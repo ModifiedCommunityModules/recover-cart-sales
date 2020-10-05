@@ -1,0 +1,13 @@
+Zitat prizzer:
+„Was ich nicht angepasst habe: /includes/modules/order_total/ot_loworderfee.php
+
+Laut Anleitung soll dort auskommentiert werden:
+
+Code: PHP  [Auswählen]
+require_once(DIR_FS_INC . 'xtc_calculate_tax.inc.php');
+
+Ich denke, dort sollte es eine bessere Lösung geben, die das Bearbeiten von bestehenden OT-Modulen unnötig macht.
+
+Kann jemand diese Version prüfen und ggf. überarbeiten/Feedback geben?“
+
+Quelle: https://www.modified-shop.org/forum/index.php?topic=8612.msg337243#msg337243
