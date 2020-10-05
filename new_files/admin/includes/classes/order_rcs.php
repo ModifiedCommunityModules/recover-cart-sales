@@ -288,18 +288,11 @@ class Order
         return xtc_db_fetch_array($query);
     }
 
-    public function cart($customerId)
+    private function buildInfoArray()
     {
-        global $currencies, $xtPrice;
+        global $xtPrice;
 
-        $this->contentType = $_SESSION['cart']->get_content_type();
-
-        $customerAddress = $this->getCustomerAddress($customerId);
-        $shippingAddress = $this->getShippingAddress($customerId, $customerAddress['customers_default_address_id']);
-        $billingAddress = $this->getBillingAddress($customerId, $customerAddress['customers_default_address_id']);
-        $taxAddress = $this->getTaxAddress($customerId, $customerAddress['customers_default_address_id']);
-
-        $this->info = [
+        $result = [
             'order_status' => DEFAULT_ORDERS_STATUS_ID,
             'currency' => DEFAULT_CURRENCY,
             'currency_value' => $xtPrice->currencies[$_SESSION['currency']]['value'],
@@ -328,14 +321,17 @@ class Order
         ];
 
         if (isset($_SESSION['payment']) && is_object($_SESSION['payment'])) {
-            $this->info['payment_method'] = $_SESSION['payment']->title;
-            $this->info['payment_class'] = $_SESSION['payment']->title;
+            $result['payment_method'] = $_SESSION['payment']->title;
+            $result['payment_class'] = $_SESSION['payment']->title;
             if ( isset($_SESSION['payment']->order_status) && is_numeric($_SESSION['payment']->order_status) && ($_SESSION['payment']->order_status > 0) ) {
-                $this->info['order_status'] = $_SESSION['payment']->order_status;
+                $result['order_status'] = $_SESSION['payment']->order_status;
             }
         }
+    }
 
-        $this->customer = [
+    private function buildCustomerArrayFromCustomerAddress($customerAddress)
+    {
+        return [
             'firstname' => $customerAddress['customers_firstname'],
             'lastname' => $customerAddress['customers_lastname'],
             'csID' => $customerAddress['customers_cid'],
@@ -359,8 +355,11 @@ class Order
             'shipping_unallowed' => $customerAddress['shipping_unallowed'],
             'email_address' => $customerAddress['customers_email_address']
         ];
+    }
 
-        $this->delivery = [
+    public function buildDeliveryArrayFromShippingAddress($shippingAddress)
+    {
+        return [
             'firstname' => $shippingAddress['entry_firstname'],
             'lastname' => $shippingAddress['entry_lastname'],
             'company' => $shippingAddress['entry_company'],
@@ -379,8 +378,11 @@ class Order
             'country_id' => $shippingAddress['entry_country_id'],
             'format_id' => $shippingAddress['address_format_id']
         ];
+    }
 
-        $this->billing = [
+    private function buildBillingFromBillingAddress($billingAddress)
+    {
+        return [
             'firstname' => $billingAddress['entry_firstname'],
             'lastname' => $billingAddress['entry_lastname'],
             'company' => $billingAddress['entry_company'],
@@ -399,6 +401,23 @@ class Order
             'country_id' => $billingAddress['entry_country_id'],
             'format_id' => $billingAddress['address_format_id']
         ];
+    }
+
+    public function cart($customerId)
+    {
+        global $currencies, $xtPrice;
+
+        $this->contentType = $_SESSION['cart']->get_content_type();
+
+        $customerAddress = $this->getCustomerAddress($customerId);
+        $shippingAddress = $this->getShippingAddress($customerId, $customerAddress['customers_default_address_id']);
+        $billingAddress = $this->getBillingAddress($customerId, $customerAddress['customers_default_address_id']);
+        $taxAddress = $this->getTaxAddress($customerId, $customerAddress['customers_default_address_id']);
+
+        $this->info = $this->buildInfoArray();
+        $this->customer = $this->buildCustomerArrayFromCustomerAddress($customerAddress);
+        $this->delivery = $this->buildDeliveryArrayFromShippingAddress($shippingAddress);
+        $this->billing = $this->buildBillingFromBillingAddress($billingAddress);
 
         $index = 0;
         // BOF - web28 - 2010-05-06 - PayPal API Modul / Paypal Express Modul
