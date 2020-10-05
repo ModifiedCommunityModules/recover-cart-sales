@@ -59,7 +59,7 @@ if (isset($_GET['action']) && $_GET['action']=='complete') {
     $payment_modules = new payment($_SESSION['payment']);
 
     require DIR_WS_CLASSES . 'order_rcs.php';
-    $order = new order($cID);
+    $order = new Order($cID);
 
     if ($order->billing['country']['iso_code_2'] != '' && $order->delivery['country']['iso_code_2'] == '') {
         $_SESSION['delivery_zone'] = $order->billing['country']['iso_code_2'];
@@ -87,7 +87,7 @@ if (isset($_GET['action']) && $_GET['action']=='complete') {
     } else {
         $shipping_modules = MODULE_SHIPPING_INSTALLED;
     }
-    $order = new order($cID);
+    $order = new Order($cID);
 
     // load the before_process function from the payment modules
     //$payment_modules->before_process();
