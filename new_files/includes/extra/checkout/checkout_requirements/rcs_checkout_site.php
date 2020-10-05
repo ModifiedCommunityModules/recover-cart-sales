@@ -17,4 +17,3 @@ switch ($checkout_position[$current_page]) {
 //BOF Offener Warenkorb Plus
 xtc_checkout_site($site);
 //EOF Offener Warenkorb Plus
-?>
