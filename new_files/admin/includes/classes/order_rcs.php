@@ -169,9 +169,9 @@ class Order
     //         );
 
     //         $subindex = 0;
-    //         $attributes_query = xtc_db_query("SELECT * FROM " . TABLE_ORDERS_PRODUCTS_ATTRIBUTES . " where orders_id = '" . xtc_db_input($order_id) . "' and orders_products_id = '" . $orders_products['orders_products_id'] . "'");
-    //         if (xtc_db_num_rows($attributes_query)) {
-    //             while ($attributes = xtc_db_fetch_array($attributes_query)) {
+    //         $attributesQuery = xtc_db_query("SELECT * FROM " . TABLE_ORDERS_PRODUCTS_ATTRIBUTES . " where orders_id = '" . xtc_db_input($order_id) . "' and orders_products_id = '" . $orders_products['orders_products_id'] . "'");
+    //         if (xtc_db_num_rows($attributesQuery)) {
+    //             while ($attributes = xtc_db_fetch_array($attributesQuery)) {
     //                 $this->products[$index]['attributes'][$subindex] = array('option' => $attributes['products_options'],
     //                     'value' => $attributes['products_options_values'],
     //                     'prefix' => $attributes['price_prefix'],
@@ -206,7 +206,7 @@ class Order
     //     $order_data = array ();
     //     $order_query = xtc_db_query($order_query);
     //     while ($order_data_values = xtc_db_fetch_array($order_query)) {
-    //         $attributes_query = "SELECT
+    //         $attributesQuery = "SELECT
     //                   products_options,
     //                   products_options_values,
     //                   price_prefix,
@@ -215,8 +215,8 @@ class Order
     //                   WHERE orders_products_id='".$order_data_values['orders_products_id']."'";
     //         $attributes_data = '';
     //         $attributes_model = '';
-    //         $attributes_query = xtc_db_query($attributes_query);
-    //         while ($attributes_data_values = xtc_db_fetch_array($attributes_query)) {
+    //         $attributesQuery = xtc_db_query($attributesQuery);
+    //         while ($attributes_data_values = xtc_db_fetch_array($attributesQuery)) {
     //             $attributes_data .= '<br />'.$attributes_data_values['products_options'].':'.$attributes_data_values['products_options_values'];
     //             $attributes_model .= '<br />'.xtc_get_attributes_model($order_data_values['products_id'], $attributes_data_values['products_options_values'],$attributes_data_values['products_options']);
     //         }
@@ -256,26 +256,27 @@ class Order
     //     return array('data'=>$order_total,'total'=>$total);
     // }
 
-    public function cart($customerId) {
+    public function cart($customerId)
+    {
         global $currencies, $xtPrice;
 
         $this->contentType = $_SESSION['cart']->get_content_type();
 
-        $customer_address_query = xtc_db_query("select c.payment_unallowed,c.shipping_unallowed,c.customers_firstname,c.customers_cid, c.customers_gender,c.customers_lastname, c.customers_telephone, c.customers_email_address, c.customers_default_address_id, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, co.countries_id, co.countries_name, co.countries_iso_code_2, co.countries_iso_code_3, co.address_format_id, ab.entry_state from " . TABLE_CUSTOMERS . " c, " . TABLE_ADDRESS_BOOK . " ab left join " . TABLE_ZONES . " z on (ab.entry_zone_id = z.zone_id) left join " . TABLE_COUNTRIES . " co on (ab.entry_country_id = co.countries_id) where c.customers_id = '" . $customer_id . "' and ab.customers_id = '" . $customer_id . "' and c.customers_default_address_id = ab.address_book_id");
+        $customerAddressQuery = xtc_db_query("select c.payment_unallowed,c.shipping_unallowed,c.customers_firstname,c.customers_cid, c.customers_gender,c.customers_lastname, c.customers_telephone, c.customers_email_address, c.customers_default_address_id, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, co.countries_id, co.countries_name, co.countries_iso_code_2, co.countries_iso_code_3, co.address_format_id, ab.entry_state from " . TABLE_CUSTOMERS . " c, " . TABLE_ADDRESS_BOOK . " ab left join " . TABLE_ZONES . " z on (ab.entry_zone_id = z.zone_id) left join " . TABLE_COUNTRIES . " co on (ab.entry_country_id = co.countries_id) where c.customers_id = '" . $customerId . "' and ab.customers_id = '" . $customerId . "' and c.customers_default_address_id = ab.address_book_id");
       
-        $customer_address = xtc_db_fetch_array($customer_address_query);
+        $customerAddress = xtc_db_fetch_array($customerAddressQuery);
 
-        $shipping_address_query = xtc_db_query("select ab.entry_firstname, ab.entry_lastname, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, ab.entry_country_id, c.countries_id, c.countries_name, c.countries_iso_code_2, c.countries_iso_code_3, c.address_format_id, ab.entry_state from " . TABLE_ADDRESS_BOOK . " ab left join " . TABLE_ZONES . " z on (ab.entry_zone_id = z.zone_id) left join " . TABLE_COUNTRIES . " c on (ab.entry_country_id = c.countries_id) where ab.customers_id = '" . $customer_id . "' and ab.address_book_id = '" . $customer_address['customers_default_address_id'] . "'");
+        $shippingAddressQuery = xtc_db_query("select ab.entry_firstname, ab.entry_lastname, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, ab.entry_country_id, c.countries_id, c.countries_name, c.countries_iso_code_2, c.countries_iso_code_3, c.address_format_id, ab.entry_state from " . TABLE_ADDRESS_BOOK . " ab left join " . TABLE_ZONES . " z on (ab.entry_zone_id = z.zone_id) left join " . TABLE_COUNTRIES . " c on (ab.entry_country_id = c.countries_id) where ab.customers_id = '" . $customerId . "' and ab.address_book_id = '" . $customerAddress['customers_default_address_id'] . "'");
       
-        $shipping_address = xtc_db_fetch_array($shipping_address_query);
+        $shippingAddress = xtc_db_fetch_array($shippingAddressQuery);
 
-        $billing_address_query = xtc_db_query("select ab.entry_firstname, ab.entry_lastname, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, ab.entry_country_id, c.countries_id, c.countries_name, c.countries_iso_code_2, c.countries_iso_code_3, c.address_format_id, ab.entry_state from " . TABLE_ADDRESS_BOOK . " ab left join " . TABLE_ZONES . " z on (ab.entry_zone_id = z.zone_id) left join " . TABLE_COUNTRIES . " c on (ab.entry_country_id = c.countries_id) where ab.customers_id = '" . $customer_id . "' and ab.address_book_id = '" . $customer_address['customers_default_address_id'] . "'");
+        $billingAddressQuery = xtc_db_query("select ab.entry_firstname, ab.entry_lastname, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, ab.entry_country_id, c.countries_id, c.countries_name, c.countries_iso_code_2, c.countries_iso_code_3, c.address_format_id, ab.entry_state from " . TABLE_ADDRESS_BOOK . " ab left join " . TABLE_ZONES . " z on (ab.entry_zone_id = z.zone_id) left join " . TABLE_COUNTRIES . " c on (ab.entry_country_id = c.countries_id) where ab.customers_id = '" . $customerId . "' and ab.address_book_id = '" . $customerAddress['customers_default_address_id'] . "'");
       
-        $billing_address = xtc_db_fetch_array($billing_address_query);
+        $billingAddress = xtc_db_fetch_array($billingAddressQuery);
 
-        $tax_address_query = xtc_db_query("select ab.entry_country_id, ab.entry_zone_id from " . TABLE_ADDRESS_BOOK . " ab left join " . TABLE_ZONES . " z on (ab.entry_zone_id = z.zone_id) where ab.customers_id = '" . $customer_id . "' and ab.address_book_id = '" . $customer_address['customers_default_address_id'] . "'");
+        $taxAddressQuery = xtc_db_query("select ab.entry_country_id, ab.entry_zone_id from " . TABLE_ADDRESS_BOOK . " ab left join " . TABLE_ZONES . " z on (ab.entry_zone_id = z.zone_id) where ab.customers_id = '" . $customerId . "' and ab.address_book_id = '" . $customerAddress['customers_default_address_id'] . "'");
         
-        $tax_address = xtc_db_fetch_array($tax_address_query);
+        $taxAddress = xtc_db_fetch_array($taxAddressQuery);
 
         $this->info = [
             'order_status' => DEFAULT_ORDERS_STATUS_ID,
@@ -314,68 +315,68 @@ class Order
         }
 
         $this->customer = [
-            'firstname' => $customer_address['customers_firstname'],
-            'lastname' => $customer_address['customers_lastname'],
-            'csID' => $customer_address['customers_cid'],
-            'gender' => $customer_address['customers_gender'],
-            'company' => $customer_address['entry_company'],
-            'street_address' => $customer_address['entry_street_address'],
-            'suburb' => $customer_address['entry_suburb'],
-            'city' => $customer_address['entry_city'],
-            'postcode' => $customer_address['entry_postcode'],
-            'state' => ((xtc_not_null($customer_address['entry_state'])) ? $customer_address['entry_state'] : $customer_address['zone_name']),
-            'zone_id' => $customer_address['entry_zone_id'],
+            'firstname' => $customerAddress['customers_firstname'],
+            'lastname' => $customerAddress['customers_lastname'],
+            'csID' => $customerAddress['customers_cid'],
+            'gender' => $customerAddress['customers_gender'],
+            'company' => $customerAddress['entry_company'],
+            'street_address' => $customerAddress['entry_street_address'],
+            'suburb' => $customerAddress['entry_suburb'],
+            'city' => $customerAddress['entry_city'],
+            'postcode' => $customerAddress['entry_postcode'],
+            'state' => ((xtc_not_null($customerAddress['entry_state'])) ? $customerAddress['entry_state'] : $customerAddress['zone_name']),
+            'zone_id' => $customerAddress['entry_zone_id'],
             'country' => [
-                'id' => $customer_address['countries_id'],
-                'title' => $customer_address['countries_name'],
-                'iso_code_2' => $customer_address['countries_iso_code_2'],
-                'iso_code_3' => $customer_address['countries_iso_code_3']
+                'id' => $customerAddress['countries_id'],
+                'title' => $customerAddress['countries_name'],
+                'iso_code_2' => $customerAddress['countries_iso_code_2'],
+                'iso_code_3' => $customerAddress['countries_iso_code_3']
             ],
-            'format_id' => $customer_address['address_format_id'],
-            'telephone' => $customer_address['customers_telephone'],
-            'payment_unallowed' => $customer_address['payment_unallowed'],
-            'shipping_unallowed' => $customer_address['shipping_unallowed'],
-            'email_address' => $customer_address['customers_email_address']
+            'format_id' => $customerAddress['address_format_id'],
+            'telephone' => $customerAddress['customers_telephone'],
+            'payment_unallowed' => $customerAddress['payment_unallowed'],
+            'shipping_unallowed' => $customerAddress['shipping_unallowed'],
+            'email_address' => $customerAddress['customers_email_address']
         ];
 
         $this->delivery = [
-            'firstname' => $shipping_address['entry_firstname'],
-            'lastname' => $shipping_address['entry_lastname'],
-            'company' => $shipping_address['entry_company'],
-            'street_address' => $shipping_address['entry_street_address'],
-            'suburb' => $shipping_address['entry_suburb'],
-            'city' => $shipping_address['entry_city'],
-            'postcode' => $shipping_address['entry_postcode'],
-            'state' => ((xtc_not_null($shipping_address['entry_state'])) ? $shipping_address['entry_state'] : $shipping_address['zone_name']),
-            'zone_id' => $shipping_address['entry_zone_id'],
+            'firstname' => $shippingAddress['entry_firstname'],
+            'lastname' => $shippingAddress['entry_lastname'],
+            'company' => $shippingAddress['entry_company'],
+            'street_address' => $shippingAddress['entry_street_address'],
+            'suburb' => $shippingAddress['entry_suburb'],
+            'city' => $shippingAddress['entry_city'],
+            'postcode' => $shippingAddress['entry_postcode'],
+            'state' => ((xtc_not_null($shippingAddress['entry_state'])) ? $shippingAddress['entry_state'] : $shippingAddress['zone_name']),
+            'zone_id' => $shippingAddress['entry_zone_id'],
             'country' => [
-                'id' => $shipping_address['countries_id'],
-                'title' => $shipping_address['countries_name'],
-                'iso_code_2' => $shipping_address['countries_iso_code_2'],
-                'iso_code_3' => $shipping_address['countries_iso_code_3']
+                'id' => $shippingAddress['countries_id'],
+                'title' => $shippingAddress['countries_name'],
+                'iso_code_2' => $shippingAddress['countries_iso_code_2'],
+                'iso_code_3' => $shippingAddress['countries_iso_code_3']
             ],
-            'country_id' => $shipping_address['entry_country_id'],
-            'format_id' => $shipping_address['address_format_id']
+            'country_id' => $shippingAddress['entry_country_id'],
+            'format_id' => $shippingAddress['address_format_id']
         ];
 
         $this->billing = [
-            'firstname' => $billing_address['entry_firstname'],
-            'lastname' => $billing_address['entry_lastname'],
-            'company' => $billing_address['entry_company'],
-            'street_address' => $billing_address['entry_street_address'],
-            'suburb' => $billing_address['entry_suburb'],
-            'city' => $billing_address['entry_city'],
-            'postcode' => $billing_address['entry_postcode'],
-            'state' => ((xtc_not_null($billing_address['entry_state'])) ? $billing_address['entry_state'] : $billing_address['zone_name']),
-            'zone_id' => $billing_address['entry_zone_id'],
+            'firstname' => $billingAddress['entry_firstname'],
+            'lastname' => $billingAddress['entry_lastname'],
+            'company' => $billingAddress['entry_company'],
+            'street_address' => $billingAddress['entry_street_address'],
+            'suburb' => $billingAddress['entry_suburb'],
+            'city' => $billingAddress['entry_city'],
+            'postcode' => $billingAddress['entry_postcode'],
+            'state' => ((xtc_not_null($billingAddress['entry_state'])) ? $billingAddress['entry_state'] : $billingAddress['zone_name']),
+            'zone_id' => $billingAddress['entry_zone_id'],
             'country' => [
-                'id' => $billing_address['countries_id'],
-                'title' => $billing_address['countries_name'],
-                'iso_code_2' => $billing_address['countries_iso_code_2'],
-                'iso_code_3' => $billing_address['countries_iso_code_3']
+                'id' => $billingAddress['countries_id'],
+                'title' => $billingAddress['countries_name'],
+                'iso_code_2' => $billingAddress['countries_iso_code_2'],
+                'iso_code_3' => $billingAddress['countries_iso_code_3']
             ],
-            'country_id' => $billing_address['entry_country_id'],
-            'format_id' => $billing_address['address_format_id']
+            'country_id' => $billingAddress['entry_country_id'],
+            'format_id' => $billingAddress['address_format_id']
         ];
 
         $index = 0;
@@ -385,18 +386,18 @@ class Order
         $products = $_SESSION['cart']->get_products();
         
         for ($i = 0, $n = sizeof($products); $i < $n; $i++) {
-            $products_price = $xtPrice->xtcGetPrice($products[$i]['id'], $format = false, $products[$i]['quantity'], $products[$i]['tax_class_id'], '');
-            $products_price += $xtPrice->xtcFormat($_SESSION['cart']->attributes_price($products[$i]['id']), false, $products[$i]['tax_class_id']);
+            $productPrice = $xtPrice->xtcGetPrice($products[$i]['id'], $format = false, $products[$i]['quantity'], $products[$i]['tax_class_id'], '');
+            $productPrice += $xtPrice->xtcFormat($_SESSION['cart']->attributes_price($products[$i]['id']), false, $products[$i]['tax_class_id']);
 
             $this->products[$index] = [
                 'qty' => $products[$i]['quantity'],
                 'name' => $products[$i]['name'],
                 'model' => $products[$i]['model'],
                 'tax_class_id'=> $products[$i]['tax_class_id'],
-                'tax' => xtc_get_tax_rate($products[$i]['tax_class_id'], $tax_address['entry_country_id'], $tax_address['entry_zone_id']),
-                'tax_description' => xtc_get_tax_description($products[$i]['tax_class_id'], $tax_address['entry_country_id'], $tax_address['entry_zone_id']),
-                'price' =>  $products_price ,
-                'final_price' => $products_price*$products[$i]['quantity'],
+                'tax' => xtc_get_tax_rate($products[$i]['tax_class_id'], $taxAddress['entry_country_id'], $taxAddress['entry_zone_id']),
+                'tax_description' => xtc_get_tax_description($products[$i]['tax_class_id'], $taxAddress['entry_country_id'], $taxAddress['entry_zone_id']),
+                'price' =>  $productPrice ,
+                'final_price' => $productPrice * $products[$i]['quantity'],
                 'shipping_time'=>$products[$i]['shipping_time'],
                 'weight' => $products[$i]['weight'],
                 'id' => $products[$i]['id']
@@ -406,8 +407,8 @@ class Order
                 $subindex = 0;
                 reset($products[$i]['attributes']);
                 while (list($option, $value) = each($products[$i]['attributes'])) {
-                    $attributes_query = xtc_db_query("select popt.products_options_name, poval.products_options_values_name, pa.options_values_price, pa.price_prefix from " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa where pa.products_id = '" . $products[$i]['id'] . "' and pa.options_id = '" . $option . "' and pa.options_id = popt.products_options_id and pa.options_values_id = '" . $value . "' and pa.options_values_id = poval.products_options_values_id and popt.language_id = '" . $_SESSION['languages_id'] . "' and poval.language_id = '" . $_SESSION['languages_id'] . "'");
-                    $attributes = xtc_db_fetch_array($attributes_query);
+                    $attributesQuery = xtc_db_query("select popt.products_options_name, poval.products_options_values_name, pa.options_values_price, pa.price_prefix from " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa where pa.products_id = '" . $products[$i]['id'] . "' and pa.options_id = '" . $option . "' and pa.options_id = popt.products_options_id and pa.options_values_id = '" . $value . "' and pa.options_values_id = poval.products_options_values_id and popt.language_id = '" . $_SESSION['languages_id'] . "' and poval.language_id = '" . $_SESSION['languages_id'] . "'");
+                    $attributes = xtc_db_fetch_array($attributesQuery);
 
                     $this->products[$index]['attributes'][$subindex] = [
                         'option' => $attributes['products_options_name'],
@@ -422,48 +423,48 @@ class Order
                 }
             }
 
-            $shown_price = $this->products[$index]['final_price'];
-            $this->info['subtotal'] += $shown_price;
+            $shownPrice = $this->products[$index]['final_price'];
+            $this->info['subtotal'] += $shownPrice;
             if ($_SESSION['customers_status']['customers_status_ot_discount_flag'] == 1){
-                $shown_price_tax = $shown_price - ($shown_price / 100 * $_SESSION['customers_status']['customers_status_ot_discount']);
+                $shownPriceTax = $shownPrice - ($shownPrice / 100 * $_SESSION['customers_status']['customers_status_ot_discount']);
             }
 
-            $products_tax = $this->products[$index]['tax'];
-            $products_tax_description = $this->products[$index]['tax_description'];
+            $productTax = $this->products[$index]['tax'];
+            $productTaxDescription = $this->products[$index]['tax_description'];
             
             if ($_SESSION['customers_status']['customers_status_show_price_tax'] == '1') {
-                $tax_index = TAX_ADD_TAX . $products_tax_description;
+                $taxIndex = TAX_ADD_TAX . $productTaxDescription;
 
-                if (!isset($this->info['tax_groups'][$tax_index])) {
-                    $this->info['tax_groups'][$tax_index] = 0;
+                if (!isset($this->info['tax_groups'][$taxIndex])) {
+                    $this->info['tax_groups'][$taxIndex] = 0;
                 }
 
                 if ($_SESSION['customers_status']['customers_status_ot_discount_flag'] == 1) {
-                    $this->info['tax'] += $shown_price_tax - ($shown_price_tax / (($products_tax < 10) ? "1.0" . str_replace('.', '', $products_tax) : "1." . str_replace('.', '', $products_tax)));
-                    //$this->info['tax_groups'][TAX_ADD_TAX."$products_tax_description"] += (($shown_price_tax /(100+$products_tax)) * $products_tax);
-                    $this->info['tax_groups'][$tax_index] += (($shown_price_tax /(100+$products_tax)) * $products_tax);
+                    $this->info['tax'] += $shownPriceTax - ($shownPriceTax / (($productTax < 10) ? "1.0" . str_replace('.', '', $productTax) : "1." . str_replace('.', '', $productTax)));
+                    //$this->info['tax_groups'][TAX_ADD_TAX . "$productTaxDescription"] += (($shownPriceTax / (100 + $productTax)) * $productTax);
+                    $this->info['tax_groups'][$taxIndex] += (($shownPriceTax / (100 + $productTax)) * $productTax);
                 } else {
-                    $this->info['tax'] += $shown_price - ($shown_price / (($products_tax < 10) ? "1.0" . str_replace('.', '', $products_tax) : "1." . str_replace('.', '', $products_tax)));
-                    //$this->info['tax_groups'][TAX_ADD_TAX . "$products_tax_description"] += (($shown_price /(100+$products_tax)) * $products_tax);
-                    $this->info['tax_groups'][$tax_index] += (($shown_price /(100+$products_tax)) * $products_tax);
+                    $this->info['tax'] += $shownPrice - ($shownPrice / (($productTax < 10) ? "1.0" . str_replace('.', '', $productTax) : "1." . str_replace('.', '', $productTax)));
+                    //$this->info['tax_groups'][TAX_ADD_TAX . "$productTaxDescription"] += (($shownPrice / (100 + $productTax)) * $productTax);
+                    $this->info['tax_groups'][$taxIndex] += (($shownPrice / (100 + $productTax)) * $productTax);
                 }
             } else {
-                $tax_index = TAX_NO_TAX . $products_tax_description;
-                if (!isset($this->info['tax_groups'][$tax_index])) {
-                    $this->info['tax_groups'][$tax_index] = 0;
+                $taxIndex = TAX_NO_TAX . $productTaxDescription;
+                if (!isset($this->info['tax_groups'][$taxIndex])) {
+                    $this->info['tax_groups'][$taxIndex] = 0;
                 }
 
                 if ($_SESSION['customers_status']['customers_status_ot_discount_flag'] == 1) {
                     // BOF - web28 - 2010-05-06 - PayPal API Modul / Paypal Express Modul
-                    //$this->info['tax'] += ($shown_price_tax/100) * ($products_tax);
-                    $this->taxDiscount[$products[$i]['tax_class_id']] += ($shown_price_tax / 100) * $products_tax;
+                    //$this->info['tax'] += ($shownPriceTax / 100) * ($productTax);
+                    $this->taxDiscount[$products[$i]['tax_class_id']] += ($shownPriceTax / 100) * $productTax;
                     // EOF - web28 - 2010-05-06 - PayPal API Modul / Paypal Express Modul
-                    //$this->info['tax_groups'][TAX_NO_TAX . "$products_tax_description"] += ($shown_price_tax/100) * ($products_tax);
-                    $this->info['tax_groups'][$tax_index] += ($shown_price_tax/100) * ($products_tax);
+                    //$this->info['tax_groups'][TAX_NO_TAX . "$productTaxDescription"] += ($shownPriceTax / 100) * ($productTax);
+                    $this->info['tax_groups'][$taxIndex] += ($shownPriceTax / 100) * ($productTax);
                 } else {
-                    $this->info['tax'] += ($shown_price/100) * ($products_tax);
-                    //$this->info['tax_groups'][TAX_NO_TAX . "$products_tax_description"] += ($shown_price/100) * ($products_tax);
-                    $this->info['tax_groups'][$tax_index] += ($shown_price/100) * ($products_tax);
+                    $this->info['tax'] += ($shownPrice / 100) * ($productTax);
+                    //$this->info['tax_groups'][TAX_NO_TAX . "$productTaxDescription"] += ($shownPrice / 100) * ($productTax);
+                    $this->info['tax_groups'][$taxIndex] += ($shownPrice / 100) * ($productTax);
                 }
             }
             $index++;
