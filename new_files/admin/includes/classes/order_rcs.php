@@ -79,13 +79,13 @@ class Order
     //         'value'=>$totals['value']);
     //     }
 
-    //     $order_total_query = xtc_db_query("SELECT text from " . TABLE_ORDERS_TOTAL . " WHERE orders_id = '" . $order_id . "' AND class = 'ot_total'");
+    //     $order_total_query = xtc_db_query("SELECT text FROM " . TABLE_ORDERS_TOTAL . " WHERE orders_id = '" . $order_id . "' AND class = 'ot_total'");
     //     $order_total = xtc_db_fetch_array($order_total_query);
 
-    //     $shipping_method_query = xtc_db_query("SELECT title from " . TABLE_ORDERS_TOTAL . " WHERE orders_id = '" . $order_id . "' AND class = 'ot_shipping'");
+    //     $shipping_method_query = xtc_db_query("SELECT title FROM " . TABLE_ORDERS_TOTAL . " WHERE orders_id = '" . $order_id . "' AND class = 'ot_shipping'");
     //     $shipping_method = xtc_db_fetch_array($shipping_method_query);
 
-    //     $order_status_query = xtc_db_query("SELECT orders_status_name from " . TABLE_ORDERS_STATUS . " WHERE orders_status_id = '" . $order['orders_status'] . "' AND language_id = '" . $_SESSION['languages_id'] . "'");
+    //     $order_status_query = xtc_db_query("SELECT orders_status_name FROM " . TABLE_ORDERS_STATUS . " WHERE orders_status_id = '" . $order['orders_status'] . "' AND language_id = '" . $_SESSION['languages_id'] . "'");
     //     $order_status = xtc_db_fetch_array($order_status_query);
 
     //     $this->info = array('currency' => $order['currency'],
@@ -449,7 +449,7 @@ class Order
                 $subindex = 0;
                 reset($products[$i]['attributes']);
                 while (list($option, $value) = each($products[$i]['attributes'])) {
-                    $attributesQuery = xtc_db_query("SELECT popt.products_options_name, poval.products_options_values_name, pa.options_values_price, pa.price_prefix from " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa WHERE pa.products_id = '" . $products[$i]['id'] . "' AND pa.options_id = '" . $option . "' AND pa.options_id = popt.products_options_id AND pa.options_values_id = '" . $value . "' AND pa.options_values_id = poval.products_options_values_id AND popt.language_id = '" . $_SESSION['languages_id'] . "' AND poval.language_id = '" . $_SESSION['languages_id'] . "'");
+                    $attributesQuery = xtc_db_query("SELECT popt.products_options_name, poval.products_options_values_name, pa.options_values_price, pa.price_prefix FROM " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa WHERE pa.products_id = '" . $products[$i]['id'] . "' AND pa.options_id = '" . $option . "' AND pa.options_id = popt.products_options_id AND pa.options_values_id = '" . $value . "' AND pa.options_values_id = poval.products_options_values_id AND popt.language_id = '" . $_SESSION['languages_id'] . "' AND poval.language_id = '" . $_SESSION['languages_id'] . "'");
                     $attributes = xtc_db_fetch_array($attributesQuery);
 
                     $this->products[$index]['attributes'][$subindex] = [
