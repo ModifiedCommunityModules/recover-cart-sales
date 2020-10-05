@@ -25,5 +25,3 @@
 		'parameter'			=> '',                  //zusaetzliche Parameter z.B. 'set=export'
 		'ssl' 				=> ''                   //SSL oder NONSSL, kein Eintrag = NONSSL
 	);
-
-?>

@@ -13,4 +13,3 @@
     return $product['specials_new_products_price'];
   }
   // EOF Offener Warenkorb Plus
-?>

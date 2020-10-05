@@ -28,4 +28,3 @@ function compareSite($currentSite, $oldSite) {
         xtc_db_query("UPDATE " . TABLE_CUSTOMERS_BASKET . " SET checkout_site='" . xtc_db_input($currentSite) . "', language='" . xtc_db_input($_SESSION['language']) . "' WHERE customers_id=" . (int)$_SESSION['customer_id']);
     }
 }
-?>

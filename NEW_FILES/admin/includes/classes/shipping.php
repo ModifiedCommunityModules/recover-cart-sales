@@ -16,4 +16,3 @@
    --------------------------------------------------------------*/
 defined( '_VALID_XTC' ) or die( 'Direct Access to this location is not allowed.' );
 include(DIR_FS_CATALOG.DIR_WS_CLASSES.'shipping.php'); // Using frontend class
-?>
