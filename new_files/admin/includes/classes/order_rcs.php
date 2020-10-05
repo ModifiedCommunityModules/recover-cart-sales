@@ -327,6 +327,8 @@ class Order
                 $result['order_status'] = $_SESSION['payment']->order_status;
             }
         }
+
+        return $result;
     }
 
     private function buildCustomerArrayFromCustomerAddress($customerAddress)
