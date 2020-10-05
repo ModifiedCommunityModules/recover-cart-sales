@@ -7,7 +7,7 @@ Source modified Forum: [Offene Warenkörbe PLUS](https://www.modified-shop.org/f
 PHP 7.0 or above
 
 ## Authors
-- 2020 by Robin Wieschendorf (robinwieschendord.de) - transferred to Github and entered in MMLC
+- 2020 by Robin Wieschendorf (robinwieschendorf.de) - transferred to Github and entered in MMLC
 - 2009-2013 by modified (www.modified-shop.org)
 - 2007-2008 by Estelco
 - 2007 by 2007 Andre Estel (www.estelco.de)
