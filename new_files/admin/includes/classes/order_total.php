@@ -15,4 +15,4 @@
    Released under the GNU General Public License 
    --------------------------------------------------------------*/
 defined( '_VALID_XTC' ) or die( 'Direct Access to this location is not allowed.' );
-include(DIR_FS_CATALOG.DIR_WS_CLASSES.'order_total.php'); // Using frontend class
+include DIR_FS_CATALOG . DIR_WS_CLASSES . 'order_total.php'; // Using frontend class

@@ -16,8 +16,8 @@ aalst@aalst.com
 Modified by Lane Roathe (recover_cart_sales.php,v 1.4d .. v2.11)
 lane@ifd.com	www.osc-modsquad.com / www.ifd.com
 */
-require('includes/application_top.php');
-require(DIR_WS_CLASSES . 'currencies.php');
+require 'includes/application_top.php';
+require DIR_WS_CLASSES . 'currencies.php';
 
 $currencies = new currencies();
 
@@ -28,12 +28,12 @@ function xtc_date_order_stat($raw_date) {
     $day = (int)substr($raw_date, 6, 2);
     return date(DATE_FORMAT, mktime(0, 0, 0, $month, $day, $year));
 }
-require (DIR_WS_INCLUDES.'head.php');
+require DIR_WS_INCLUDES.'head.php';
 ?>
 
 <!-- header //-->
 
-<?php require(DIR_WS_INCLUDES . 'header.php'); ?>
+<?php require DIR_WS_INCLUDES . 'header.php'; ?>
 
 <!-- header_eof //-->
 
@@ -51,7 +51,7 @@ function seadate($day) {
     <td class="columnLeft2" width="<?php echo BOX_WIDTH; ?>" valign="top">
       <table border="0" width="<?php echo BOX_WIDTH; ?>" cellspacing="1" cellpadding="1" class="columnLeft">
         <!-- left_navigation //-->
-        <?php require(DIR_WS_INCLUDES . 'column_left.php'); ?>
+        <?php require DIR_WS_INCLUDES . 'column_left.php'; ?>
         <!-- left_navigation_eof //-->
       </table>
     </td>
@@ -180,11 +180,11 @@ Done!
 
 <!-- footer //-->
 
-<?php require(DIR_WS_INCLUDES . 'footer.php'); ?>
+<?php require DIR_WS_INCLUDES . 'footer.php'; ?>
 
 <!-- footer_eof //-->
 
 <br>
 </body>
 </html>
-<?php require(DIR_WS_INCLUDES . 'application_bottom.php'); ?>
+<?php require DIR_WS_INCLUDES . 'application_bottom.php'; ?>
