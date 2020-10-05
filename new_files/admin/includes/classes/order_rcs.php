@@ -256,27 +256,48 @@ class Order
     //     return array('data'=>$order_total,'total'=>$total);
     // }
 
+    private function getCustomerAddress($customerId)
+    {
+        $sql = "SELECT c.payment_unallowed,c.shipping_unallowed,c.customers_firstname,c.customers_cid, c.customers_gender,c.customers_lastname, c.customers_telephone, c.customers_email_address, c.customers_default_address_id, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, co.countries_id, co.countries_name, co.countries_iso_code_2, co.countries_iso_code_3, co.address_format_id, ab.entry_state FROM " . TABLE_CUSTOMERS . " c, " . TABLE_ADDRESS_BOOK . " ab LEFT JOIN " . TABLE_ZONES . " z ON (ab.entry_zone_id = z.zone_id) LEFT JOIN " . TABLE_COUNTRIES . " co ON (ab.entry_country_id = co.countries_id) WHERE c.customers_id = '" . $customerId . "' AND ab.customers_id = '" . $customerId . "' AND c.customers_default_address_id = ab.address_book_id";
+
+        $query = xtc_db_query($sql);
+        return xtc_db_fetch_array($query);
+    }
+
+    private function getShippingAddress($customerId, $customerDefaultAddressId)
+    {
+        $sql = "SELECT ab.entry_firstname, ab.entry_lastname, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, ab.entry_country_id, c.countries_id, c.countries_name, c.countries_iso_code_2, c.countries_iso_code_3, c.address_format_id, ab.entry_state FROM " . TABLE_ADDRESS_BOOK . " ab LEFT JOIN " . TABLE_ZONES . " z ON (ab.entry_zone_id = z.zone_id) LEFT JOIN " . TABLE_COUNTRIES . " c ON (ab.entry_country_id = c.countries_id) WHERE ab.customers_id = '" . $customerId . "' AND ab.address_book_id = '" . $$customerDefaultAddressId . "'";
+      
+        $query = xtc_db_query($sql);
+        return xtc_db_fetch_array($query);
+    }
+
+    private function getBillingAddress($customerId, $customerDefaultAddressId)
+    {
+        $sql = "SELECT ab.entry_firstname, ab.entry_lastname, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, ab.entry_country_id, c.countries_id, c.countries_name, c.countries_iso_code_2, c.countries_iso_code_3, c.address_format_id, ab.entry_state FROM " . TABLE_ADDRESS_BOOK . " ab LEFT JOIN " . TABLE_ZONES . " z ON (ab.entry_zone_id = z.zone_id) LEFT JOIN " . TABLE_COUNTRIES . " c ON (ab.entry_country_id = c.countries_id) WHERE ab.customers_id = '" . $customerId . "' AND ab.address_book_id = '" . $customerDefaultAddressId . "'";
+      
+        $query = xtc_db_query($sql);
+        return xtc_db_fetch_array($query);
+    }
+
+    private function getTaxAddress($customerId, $customerDefaultAddressId)
+    {
+        $sql = "SELECT ab.entry_country_id, ab.entry_zone_id FROM " . TABLE_ADDRESS_BOOK . " ab LEFT JOIN " . TABLE_ZONES . " z ON (ab.entry_zone_id = z.zone_id) WHERE ab.customers_id = '" . $customerId . "' AND ab.address_book_id = '" . $customerDefaultAddressId . "'";
+        
+        $query = xtc_db_query($sql);
+        return xtc_db_fetch_array($query);
+    }
+
     public function cart($customerId)
     {
         global $currencies, $xtPrice;
 
         $this->contentType = $_SESSION['cart']->get_content_type();
 
-        $customerAddressQuery = xtc_db_query("SELECT c.payment_unallowed,c.shipping_unallowed,c.customers_firstname,c.customers_cid, c.customers_gender,c.customers_lastname, c.customers_telephone, c.customers_email_address, c.customers_default_address_id, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, co.countries_id, co.countries_name, co.countries_iso_code_2, co.countries_iso_code_3, co.address_format_id, ab.entry_state FROM " . TABLE_CUSTOMERS . " c, " . TABLE_ADDRESS_BOOK . " ab LEFT JOIN " . TABLE_ZONES . " z ON (ab.entry_zone_id = z.zone_id) LEFT JOIN " . TABLE_COUNTRIES . " co ON (ab.entry_country_id = co.countries_id) WHERE c.customers_id = '" . $customerId . "' AND ab.customers_id = '" . $customerId . "' AND c.customers_default_address_id = ab.address_book_id");
-      
-        $customerAddress = xtc_db_fetch_array($customerAddressQuery);
-
-        $shippingAddressQuery = xtc_db_query("SELECT ab.entry_firstname, ab.entry_lastname, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, ab.entry_country_id, c.countries_id, c.countries_name, c.countries_iso_code_2, c.countries_iso_code_3, c.address_format_id, ab.entry_state FROM " . TABLE_ADDRESS_BOOK . " ab LEFT JOIN " . TABLE_ZONES . " z ON (ab.entry_zone_id = z.zone_id) LEFT JOIN " . TABLE_COUNTRIES . " c ON (ab.entry_country_id = c.countries_id) WHERE ab.customers_id = '" . $customerId . "' AND ab.address_book_id = '" . $customerAddress['customers_default_address_id'] . "'");
-      
-        $shippingAddress = xtc_db_fetch_array($shippingAddressQuery);
-
-        $billingAddressQuery = xtc_db_query("SELECT ab.entry_firstname, ab.entry_lastname, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, ab.entry_country_id, c.countries_id, c.countries_name, c.countries_iso_code_2, c.countries_iso_code_3, c.address_format_id, ab.entry_state FROM " . TABLE_ADDRESS_BOOK . " ab LEFT JOIN " . TABLE_ZONES . " z ON (ab.entry_zone_id = z.zone_id) LEFT JOIN " . TABLE_COUNTRIES . " c ON (ab.entry_country_id = c.countries_id) WHERE ab.customers_id = '" . $customerId . "' AND ab.address_book_id = '" . $customerAddress['customers_default_address_id'] . "'");
-      
-        $billingAddress = xtc_db_fetch_array($billingAddressQuery);
-
-        $taxAddressQuery = xtc_db_query("SELECT ab.entry_country_id, ab.entry_zone_id FROM " . TABLE_ADDRESS_BOOK . " ab LEFT JOIN " . TABLE_ZONES . " z ON (ab.entry_zone_id = z.zone_id) WHERE ab.customers_id = '" . $customerId . "' AND ab.address_book_id = '" . $customerAddress['customers_default_address_id'] . "'");
-        
-        $taxAddress = xtc_db_fetch_array($taxAddressQuery);
+        $customerAddress = $this->getCustomerAddress($customerId);
+        $shippingAddress = $this->getShippingAddress($customerId, $customerAddress['customers_default_address_id']);
+        $billingAddress = $this->getBillingAddress($customerId, $customerAddress['customers_default_address_id']);
+        $taxAddress = $this->getTaxAddress($customerId, $customerAddress['customers_default_address_id']);
 
         $this->info = [
             'order_status' => DEFAULT_ORDERS_STATUS_ID,
