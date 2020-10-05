@@ -27,21 +27,21 @@ class rcs_shopping_cart {
     
     function translate() {
         switch ($_SESSION['language_code']) {
-          case 'de':
-            $this->title = 'rcs_shopping_cart';
-            $this->description = '';
-            break;
+            case 'de':
+                $this->title = 'rcs_shopping_cart';
+                $this->description = '';
+                break;
           default:
-            $this->title = 'rcs_shopping_cart';
-            $this->description = '';
-            break;
+                $this->title = 'rcs_shopping_cart';
+                $this->description = '';
+                break;
         }
     }
     
     function check() {
         if (!isset($this->_check)) {
-          $check_query = xtc_db_query("select configuration_value from " . TABLE_CONFIGURATION . " where configuration_key = '".$this->name."_STATUS'");
-          $this->_check = xtc_db_num_rows($check_query);
+            $check_query = xtc_db_query("select configuration_value from " . TABLE_CONFIGURATION . " where configuration_key = '".$this->name."_STATUS'");
+            $this->_check = xtc_db_num_rows($check_query);
         }
         return $this->_check;
     }
@@ -65,12 +65,12 @@ class rcs_shopping_cart {
 
         $products_query = xtc_db_query("select products_id, customers_basket_quantity from ".TABLE_CUSTOMERS_BASKET." where customers_id = '".$customers_id."'");
         while ($products = xtc_db_fetch_array($products_query)) {
-          $shopping_cart->contents[$products['products_id']] = array ('qty' => $products['customers_basket_quantity']);
-          // attributes
-          $attributes_query = xtc_db_query("select products_options_id, products_options_value_id from ".TABLE_CUSTOMERS_BASKET_ATTRIBUTES." where customers_id = '".$customers_id."' and products_id = '".$products['products_id']."'");
-          while ($attributes = xtc_db_fetch_array($attributes_query)) {
-            $shopping_cart->contents[$products['products_id']]['attributes'][$attributes['products_options_id']] = $attributes['products_options_value_id'];
-          }
+            $shopping_cart->contents[$products['products_id']] = array ('qty' => $products['customers_basket_quantity']);
+            // attributes
+            $attributes_query = xtc_db_query("select products_options_id, products_options_value_id from ".TABLE_CUSTOMERS_BASKET_ATTRIBUTES." where customers_id = '".$customers_id."' and products_id = '".$products['products_id']."'");
+            while ($attributes = xtc_db_fetch_array($attributes_query)) {
+                $shopping_cart->contents[$products['products_id']]['attributes'][$attributes['products_options_id']] = $attributes['products_options_value_id'];
+            }
         }
         $shopping_cart->calculate();
     }

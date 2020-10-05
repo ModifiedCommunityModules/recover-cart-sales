@@ -39,8 +39,8 @@ if (isset($_GET['action']) && $_GET['action']=='complete') {
     $_SESSION['saved_cart'] = $_SESSION['cart'];
 
     require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'main.php';
-		$main = new main();
-		
+        $main = new main();
+        
     require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'xtcPrice.php';
     $statusQuery = xtc_db_query("SELECT c.customers_status, cs.customers_status_name,  cs.customers_status_image, cs.customers_status_ot_discount_flag, cs.customers_status_ot_discount FROM " . TABLE_CUSTOMERS . " c, " . TABLE_CUSTOMERS_STATUS . " cs WHERE c.customers_status=cs.customers_status_id AND c.customers_id=" . $cID . " AND cs.language_id=" . (int)$_SESSION['languages_id']);
     $status = xtc_db_fetch_array($statusQuery);

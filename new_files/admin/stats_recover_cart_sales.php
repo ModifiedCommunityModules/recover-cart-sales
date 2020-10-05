@@ -65,30 +65,30 @@ function seadate($day) {
         <table border="0" width="100%" cellspacing="0" cellpadding="0">
 Working...
           <tr>
-          	<td colspan="6">
+              <td colspan="6">
 <!-- new header -->
-          		<table border="0" width="100%" cellspacing="0" cellpadding="2">
-            		<tr>
-              			<td class="pageHeading" align="left"><?php echo HEADING_TITLE; ?></td>
-              			<td class="pageHeading" align="right">
-	                	<?php
-	                	$tdate = isset($_POST['tdate'])?$_POST['tdate']:'';
-	                	if ($tdate == '') $tdate = RCS_REPORT_DAYS;
-      	              	$ndate = seadate($tdate);
-      	            ?>
+                  <table border="0" width="100%" cellspacing="0" cellpadding="2">
+                    <tr>
+                          <td class="pageHeading" align="left"><?php echo HEADING_TITLE; ?></td>
+                          <td class="pageHeading" align="right">
+                        <?php
+                        $tdate = isset($_POST['tdate'])?$_POST['tdate']:'';
+                        if ($tdate == '') $tdate = RCS_REPORT_DAYS;
+                            $ndate = seadate($tdate);
+                      ?>
                     <?php
                     echo xtc_draw_form('stats_recover_cart_sales', 'stats_recover_cart_sales.php', '', 'post', '').PHP_EOL;
                     ?>
-            	      <table align="right" width="100%">
-               	     <tr class="dataTableContent" align="right">
-                  	    <td nowrap><?php echo DAYS_FIELD_PREFIX; ?><input type="text" size="4" width="4" value="<?php echo $tdate; ?>" name="tdate"><?php echo DAYS_FIELD_POSTFIX; ?><input type="submit" value="<?php echo DAYS_FIELD_BUTTON; ?>"></td>
-   	                 </tr>
-	                  </table>
-			            </form>
-         	         </td>
-            		</tr>
-	            </table>
-          	</td>
+                      <table align="right" width="100%">
+                        <tr class="dataTableContent" align="right">
+                          <td nowrap><?php echo DAYS_FIELD_PREFIX; ?><input type="text" size="4" width="4" value="<?php echo $tdate; ?>" name="tdate"><?php echo DAYS_FIELD_POSTFIX; ?><input type="submit" value="<?php echo DAYS_FIELD_BUTTON; ?>"></td>
+                        </tr>
+                      </table>
+                        </form>
+                      </td>
+                    </tr>
+                </table>
+              </td>
           </tr>
 <?php
 // Init vars
@@ -147,33 +147,33 @@ $cline =  "<tr><td height=\"15\" COLSPAN=8> </td></tr>".
 "<tr><td height=\"12\" COLSPAN=6> </td></tr>";
 echo $cline;
 ?>
-			 <tr class="dataTableHeadingRow">	<!-- Header -->
-			  <td width="7%" class="dataTableHeadingContent" align="right"><?php echo TABLE_HEADING_SCART_ID ?></td>
-			  <td width="1%" class="dataTableHeadingContent">&nbsp;</td>
-			  <td width="10%" class="dataTableHeadingContent" align="center"><?php echo TABLE_HEADING_SCART_DATE ?></td>
-			  <td width="1%" class="dataTableHeadingContent">&nbsp;</td>
-			  <td width="50%" class="dataTableHeadingContent"><?php echo TABLE_HEADING_CUSTOMER ?></td>
-			  <td width="10%" class="dataTableHeadingContent"><?php echo TABLE_HEADING_ORDER_DATE ?></td>
-			  <td width="10%" class="dataTableHeadingContent" align="center"><?php echo TABLE_HEADING_ORDER_STATUS ?></td>
-			  <td width="10%" class="dataTableHeadingContent" align="right"><?php echo TABLE_HEADING_ORDER_AMOUNT ?></td>
-			  <td width="1%" class="dataTableHeadingContent">&nbsp;</td>
-      	</tr>
+             <tr class="dataTableHeadingRow">	<!-- Header -->
+              <td width="7%" class="dataTableHeadingContent" align="right"><?php echo TABLE_HEADING_SCART_ID ?></td>
+              <td width="1%" class="dataTableHeadingContent">&nbsp;</td>
+              <td width="10%" class="dataTableHeadingContent" align="center"><?php echo TABLE_HEADING_SCART_DATE ?></td>
+              <td width="1%" class="dataTableHeadingContent">&nbsp;</td>
+              <td width="50%" class="dataTableHeadingContent"><?php echo TABLE_HEADING_CUSTOMER ?></td>
+              <td width="10%" class="dataTableHeadingContent"><?php echo TABLE_HEADING_ORDER_DATE ?></td>
+              <td width="10%" class="dataTableHeadingContent" align="center"><?php echo TABLE_HEADING_ORDER_STATUS ?></td>
+              <td width="10%" class="dataTableHeadingContent" align="right"><?php echo TABLE_HEADING_ORDER_AMOUNT ?></td>
+              <td width="1%" class="dataTableHeadingContent">&nbsp;</td>
+          </tr>
 <?php
 echo $custlist;	// BODY: <tr> sections with recovered cart data
 ?>
-		<tr>
-				<td colspan=9 valign="bottom"><hr width="100%" size="1" color="#800000" noshade></td>
-			 </tr>
-		<tr class="main">
-		  <td align="right" valign="center" colspan=4 class="main"><b><?php echo TOTAL_RECOVERED ?>&nbsp;</b></font></td>
-		  <td align=left colspan=3 class="main"><b><?php echo $rc_cnt ? xtc_round(($custknt / $rc_cnt) * 100, 2) : 0 ?>%</b></font></td>
-		  <td class="main" align="right"><b><?php echo $currencies->format(xtc_round($total_recovered, 2)) ?></b></font></td>
-		  <td class="main">&nbsp;</td>
-		</tr>
+        <tr>
+                <td colspan=9 valign="bottom"><hr width="100%" size="1" color="#800000" noshade></td>
+             </tr>
+        <tr class="main">
+          <td align="right" valign="center" colspan=4 class="main"><b><?php echo TOTAL_RECOVERED ?>&nbsp;</b></font></td>
+          <td align=left colspan=3 class="main"><b><?php echo $rc_cnt ? xtc_round(($custknt / $rc_cnt) * 100, 2) : 0 ?>%</b></font></td>
+          <td class="main" align="right"><b><?php echo $currencies->format(xtc_round($total_recovered, 2)) ?></b></font></td>
+          <td class="main">&nbsp;</td>
+        </tr>
 Done!
     </table>
 <!-- body_text_eof //-->
-	</td>
+    </td>
  </tr>
 </table>
 <!-- body_eof //-->
