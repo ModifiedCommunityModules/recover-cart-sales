@@ -72,20 +72,20 @@ class Order
 
     //     $order = xtc_db_fetch_array($order_query);
 
-    //     $totals_query = xtc_db_query("SELECT * FROM " . TABLE_ORDERS_TOTAL . " where orders_id = '" . xtc_db_input($order_id) . "' order by sort_order");
+    //     $totals_query = xtc_db_query("SELECT * FROM " . TABLE_ORDERS_TOTAL . " WHERE orders_id = '" . xtc_db_input($order_id) . "' order by sort_order");
     //     while ($totals = xtc_db_fetch_array($totals_query)) {
     //         $this->totals[] = array('title' => $totals['title'],
     //         'text' =>$totals['text'],
     //         'value'=>$totals['value']);
     //     }
 
-    //     $order_total_query = xtc_db_query("select text from " . TABLE_ORDERS_TOTAL . " where orders_id = '" . $order_id . "' and class = 'ot_total'");
+    //     $order_total_query = xtc_db_query("SELECT text from " . TABLE_ORDERS_TOTAL . " WHERE orders_id = '" . $order_id . "' AND class = 'ot_total'");
     //     $order_total = xtc_db_fetch_array($order_total_query);
 
-    //     $shipping_method_query = xtc_db_query("select title from " . TABLE_ORDERS_TOTAL . " where orders_id = '" . $order_id . "' and class = 'ot_shipping'");
+    //     $shipping_method_query = xtc_db_query("SELECT title from " . TABLE_ORDERS_TOTAL . " WHERE orders_id = '" . $order_id . "' AND class = 'ot_shipping'");
     //     $shipping_method = xtc_db_fetch_array($shipping_method_query);
 
-    //     $order_status_query = xtc_db_query("select orders_status_name from " . TABLE_ORDERS_STATUS . " where orders_status_id = '" . $order['orders_status'] . "' and language_id = '" . $_SESSION['languages_id'] . "'");
+    //     $order_status_query = xtc_db_query("SELECT orders_status_name from " . TABLE_ORDERS_STATUS . " WHERE orders_status_id = '" . $order['orders_status'] . "' AND language_id = '" . $_SESSION['languages_id'] . "'");
     //     $order_status = xtc_db_fetch_array($order_status_query);
 
     //     $this->info = array('currency' => $order['currency'],
@@ -156,7 +156,7 @@ class Order
     //     );
 
     //     $index = 0;
-    //     $orders_products_query = xtc_db_query("SELECT * FROM " . TABLE_ORDERS_PRODUCTS . " where orders_id = '" . xtc_db_input($order_id) . "'");
+    //     $orders_products_query = xtc_db_query("SELECT * FROM " . TABLE_ORDERS_PRODUCTS . " WHERE orders_id = '" . xtc_db_input($order_id) . "'");
     //     while ($orders_products = xtc_db_fetch_array($orders_products_query)) {
     //         $this->products[$index] = array('qty' => $orders_products['products_quantity'],
     //             'id' => $orders_products['products_id'],
@@ -169,7 +169,7 @@ class Order
     //         );
 
     //         $subindex = 0;
-    //         $attributesQuery = xtc_db_query("SELECT * FROM " . TABLE_ORDERS_PRODUCTS_ATTRIBUTES . " where orders_id = '" . xtc_db_input($order_id) . "' and orders_products_id = '" . $orders_products['orders_products_id'] . "'");
+    //         $attributesQuery = xtc_db_query("SELECT * FROM " . TABLE_ORDERS_PRODUCTS_ATTRIBUTES . " WHERE orders_id = '" . xtc_db_input($order_id) . "' AND orders_products_id = '" . $orders_products['orders_products_id'] . "'");
     //         if (xtc_db_num_rows($attributesQuery)) {
     //             while ($attributes = xtc_db_fetch_array($attributesQuery)) {
     //                 $this->products[$index]['attributes'][$subindex] = array('option' => $attributes['products_options'],
@@ -262,19 +262,19 @@ class Order
 
         $this->contentType = $_SESSION['cart']->get_content_type();
 
-        $customerAddressQuery = xtc_db_query("select c.payment_unallowed,c.shipping_unallowed,c.customers_firstname,c.customers_cid, c.customers_gender,c.customers_lastname, c.customers_telephone, c.customers_email_address, c.customers_default_address_id, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, co.countries_id, co.countries_name, co.countries_iso_code_2, co.countries_iso_code_3, co.address_format_id, ab.entry_state from " . TABLE_CUSTOMERS . " c, " . TABLE_ADDRESS_BOOK . " ab left join " . TABLE_ZONES . " z on (ab.entry_zone_id = z.zone_id) left join " . TABLE_COUNTRIES . " co on (ab.entry_country_id = co.countries_id) where c.customers_id = '" . $customerId . "' and ab.customers_id = '" . $customerId . "' and c.customers_default_address_id = ab.address_book_id");
+        $customerAddressQuery = xtc_db_query("SELECT c.payment_unallowed,c.shipping_unallowed,c.customers_firstname,c.customers_cid, c.customers_gender,c.customers_lastname, c.customers_telephone, c.customers_email_address, c.customers_default_address_id, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, co.countries_id, co.countries_name, co.countries_iso_code_2, co.countries_iso_code_3, co.address_format_id, ab.entry_state FROM " . TABLE_CUSTOMERS . " c, " . TABLE_ADDRESS_BOOK . " ab LEFT JOIN " . TABLE_ZONES . " z ON (ab.entry_zone_id = z.zone_id) LEFT JOIN " . TABLE_COUNTRIES . " co ON (ab.entry_country_id = co.countries_id) WHERE c.customers_id = '" . $customerId . "' AND ab.customers_id = '" . $customerId . "' AND c.customers_default_address_id = ab.address_book_id");
       
         $customerAddress = xtc_db_fetch_array($customerAddressQuery);
 
-        $shippingAddressQuery = xtc_db_query("select ab.entry_firstname, ab.entry_lastname, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, ab.entry_country_id, c.countries_id, c.countries_name, c.countries_iso_code_2, c.countries_iso_code_3, c.address_format_id, ab.entry_state from " . TABLE_ADDRESS_BOOK . " ab left join " . TABLE_ZONES . " z on (ab.entry_zone_id = z.zone_id) left join " . TABLE_COUNTRIES . " c on (ab.entry_country_id = c.countries_id) where ab.customers_id = '" . $customerId . "' and ab.address_book_id = '" . $customerAddress['customers_default_address_id'] . "'");
+        $shippingAddressQuery = xtc_db_query("SELECT ab.entry_firstname, ab.entry_lastname, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, ab.entry_country_id, c.countries_id, c.countries_name, c.countries_iso_code_2, c.countries_iso_code_3, c.address_format_id, ab.entry_state FROM " . TABLE_ADDRESS_BOOK . " ab LEFT JOIN " . TABLE_ZONES . " z ON (ab.entry_zone_id = z.zone_id) LEFT JOIN " . TABLE_COUNTRIES . " c ON (ab.entry_country_id = c.countries_id) WHERE ab.customers_id = '" . $customerId . "' AND ab.address_book_id = '" . $customerAddress['customers_default_address_id'] . "'");
       
         $shippingAddress = xtc_db_fetch_array($shippingAddressQuery);
 
-        $billingAddressQuery = xtc_db_query("select ab.entry_firstname, ab.entry_lastname, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, ab.entry_country_id, c.countries_id, c.countries_name, c.countries_iso_code_2, c.countries_iso_code_3, c.address_format_id, ab.entry_state from " . TABLE_ADDRESS_BOOK . " ab left join " . TABLE_ZONES . " z on (ab.entry_zone_id = z.zone_id) left join " . TABLE_COUNTRIES . " c on (ab.entry_country_id = c.countries_id) where ab.customers_id = '" . $customerId . "' and ab.address_book_id = '" . $customerAddress['customers_default_address_id'] . "'");
+        $billingAddressQuery = xtc_db_query("SELECT ab.entry_firstname, ab.entry_lastname, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, ab.entry_country_id, c.countries_id, c.countries_name, c.countries_iso_code_2, c.countries_iso_code_3, c.address_format_id, ab.entry_state FROM " . TABLE_ADDRESS_BOOK . " ab LEFT JOIN " . TABLE_ZONES . " z ON (ab.entry_zone_id = z.zone_id) LEFT JOIN " . TABLE_COUNTRIES . " c ON (ab.entry_country_id = c.countries_id) WHERE ab.customers_id = '" . $customerId . "' AND ab.address_book_id = '" . $customerAddress['customers_default_address_id'] . "'");
       
         $billingAddress = xtc_db_fetch_array($billingAddressQuery);
 
-        $taxAddressQuery = xtc_db_query("select ab.entry_country_id, ab.entry_zone_id from " . TABLE_ADDRESS_BOOK . " ab left join " . TABLE_ZONES . " z on (ab.entry_zone_id = z.zone_id) where ab.customers_id = '" . $customerId . "' and ab.address_book_id = '" . $customerAddress['customers_default_address_id'] . "'");
+        $taxAddressQuery = xtc_db_query("SELECT ab.entry_country_id, ab.entry_zone_id FROM " . TABLE_ADDRESS_BOOK . " ab LEFT JOIN " . TABLE_ZONES . " z ON (ab.entry_zone_id = z.zone_id) WHERE ab.customers_id = '" . $customerId . "' AND ab.address_book_id = '" . $customerAddress['customers_default_address_id'] . "'");
         
         $taxAddress = xtc_db_fetch_array($taxAddressQuery);
 
@@ -407,7 +407,7 @@ class Order
                 $subindex = 0;
                 reset($products[$i]['attributes']);
                 while (list($option, $value) = each($products[$i]['attributes'])) {
-                    $attributesQuery = xtc_db_query("select popt.products_options_name, poval.products_options_values_name, pa.options_values_price, pa.price_prefix from " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa where pa.products_id = '" . $products[$i]['id'] . "' and pa.options_id = '" . $option . "' and pa.options_id = popt.products_options_id and pa.options_values_id = '" . $value . "' and pa.options_values_id = poval.products_options_values_id and popt.language_id = '" . $_SESSION['languages_id'] . "' and poval.language_id = '" . $_SESSION['languages_id'] . "'");
+                    $attributesQuery = xtc_db_query("SELECT popt.products_options_name, poval.products_options_values_name, pa.options_values_price, pa.price_prefix from " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa WHERE pa.products_id = '" . $products[$i]['id'] . "' AND pa.options_id = '" . $option . "' AND pa.options_id = popt.products_options_id AND pa.options_values_id = '" . $value . "' AND pa.options_values_id = poval.products_options_values_id AND popt.language_id = '" . $_SESSION['languages_id'] . "' AND poval.language_id = '" . $_SESSION['languages_id'] . "'");
                     $attributes = xtc_db_fetch_array($attributesQuery);
 
                     $this->products[$index]['attributes'][$subindex] = [
