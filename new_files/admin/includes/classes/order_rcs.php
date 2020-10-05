@@ -442,11 +442,11 @@ class Order
                 if ($_SESSION['customers_status']['customers_status_ot_discount_flag'] == 1) {
                     $this->info['tax'] += $shownPriceTax - ($shownPriceTax / (($productTax < 10) ? "1.0" . str_replace('.', '', $productTax) : "1." . str_replace('.', '', $productTax)));
                     //$this->info['tax_groups'][TAX_ADD_TAX . "$productTaxDescription"] += (($shownPriceTax / (100 + $productTax)) * $productTax);
-                    $this->info['tax_groups'][$taxIndex] += (($shownPriceTax / (100 + $productTax)) * $productTax);
+                    $this->info['tax_groups'][$taxIndex] += ($shownPriceTax / (100 + $productTax)) * $productTax;
                 } else {
                     $this->info['tax'] += $shownPrice - ($shownPrice / (($productTax < 10) ? "1.0" . str_replace('.', '', $productTax) : "1." . str_replace('.', '', $productTax)));
                     //$this->info['tax_groups'][TAX_ADD_TAX . "$productTaxDescription"] += (($shownPrice / (100 + $productTax)) * $productTax);
-                    $this->info['tax_groups'][$taxIndex] += (($shownPrice / (100 + $productTax)) * $productTax);
+                    $this->info['tax_groups'][$taxIndex] += ($shownPrice / (100 + $productTax)) * $productTax;
                 }
             } else {
                 $taxIndex = TAX_NO_TAX . $productTaxDescription;
@@ -457,14 +457,14 @@ class Order
                 if ($_SESSION['customers_status']['customers_status_ot_discount_flag'] == 1) {
                     // BOF - web28 - 2010-05-06 - PayPal API Modul / Paypal Express Modul
                     //$this->info['tax'] += ($shownPriceTax / 100) * ($productTax);
-                    $this->taxDiscount[$products[$i]['tax_class_id']] += ($shownPriceTax / 100) * $productTax;
+                    $this->taxDiscount[$products[$i]['tax_class_id']] += $shownPriceTax / 100 * $productTax;
                     // EOF - web28 - 2010-05-06 - PayPal API Modul / Paypal Express Modul
                     //$this->info['tax_groups'][TAX_NO_TAX . "$productTaxDescription"] += ($shownPriceTax / 100) * ($productTax);
-                    $this->info['tax_groups'][$taxIndex] += ($shownPriceTax / 100) * ($productTax);
+                    $this->info['tax_groups'][$taxIndex] += $shownPriceTax / 100 * $productTax;
                 } else {
-                    $this->info['tax'] += ($shownPrice / 100) * ($productTax);
+                    $this->info['tax'] += $shownPrice / 100 * $productTax;
                     //$this->info['tax_groups'][TAX_NO_TAX . "$productTaxDescription"] += ($shownPrice / 100) * ($productTax);
-                    $this->info['tax_groups'][$taxIndex] += ($shownPrice / 100) * ($productTax);
+                    $this->info['tax_groups'][$taxIndex] += $shownPrice / 100 * $productTax;
                 }
             }
             $index++;
