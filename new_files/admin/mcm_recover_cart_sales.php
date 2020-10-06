@@ -190,9 +190,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
     xtc_db_perform(TABLE_ORDERS, $sqlDataArray);
     $insertId = xtc_db_insert_id();
     $_SESSION['tmp_oID'] = $insertId;
-    for ($i = 0, $n = sizeof($orderTotals); $i < $n; $i ++) {
-        $orderTotal = $orderTotals[$i];
 
+    foreach ($orderTotals as $orderTotal) {
         $sqlDataArray = [
             'orders_id' => $insertId,
             'title' => $orderTotal['title'],
