@@ -1,7 +1,5 @@
 <?php
-
 $site = '';
-
 switch ($checkout_position[$current_page]) {
     case '1':
         $site = 'shipping';
@@ -14,6 +12,4 @@ switch ($checkout_position[$current_page]) {
         break;
 }
 
-//BOF Offener Warenkorb Plus
 xtc_checkout_site($site);
-//EOF Offener Warenkorb Plus
