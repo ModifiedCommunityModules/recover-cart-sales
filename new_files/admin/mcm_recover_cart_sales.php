@@ -58,7 +58,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
 
     $main = new Main();
 
-    $statusQuery = xtc_db_query("SELECT c.customers_status, cs.customers_status_name,  cs.customers_status_image, cs.customers_status_ot_discount_flag, cs.customers_status_ot_discount FROM " . TABLE_CUSTOMERS . " c, " . TABLE_CUSTOMERS_STATUS . " cs WHERE c.customers_status=cs.customers_status_id AND c.customers_id=" . $customerId . " AND cs.language_id=" . (int)$_SESSION['languages_id']);
+    $statusQuery = xtc_db_query("SELECT c.customers_status, cs.customers_status_name,  cs.customers_status_image, cs.customers_status_ot_discount_flag, cs.customers_status_ot_discount FROM " . TABLE_CUSTOMERS . " c, " . TABLE_CUSTOMERS_STATUS . " cs WHERE c.customers_status=cs.customers_status_id AND c.customers_id=" . $customerId . " AND cs.language_id=" . (int) $_SESSION['languages_id']);
     $status = xtc_db_fetch_array($statusQuery);
 
     $xtPrice = new XtcPrice(DEFAULT_CURRENCY, $status['customers_status']);
@@ -86,14 +86,18 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
 
     $shippingModules = new Shipping($_SESSION['shipping']);
 
-    list ($module, $method) = explode('_', $_SESSION['shipping']);
+    list($module, $method) = explode('_', $_SESSION['shipping']);
     if (is_object($$module)) {
         $quote = $shippingModules->quote($method, $module);
-        if (isset ($quote['error'])) {
-            unset ($_SESSION['shipping']);
+        if (isset($quote['error'])) {
+            unset($_SESSION['shipping']);
         } else {
-            if ((isset ($quote[0]['methods'][0]['title'])) && (isset ($quote[0]['methods'][0]['cost']))) {
-                $_SESSION['shipping'] = array ('id' => $_SESSION['shipping'], 'title' => (($free_shipping == true) ? $quote[0]['methods'][0]['title'] : $quote[0]['module'].' ('.$quote[0]['methods'][0]['title'].')'), 'cost' => $quote[0]['methods'][0]['cost']);
+            if ((isset($quote[0]['methods'][0]['title'])) && (isset($quote[0]['methods'][0]['cost']))) {
+                $_SESSION['shipping'] = [
+                    'id' => $_SESSION['shipping'],
+                    'title' => (($free_shipping == true) ? $quote[0]['methods'][0]['title'] : $quote[0]['module'] . ' (' . $quote[0]['methods'][0]['title'] . ')'),
+                    'cost' => $quote[0]['methods'][0]['cost']
+                ];
             }
         }
     } else {
@@ -106,10 +110,10 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
 
     $orderTotalModules = new OrderTotal();
     //echo "<pre>"; print_r($order); exit;
-    $order_totals = $orderTotalModules->process();
+    $orderTotals = $orderTotalModules->process();
 
     $tmp = false;
-    $tmp_status = $order->info['order_status'];
+    $tmpStatus = $order->info['order_status'];
 
     if ($status['customers_status_ot_discount_flag'] == 1) {
         $discount = $status['customers_status_ot_discount'];
@@ -174,7 +178,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
         //'cc_cvv' => $order->info['cc_cvv'],
         //'cc_issue' => $order->info['cc_issue'],
         'date_purchased' => 'now()',
-        'orders_status' => $tmp_status,
+        'orders_status' => $tmpStatus,
         'currency' => $order->info['currency'],
         'currency_value' => $order->info['currency_value'],
         'customers_ip' => $customers_ip,
@@ -184,9 +188,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
 
     xtc_db_perform(TABLE_ORDERS, $sqlDataArray);
     $insertId = xtc_db_insert_id();
-    $_SESSION['tmp_oID'] = $insert_id;
-    for ($i = 0, $n = sizeof($order_totals); $i < $n; $i ++) {
-        $orderTotal = $order_totals[$i];
+    $_SESSION['tmp_oID'] = $insertId;
+    for ($i = 0, $n = sizeof($orderTotals); $i < $n; $i ++) {
+        $orderTotal = $orderTotals[$i];
 
         $sqlDataArray = [
             'orders_id' => $insertId,
@@ -211,63 +215,76 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
     xtc_db_perform(TABLE_ORDERS_STATUS_HISTORY, $sqlDataArray);
 
     // initialized for the email confirmation
-    $products_ordered = '';
-    $products_ordered_html = '';
+    $productsOrdered = '';
+    $productsOrdered_html = '';
     $subtotal = 0;
-    $total_tax = 0;
+    $totalTax = 0;
 
     for ($i = 0, $n = sizeof($order->products); $i < $n; $i ++) {
         // Stock Update - Joao Correia
         if (STOCK_LIMITED == 'true') {
             if (DOWNLOAD_ENABLED == 'true') {
-                $stock_query_raw = "SELECT products_quantity, pad.products_attributes_filename
-                                        FROM ".TABLE_PRODUCTS." p
-                                        LEFT JOIN ".TABLE_PRODUCTS_ATTRIBUTES." pa
-                                        ON p.products_id=pa.products_id
-                                        LEFT JOIN ".TABLE_PRODUCTS_ATTRIBUTES_DOWNLOAD." pad
-                                        ON pa.products_attributes_id=pad.products_attributes_id
-                                        WHERE p.products_id = '".xtc_get_prid($order->products[$i]['id'])."'";
+                $stockQueryRaw = "SELECT products_quantity, pad.products_attributes_filename
+                                        FROM " . TABLE_PRODUCTS . " p
+                                        LEFT JOIN " . TABLE_PRODUCTS_ATTRIBUTES . " pa
+                                        ON p.products_id = pa.products_id
+                                        LEFT JOIN " . TABLE_PRODUCTS_ATTRIBUTES_DOWNLOAD . " pad
+                                        ON pa.products_attributes_id = pad.products_attributes_id
+                                        WHERE p.products_id = '" . xtc_get_prid($order->products[$i]['id']) . "'";
                 // Will work with only one option for downloadable products
                 // otherwise, we have to build the query dynamically with a loop
-                $products_attributes = $order->products[$i]['attributes'];
-                if (is_array($products_attributes)) {
-                    $stock_query_raw .= " AND pa.options_id = '".$products_attributes[0]['option_id']."' AND pa.options_values_id = '".$products_attributes[0]['value_id']."'";
+                $productsAttributes = $order->products[$i]['attributes'];
+                if (is_array($productsAttributes)) {
+                    $stockQueryRaw .= " AND pa.options_id = '" . $productsAttributes[0]['option_id'] . "' AND pa.options_values_id = '" . $productsAttributes[0]['value_id'] . "'";
                 }
-                $stock_query = xtc_db_query($stock_query_raw);
+                $stockQuery = xtc_db_query($stockQueryRaw);
             } else {
-                $stock_query = xtc_db_query("select products_quantity from ".TABLE_PRODUCTS." where products_id = '".xtc_get_prid($order->products[$i]['id'])."'");
+                $stockQuery = xtc_db_query("SELECT products_quantity FROM " . TABLE_PRODUCTS . " WHERE products_id = '" . xtc_get_prid($order->products[$i]['id']) . "'");
             }
-            if (xtc_db_num_rows($stock_query) > 0) {
-                $stock_values = xtc_db_fetch_array($stock_query);
+
+            if (xtc_db_num_rows($stockQuery) > 0) {
+                $stockValues = xtc_db_fetch_array($stockQuery);
                 // do not decrement quantities if products_attributes_filename exists
-                if ((DOWNLOAD_ENABLED != 'true') || (!$stock_values['products_attributes_filename'])) {
-                    $stock_left = $stock_values['products_quantity'] - $order->products[$i]['qty'];
+                if ((DOWNLOAD_ENABLED != 'true') || (!$stockValues['products_attributes_filename'])) {
+                    $stockLeft = $stockValues['products_quantity'] - $order->products[$i]['qty'];
                 } else {
-                    $stock_left = $stock_values['products_quantity'];
+                    $stockLeft = $stockValues['products_quantity'];
                 }
-                xtc_db_query("update ".TABLE_PRODUCTS." set products_quantity = '".$stock_left."' where products_id = '".xtc_get_prid($order->products[$i]['id'])."'");
+                xtc_db_query("UPDATE " . TABLE_PRODUCTS . " SET products_quantity = '" . $stockLeft . "' WHERE products_id = '" . xtc_get_prid($order->products[$i]['id']) . "'");
             }
         }
 
         // Update products_ordered (for bestsellers list)
-        xtc_db_query("update ".TABLE_PRODUCTS." set products_ordered = products_ordered + ".sprintf('%d', $order->products[$i]['qty'])." where products_id = '".xtc_get_prid($order->products[$i]['id'])."'");
+        xtc_db_query("UPDATE " . TABLE_PRODUCTS . " SET products_ordered = products_ordered + " . sprintf('%d', $order->products[$i]['qty']) . " WHERE products_id = '" . xtc_get_prid($order->products[$i]['id']) . "'");
 
-        $sqlDataArray = array ('orders_id' => $insert_id, 'products_id' => xtc_get_prid($order->products[$i]['id']), 'products_model' => $order->products[$i]['model'], 'products_name' => $order->products[$i]['name'],'products_shipping_time'=>$order->products[$i]['shipping_time'], 'products_price' => $order->products[$i]['price'], 'final_price' => $order->products[$i]['final_price'], 'products_tax' => $order->products[$i]['tax'], 'products_discount_made' => $order->products[$i]['discount_allowed'], 'products_quantity' => $order->products[$i]['qty'], 'allow_tax' => $_SESSION['customers_status']['customers_status_show_price_tax']);
+        $sqlDataArray = [
+            'orders_id' => $insertId,
+            'products_id' => xtc_get_prid($order->products[$i]['id']),
+            'products_model' => $order->products[$i]['model'],
+            'products_name' => $order->products[$i]['name'],
+            'products_shipping_time'=>$order->products[$i]['shipping_time'],
+            'products_price' => $order->products[$i]['price'],
+            'final_price' => $order->products[$i]['final_price'],
+            'products_tax' => $order->products[$i]['tax'],
+            'products_discount_made' => $order->products[$i]['discount_allowed'],
+            'products_quantity' => $order->products[$i]['qty'],
+            'allow_tax' => $_SESSION['customers_status']['customers_status_show_price_tax']
+        ];
 
         xtc_db_perform(TABLE_ORDERS_PRODUCTS, $sqlDataArray);
-        $order_products_id = xtc_db_insert_id();
+        $orderProductId = xtc_db_insert_id();
 
         // Aenderung Specials Quantity Anfang
-        $specials_result = xtc_db_query("SELECT products_id, specials_quantity from ".TABLE_SPECIALS." WHERE products_id = '".xtc_get_prid($order->products[$i]['id'])."' ");
-        if (xtc_db_num_rows($specials_result)) {
-            $spq = xtc_db_fetch_array($specials_result);
+        $specialsResult = xtc_db_query("SELECT products_id, specials_quantity FROM " . TABLE_SPECIALS . " WHERE products_id = '" . xtc_get_prid($order->products[$i]['id']) . "' ");
+        if (xtc_db_num_rows($specialsResult)) {
+            $spq = xtc_db_fetch_array($specialsResult);
 
             $new_sp_quantity = ($spq['specials_quantity'] - $order->products[$i]['qty']);
 
             if ($new_sp_quantity >= 1) {
-                xtc_db_query("update ".TABLE_SPECIALS." set specials_quantity = '".$new_sp_quantity."' where products_id = '".xtc_get_prid($order->products[$i]['id'])."' ");
+                xtc_db_query("UPDATE " . TABLE_SPECIALS . " SET specials_quantity = '" . $new_sp_quantity . "' WHERE products_id = '" . xtc_get_prid($order->products[$i]['id']) . "' ");
             } else {
-                xtc_db_query("update ".TABLE_SPECIALS." set status = '0', specials_quantity = '".$new_sp_quantity."' where products_id = '".xtc_get_prid($order->products[$i]['id'])."' ");
+                xtc_db_query("UPDATE " . TABLE_SPECIALS . " SET status = '0', specials_quantity = '" . $new_sp_quantity . "' WHERE products_id = '" . xtc_get_prid($order->products[$i]['id']) . "' ");
             }
         }
         // Aenderung Ende
@@ -275,87 +292,103 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
         $orderTotalModules->update_credit_account($i); // GV Code ICW ADDED FOR CREDIT CLASS SYSTEM
         //------insert customer choosen option to order--------
         $attributes_exist = '0';
-        $products_ordered_attributes = '';
-        if (isset ($order->products[$i]['attributes'])) {
+        $productsOrderedAttributes = '';
+        if (isset($order->products[$i]['attributes'])) {
             $attributes_exist = '1';
             for ($j = 0, $n2 = sizeof($order->products[$i]['attributes']); $j < $n2; $j ++) {
                 if (DOWNLOAD_ENABLED == 'true') {
-                    $attributes_query = "SELECT popt.products_options_name,
+                    $attributesQuery = "SELECT popt.products_options_name,
                                               poval.products_options_values_name,
                                               pa.options_values_price,
                                               pa.price_prefix,
                                               pad.products_attributes_maxdays,
                                               pad.products_attributes_maxcount,
                                               pad.products_attributes_filename
-                                       FROM ".TABLE_PRODUCTS_OPTIONS." popt,
-                                            ".TABLE_PRODUCTS_OPTIONS_VALUES." poval,
-                                            ".TABLE_PRODUCTS_ATTRIBUTES." pa
-                                       LEFT JOIN ".TABLE_PRODUCTS_ATTRIBUTES_DOWNLOAD." pad
-                                       ON pa.products_attributes_id=pad.products_attributes_id
-                                       WHERE pa.products_id = '".$order->products[$i]['id']."'
-                                       AND pa.options_id = '".$order->products[$i]['attributes'][$j]['option_id']."'
+                                       FROM " . TABLE_PRODUCTS_OPTIONS . " popt,
+                                            " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval,
+                                            " . TABLE_PRODUCTS_ATTRIBUTES . " pa
+                                       LEFT JOIN " . TABLE_PRODUCTS_ATTRIBUTES_DOWNLOAD . " pad
+                                       ON pa.products_attributes_id = pad.products_attributes_id
+                                       WHERE pa.products_id = '" . $order->products[$i]['id'] . "'
+                                       AND pa.options_id = '" . $order->products[$i]['attributes'][$j]['option_id'] . "'
                                        AND pa.options_id = popt.products_options_id
-                                       AND pa.options_values_id = '".$order->products[$i]['attributes'][$j]['value_id']."'
+                                       AND pa.options_values_id = '" . $order->products[$i]['attributes'][$j]['value_id'] . "'
                                        AND pa.options_values_id = poval.products_options_values_id
-                                       AND popt.language_id = " . (int)$_SESSION['languages_id']."
-                                       AND poval.language_id = " . (int)$_SESSION['languages_id'];
-                    $attributes = xtc_db_query($attributes_query);
+                                       AND popt.language_id = " . (int) $_SESSION['languages_id'] . "
+                                       AND poval.language_id = " . (int) $_SESSION['languages_id'];
+                    $attributes = xtc_db_query($attributesQuery);
                 } else {
                     $attributes = xtc_db_query("SELECT popt.products_options_name,
                                              poval.products_options_values_name,
                                              pa.options_values_price,
                                              pa.price_prefix
-                                      FROM ".TABLE_PRODUCTS_OPTIONS." popt,
-                                           ".TABLE_PRODUCTS_OPTIONS_VALUES." poval,
-                                           ".TABLE_PRODUCTS_ATTRIBUTES." pa
-                                      WHERE pa.products_id = '".$order->products[$i]['id']."'
-                                      AND pa.options_id = '".$order->products[$i]['attributes'][$j]['option_id']."'
+                                      FROM " . TABLE_PRODUCTS_OPTIONS . " popt,
+                                           " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval,
+                                           " . TABLE_PRODUCTS_ATTRIBUTES . " pa
+                                      WHERE pa.products_id = '" . $order->products[$i]['id'] . "'
+                                      AND pa.options_id = '" . $order->products[$i]['attributes'][$j]['option_id'] . "'
                                       AND pa.options_id = popt.products_options_id
-                                      AND pa.options_values_id = '".$order->products[$i]['attributes'][$j]['value_id']."'
+                                      AND pa.options_values_id = '" . $order->products[$i]['attributes'][$j]['value_id'] . "'
                                       AND pa.options_values_id = poval.products_options_values_id
-                                      AND popt.language_id = " . (int)$_SESSION['languages_id'] . "
-                                      AND poval.language_id = " . (int)$_SESSION['languages_id']);
+                                      AND popt.language_id = " . (int) $_SESSION['languages_id'] . "
+                                      AND poval.language_id = " . (int) $_SESSION['languages_id']);
                 }
                 // update attribute stock
-                xtc_db_query("UPDATE ".TABLE_PRODUCTS_ATTRIBUTES."
-                      SET attributes_stock=attributes_stock - '".$order->products[$i]['qty']."'
-                                  WHERE products_id='".$order->products[$i]['id']."'
-                                  AND options_values_id='".$order->products[$i]['attributes'][$j]['value_id']."'
-                                  AND options_id='".$order->products[$i]['attributes'][$j]['option_id']."'");
+                xtc_db_query("UPDATE " . TABLE_PRODUCTS_ATTRIBUTES."
+                      SET attributes_stock = attributes_stock - '" . $order->products[$i]['qty'] . "'
+                                  WHERE products_id = '" . $order->products[$i]['id'] . "'
+                                  AND options_values_id = '" . $order->products[$i]['attributes'][$j]['value_id'] . "'
+                                  AND options_id = '" . $order->products[$i]['attributes'][$j]['option_id'] . "'");
 
-                $attributes_values = xtc_db_fetch_array($attributes);
+                $attributesValues = xtc_db_fetch_array($attributes);
 
-                $sqlDataArray = array ('orders_id' => $insert_id, 'orders_products_id' => $order_products_id, 'products_options' => $attributes_values['products_options_name'], 'products_options_values' => $attributes_values['products_options_values_name'], 'options_values_price' => $attributes_values['options_values_price'], 'price_prefix' => $attributes_values['price_prefix']);
+                $sqlDataArray = [
+                    'orders_id' => $insertId,
+                    'orders_products_id' => $orderProductId,
+                    'products_options' => $attributesValues['products_options_name'],
+                    'products_options_values' => $attributesValues['products_options_values_name'],
+                    'options_values_price' => $attributesValues['options_values_price'],
+                    'price_prefix' => $attributesValues['price_prefix']
+                ];
+
                 xtc_db_perform(TABLE_ORDERS_PRODUCTS_ATTRIBUTES, $sqlDataArray);
 
-                if ((DOWNLOAD_ENABLED == 'true') && isset ($attributes_values['products_attributes_filename']) && xtc_not_null($attributes_values['products_attributes_filename'])) {
-                    $sqlDataArray = array ('orders_id' => $insert_id, 'orders_products_id' => $order_products_id, 'orders_products_filename' => $attributes_values['products_attributes_filename'], 'download_maxdays' => $attributes_values['products_attributes_maxdays'], 'download_count' => $attributes_values['products_attributes_maxcount']);
+                if ((DOWNLOAD_ENABLED == 'true') && isset ($attributesValues['products_attributes_filename']) && xtc_not_null($attributesValues['products_attributes_filename'])) {
+                    $sqlDataArray = [
+                        'orders_id' => $insertId,
+                        'orders_products_id' => $orderProductId,
+                        'orders_products_filename' => $attributesValues['products_attributes_filename'],
+                        'download_maxdays' => $attributesValues['products_attributes_maxdays'],
+                        'download_count' => $attributesValues['products_attributes_maxcount']
+                    ];
                     xtc_db_perform(TABLE_ORDERS_PRODUCTS_DOWNLOAD, $sqlDataArray);
                 }
             }
         }
         //------insert customer choosen option eof ----
-        $total_weight += ($order->products[$i]['qty'] * $order->products[$i]['weight']);
-        $total_tax += xtc_calculate_tax($total_products_price, $products_tax) * $order->products[$i]['qty'];
-        $total_cost += $total_products_price;
+        $totalWeight += ($order->products[$i]['qty'] * $order->products[$i]['weight']);
+        $totalTax += xtc_calculate_tax($totalProductsPrice, $productsTax) * $order->products[$i]['qty'];
+        $totalCost += $totalProductsPrice;
     }
+
     if (RCS_DELETE_COMPLETED_ORDERS == 'true') {
-        xtc_db_query("delete from " . TABLE_CUSTOMERS_BASKET . " where customers_id=" . $customerId);
-        xtc_db_query("delete from " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " where customers_id=" . $customerId);
-        xtc_db_query("delete from " . TABLE_SCART . " where customers_id=" . $customerId);
+        xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_id=" . $customerId);
+        xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " WHERE customers_id=" . $customerId);
+        xtc_db_query("DELETE FROM " . TABLE_SCART . " WHERE customers_id=" . $customerId);
     }
+
     $_SESSION['cart'] = $_SESSION['saved_cart'];
-    xtc_redirect(xtc_href_link(FILENAME_ORDERS, "oID=" . $insert_id . "&action=edit"));
+    xtc_redirect(xtc_href_link(FILENAME_ORDERS, "oID=" . $insertId . "&action=edit"));
 }
 
 
 
 // Delete Entry Begin
-if ($_GET['action']=='delete') {
-    $customerId = (int)$_GET['customer_id'];
-    xtc_db_query("delete from " . TABLE_CUSTOMERS_BASKET . " where customers_id=" . $customerId);
-    xtc_db_query("delete from " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " where customers_id=" . $customerId);
-    xtc_db_query("delete from " . TABLE_SCART . " where customers_id=" . $customerId);
+if ($_GET['action'] == 'delete') {
+    $customerId = (int) $_GET['customer_id'];
+    xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_id=" . $customerId);
+    xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " WHERE customers_id=" . $customerId);
+    xtc_db_query("DELETE FROM " . TABLE_SCART . " WHERE customers_id=" . $customerId);
 
     xtc_redirect(xtc_href_link(FILENAME_RECOVER_CART_SALES, 'delete=1&customer_id='. $_GET['customer_id'] . '&tdate=' . $_GET['tdate']));
 }
@@ -366,7 +399,9 @@ if ($_GET['delete']) {
 
 // Delete Entry End
 $tdate = $_POST['tdate'];
-if ($tdate == '') $tdate = RCS_BASE_DAYS;
+if ($tdate == '') {
+    $tdate = RCS_BASE_DAYS;
+}
 require DIR_WS_INCLUDES . 'head.php';
 ?>
 
@@ -379,18 +414,22 @@ require DIR_WS_INCLUDES . 'head.php';
 
 <!-- body //-->
 <?php
-function seadate($day) {
-    $rawtime = strtotime("-".$day." days");
+function seadate($day)
+{
+    $rawtime = strtotime("-" . $day . " days");
     $ndate = date("Ymd", $rawtime);
     return $ndate;
 }
 
-function cart_date_short($raw_date) {
-    if ( ($raw_date == '00000000') || ($raw_date == '') ) return false;
+function cart_date_short($raw_date)
+{
+    if ( ($raw_date == '00000000') || ($raw_date == '') ) {
+        return false;
+    }
 
     $year = substr($raw_date, 0, 4);
-    $month = (int)substr($raw_date, 4, 2);
-    $day = (int)substr($raw_date, 6, 2);
+    $month = (int) substr($raw_date, 4, 2);
+    $day = (int) substr($raw_date, 6, 2);
 
     if (@date('Y', mktime(0, 0, 0, $month, $day, $year)) == $year) {
         return date(DATE_FORMAT, mktime(0, 0, 0, $month, $day, $year));
@@ -401,91 +440,93 @@ function cart_date_short($raw_date) {
 
 // This will return a list of customers with sessions. Handles either the mysql or file case
 // Returns an empty array if the check sessions flag is not true (empty array means same SQL statement can be used)
-function _GetCustomerSessions() {
-    $cust_ses_ids = array();
+function _GetCustomerSessions()
+{
+    $cust_ses_ids = [];
 
-    if( RCS_CHECK_SESSIONS == 'true' )
-    {
-        if (STORE_SESSIONS == 'mysql')
-        {
+    if (RCS_CHECK_SESSIONS == 'true' ) {
+        if (STORE_SESSIONS == 'mysql') {
             // --- DB RECORDS ---
-            $sesquery = xtc_db_query("select value from " . TABLE_SESSIONS . " where 1");
-            while ($ses = xtc_db_fetch_array($sesquery))
-            {
+            $sesquery = xtc_db_query("SELECT value FROM " . TABLE_SESSIONS . " WHERE 1");
+            while ($ses = xtc_db_fetch_array($sesquery)) {
                 if ( preg_match( "/customer_id[^\"]*\"([0-9]*)\"/", $ses['value'], $custval ) )
                 $cust_ses_ids[] = $custval[1];
             }
-        }
-        else    // --- FILES ---
-        {
-            if( $handle = opendir( xtc_session_save_path() ) )
-            {
-                while (false !== ($file = readdir( $handle )) )
-                {
-                    if ($file != "." && $file != "..")
-                    {
+        } else {
+            if ($handle = opendir(xtc_session_save_path())) {
+                while (false !== ($file = readdir($handle)) ) {
+                    if ($file != "." && $file != "..") {
                         $file = xtc_session_save_path() . '/' . $file;    // create full path to file!
-                        if( $fp = fopen( $file, 'r' ) )
-                        {
-                            $val = fread( $fp, filesize( $file ) );
-                            fclose( $fp );
+                        if ($fp = fopen($file, 'r')) {
+                            $val = fread($fp, filesize($file));
+                            fclose($fp);
 
-                            if ( preg_match( "/customer_id[^\"]*\"([0-9]*)\"/", $val, $custval ) )
-                            $cust_ses_ids[] = $custval[1];
+                            if (preg_match( "/customer_id[^\"]*\"([0-9]*)\"/", $val, $custval)) {
+                                $cust_ses_ids[] = $custval[1];
+                            }
                         }
                     }
                 }
-                closedir( $handle );
+                closedir($handle);
             }
         }
     }
     return $cust_ses_ids;
 }
 ?>
+
 <table border="0" width="100%" cellspacing="2" cellpadding="2">
   <tr>
-    <td class="columnLeft2" width="<?php echo BOX_WIDTH; ?>" valign="top">
-      <table border="0" width="<?php echo BOX_WIDTH; ?>" cellspacing="1" cellpadding="1" class="columnLeft">
-        <!-- left_navigation //-->
-        <?php require DIR_WS_INCLUDES . 'column_left.php'; ?>
-        <!-- left_navigation_eof //-->
-      </table>
-    </td>
+        <td class="columnLeft2" width="<?php echo BOX_WIDTH; ?>" valign="top">
+            <table border="0" width="<?php echo BOX_WIDTH; ?>" cellspacing="1" cellpadding="1" class="columnLeft">
+                <!-- left_navigation //-->
+                <?php require DIR_WS_INCLUDES . 'column_left.php'; ?>
+                <!-- left_navigation_eof //-->
+            </table>
+        </td>
  <!-- body_text //-->
 
-    <td width="100%" valign="top">
-    <table border="0" width="100%" cellspacing="0" cellpadding="2">
-<?php // Are we doing an e-mail to some customers?
-if (count($_POST['custid']) > 0 ) {  ?>
-            <tr>
-              <td class="pageHeading" align="left" colspan=2 width="50%"><?php echo HEADING_TITLE; ?> </td>
-              <td class="pageHeading" align="left" colspan=4 width="50%"><?php echo HEADING_EMAIL_SENT; ?> </td>
-            </tr>
-            <tr class="dataTableHeadingRow">
-              <td class="dataTableHeadingContent" align="left" colspan="1" width="15%" nowrap><?php echo TABLE_HEADING_CUSTOMER; ?></td>
-              <td class="dataTableHeadingContent" align="left" colspan="1" width="30%" nowrap>&nbsp;</td>
-              <td class="dataTableHeadingContent" align="left" colspan="1" width="25%" nowrap>&nbsp;</td>
-              <td class="dataTableHeadingContent" align="left" colspan="1" width="10%" nowrap>&nbsp;</td>
-              <td class="dataTableHeadingContent" align="left" colspan="1" width="10%" nowrap>&nbsp;</td>
-              <td class="dataTableHeadingContent" align="left" colspan="1" width="10%" nowrap>&nbsp;</td>
-            </tr><tr>&nbsp;<br></tr>
-            <tr class="dataTableHeadingRow">
-              <td class="dataTableHeadingContent" align="left"   colspan="1"  width="15%" nowrap><?php echo TABLE_HEADING_MODEL; ?></td>
-              <td class="dataTableHeadingContent" align="left"   colspan="2"  width="55%" nowrap><?php echo TABLE_HEADING_DESCRIPTION; ?></td>
-              <td class="dataTableHeadingContent" align="center" colspan="1"  width="10%" nowrap> <?php echo TABLE_HEADING_QUANTY; ?></td>
-              <td class="dataTableHeadingContent" align="right"  colspan="1"  width="10%" nowrap><?php echo TABLE_HEADING_PRICE; ?></td>
-              <td class="dataTableHeadingContent" align="right"  colspan="1"  width="10%" nowrap><?php echo TABLE_HEADING_TOTAL; ?></td>
-            </tr>
-<?php
+        <td width="100%" valign="top">
+            <table border="0" width="100%" cellspacing="0" cellpadding="2">
+                <?php if (count($_POST['custid']) > 0 ) {  // Are we doing an e-mail to some customers? ?>
+                    <tr>
+                        <td class="pageHeading" align="left" colspan=2 width="50%"><?php echo HEADING_TITLE; ?> </td>
+                        <td class="pageHeading" align="left" colspan=4 width="50%"><?php echo HEADING_EMAIL_SENT; ?> </td>
+                    </tr>
 
-foreach ($_POST['custid'] as $cid) {
-    $quantity = array();
-    $products_data = array();
-    $quantityQuery = xtc_db_query("SELECT products_id pid, customers_basket_quantity qty FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_id=" . $cid);
+                    <tr class="dataTableHeadingRow">
+                        <td class="dataTableHeadingContent" align="left" colspan="1" width="15%" nowrap><?php echo TABLE_HEADING_CUSTOMER; ?></td>
+                        <td class="dataTableHeadingContent" align="left" colspan="1" width="30%" nowrap>&nbsp;</td>
+                        <td class="dataTableHeadingContent" align="left" colspan="1" width="25%" nowrap>&nbsp;</td>
+                        <td class="dataTableHeadingContent" align="left" colspan="1" width="10%" nowrap>&nbsp;</td>
+                        <td class="dataTableHeadingContent" align="left" colspan="1" width="10%" nowrap>&nbsp;</td>
+                        <td class="dataTableHeadingContent" align="left" colspan="1" width="10%" nowrap>&nbsp;</td>
+                    </tr>
+                    
+                    <tr>
+                        &nbsp;<br>
+                    </tr>
+
+                    <tr class="dataTableHeadingRow">
+                        <td class="dataTableHeadingContent" align="left"   colspan="1"  width="15%" nowrap><?php echo TABLE_HEADING_MODEL; ?></td>
+                        <td class="dataTableHeadingContent" align="left"   colspan="2"  width="55%" nowrap><?php echo TABLE_HEADING_DESCRIPTION; ?></td>
+                        <td class="dataTableHeadingContent" align="center" colspan="1"  width="10%" nowrap> <?php echo TABLE_HEADING_QUANTY; ?></td>
+                        <td class="dataTableHeadingContent" align="right"  colspan="1"  width="10%" nowrap><?php echo TABLE_HEADING_PRICE; ?></td>
+                        <td class="dataTableHeadingContent" align="right"  colspan="1"  width="10%" nowrap><?php echo TABLE_HEADING_TOTAL; ?></td>
+                    </tr>
+
+                    <?php
+
+foreach ($_POST['custid'] as $customerId) {
+    $quantity = [];
+    $productsData = [];
+    $quantityQuery = xtc_db_query("SELECT products_id pid, customers_basket_quantity qty FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_id=" . $customerId);
+    
     while ($quantityResult = xtc_db_fetch_array($quantityQuery)) {
-        $quantity[(int)$quantityResult['pid']] += $quantityResult['qty'];
+        $quantity[(int) $quantityResult['pid']] += $quantityResult['qty'];
     }
-    $query1 = xtc_db_query("select cb.products_id pid,
+
+    $query1 = xtc_db_query("SELECT cb.products_id pid,
                                     cb.customers_basket_quantity qty,
                                     cb.customers_basket_date_added bdate,
                                     cb.checkout_site site,
@@ -495,75 +536,74 @@ foreach ($_POST['custid'] as $cid) {
                                     cus.customers_gender,
                                     cus.customers_email_address email,
                                     co.countries_iso_code_2 iso
-                          from      " . TABLE_CUSTOMERS_BASKET . " cb,
+                          FROM      " . TABLE_CUSTOMERS_BASKET . " cb,
                                     " . TABLE_CUSTOMERS . " cus,
                                     " . TABLE_ADDRESS_BOOK . " ab,
                                     " . TABLE_COUNTRIES . " co
-                          where     cb.customers_id = cus.customers_id
-                          and       cus.customers_id = '".$cid."'
-                          and       cus.customers_default_address_id = ab.address_book_id
-                          and       co.countries_id=ab.entry_country_id
-                          order by  cb.customers_basket_date_added desc ");
+                          WHERE     cb.customers_id = cus.customers_id
+                          AND       cus.customers_id = '" . $customerId."'
+                          AND       cus.customers_default_address_id = ab.address_book_id
+                          AND       co.countries_id=ab.entry_country_id
+                          ORDER BY  cb.customers_basket_date_added desc ");
 
     $knt = xtc_db_num_rows($query1);
-    for ($i = 0; $i < $knt; $i++)
-    {
+    for ($i = 0; $i < $knt; $i++) {
         $inrec = xtc_db_fetch_array($query1);
         $aprice = 0;
         // set new cline and curcus
-        if ($lastcid != $cid) {
+        
+        if ($lastcid != $customerId) {
             if ($lastcid != "") {
-                $text_total = RCS_SHOW_BRUTTO_PRICE == 'true'?TABLE_CART_TOTAL_BRUTTO:TABLE_CART_TOTAL;
+                $textTotal = RCS_SHOW_BRUTTO_PRICE == 'true' ? TABLE_CART_TOTAL_BRUTTO : TABLE_CART_TOTAL;
                 $cline .= "
               <tr>
-                 <td class='dataTableContent' align='right' colspan='6' nowrap><b>" . $text_total . "</b>" . $currencies->format($tprice) . "</td>
+                 <td class='dataTableContent' align='right' colspan='6' nowrap><b>" . $textTotal . "</b>" . $currencies->format($tprice) . "</td>
               </tr>
               <tr>
-                 <td colspan='6' align='right'><a class=\"button\" href=" . xtc_href_link(FILENAME_RECOVER_CART_SALES, "action=delete&customer_id=" . $cid . "&tdate=" . $tdate) . ">" . BUTTON_DELETE . "</a></td>
+                 <td colspan='6' align='right'><a class=\"button\" href=" . xtc_href_link(FILENAME_RECOVER_CART_SALES, "action=delete&customer_id=" . $customerId . "&tdate=" . $tdate) . ">" . BUTTON_DELETE . "</a></td>
               </tr>\n";
                 echo $cline;
             }
-            $cline = "<tr> <td class='dataTableContent' align='left' colspan='6' nowrap><a href='" . xtc_href_link(FILENAME_CUSTOMERS, 'search=' . $inrec['lname'], 'NONSSL') . "'>" . $inrec['fname'] . " " . $inrec['lname'] . "</a>".$customer."</td></tr>";
+            $cline = "<tr> <td class='dataTableContent' align='left' colspan='6' nowrap><a href='" . xtc_href_link(FILENAME_CUSTOMERS, 'search=' . $inrec['lname'], 'NONSSL') . "'>" . $inrec['fname'] . " " . $inrec['lname'] . "</a>" . $customer . "</td></tr>";
             $tprice = 0;
         }
-        $lastcid = $cid;
+        $lastcid = $customerId;
 
         // get the shopping cart
-        $query2 = xtc_db_query("select  p.products_price price,
+        $query2 = xtc_db_query("SELECT p.products_price price,
                                         p.products_model model,
                                         p.products_tax_class_id tax,
                                         p.products_image image,
                                         pd.products_name name
-                                from    " . TABLE_PRODUCTS . " p,
+                                FROM    " . TABLE_PRODUCTS . " p,
                                         " . TABLE_PRODUCTS_DESCRIPTION . " pd
-                                where   p.products_id = '" . $inrec['pid'] . "' and
+                                WHERE   p.products_id = '" . $inrec['pid'] . "' and
                                         pd.products_id = p.products_id and
-                                        pd.language_id = " . (int)$_SESSION['languages_id'] );
+                                        pd.language_id = " . (int) $_SESSION['languages_id'] );
 
         $inrec2 = xtc_db_fetch_array($query2);
 
-        $sprice = xtc_get_products_special_price_ow( $inrec['pid'], $cid, ($inrec['qty'] < $quantity[(int)$inrec['pid']]?$quantity[(int)$inrec['pid']]:$inrec['qty']));
+        $sprice = xtc_get_products_special_price_ow($inrec['pid'], $customerId, ($inrec['qty'] < $quantity[(int) $inrec['pid']] ? $quantity[(int) $inrec['pid']] : $inrec['qty']));
         // BEGIN OF ATTRIBUTE DB CODE
         $prodAttribs = ''; // DO NOT DELETE
-        if (RCS_SHOW_ATTRIBUTES == 'true')
-        {
-            $attribquery = xtc_db_query("select cba.products_id pid,
+        if (RCS_SHOW_ATTRIBUTES == 'true') {
+            $attribquery = xtc_db_query("SELECT cba.products_id pid,
                                                 po.products_options_name poname,
                                                 pov.products_options_values_name povname,
                                                 pa.options_values_price price
-                                         from " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " cba,
+                                         FROM " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " cba,
                                               " . TABLE_PRODUCTS_OPTIONS . " po,
                                               " . TABLE_PRODUCTS_OPTIONS_VALUES . " pov,
                                               " . TABLE_PRODUCTS_ATTRIBUTES . " pa
-                                         where cba.products_id = '" . $inrec['pid'] . "'
-                                         and cba.customers_id = " . $cid . "
-                                         and po.products_options_id = cba.products_options_id
-                                         and pov.products_options_values_id = cba.products_options_value_id
-                                         and pa.products_id = " . (int)$inrec['pid'] . "
-                                         and pa.options_id = cba.products_options_id
-                                         and pa.options_values_id = cba.products_options_value_id
-                                         and po.language_id = " . (int)$_SESSION['languages_id'] . "
-                                         and pov.language_id = " . (int)$_SESSION['languages_id']);
+                                         WHERE cba.products_id = '" . $inrec['pid'] . "'
+                                         AND cba.customers_id = " . $customerId . "
+                                         AND po.products_options_id = cba.products_options_id
+                                         AND pov.products_options_values_id = cba.products_options_value_id
+                                         AND pa.products_id = " . (int) $inrec['pid'] . "
+                                         AND pa.options_id = cba.products_options_id
+                                         AND pa.options_values_id = cba.products_options_value_id
+                                         AND po.language_id = " . (int) $_SESSION['languages_id'] . "
+                                         AND pov.language_id = " . (int) $_SESSION['languages_id']);
             $hasAttributes = false;
 
             if (xtc_db_num_rows($attribquery)) {
@@ -575,29 +615,35 @@ foreach ($_POST['custid'] as $cid) {
                 }
             }
         }
-        if( $sprice == 0 ) $sprice = $inrec2['price'];
+
+        if( $sprice == 0 ) {
+            $sprice = $inrec2['price'];
+        }
         $sprice += $aprice;
+        
         if (RCS_SHOW_BRUTTO_PRICE == 'true') {
             $tax = xtc_get_tax_rate($inrec2['tax']);
             $sprice = xtc_add_tax($sprice, $tax);
         }
 
         $tprice = $tprice + ($inrec['qty'] * $sprice);
-        $pprice_formated  = $currencies->format($sprice);
-        $tpprice_formated = $currencies->format(($inrec['qty'] * $sprice));
+        $ppriceFormated  = $currencies->format($sprice);
+        $tppriceFormated = $currencies->format(($inrec['qty'] * $sprice));
 
         $cline .= "<tr class='dataTableRow'>
-                    <td class='dataTableContent' align='left'   width='15%' nowrap>" . ($inrec2['model']?$inrec2['model']:'&nbsp;') . "</td>
+                    <td class='dataTableContent' align='left'   width='15%' nowrap>" . ($inrec2['model'] ? $inrec2['model'] : '&nbsp;') . "</td>
                     <td class='dataTableContent' align='left'  colspan='2' width='55%'><a href='" . xtc_href_link(FILENAME_CATEGORIES, 'action=new_product&pID=' . $inrec['pid'], 'NONSSL') . "'>" . $inrec2['name'] . "</a></td>
                     <td class='dataTableContent' align='center' width='10%' nowrap>" . $inrec['qty'] . "</td>
-                    <td class='dataTableContent' align='right'  width='10%' nowrap>" . $pprice_formated . "</td>
-                    <td class='dataTableContent' align='right'  width='10%' nowrap>" . $tpprice_formated . "</td>
+                    <td class='dataTableContent' align='right'  width='10%' nowrap>" . $ppriceFormated . "</td>
+                    <td class='dataTableContent' align='right'  width='10%' nowrap>" . $tppriceFormated . "</td>
                  </tr>";
-        $products_data[] = array(
-        'QUANTITY' => $inrec['qty'],
-        'NAME' => $inrec2['name'],
-        'LINK' => xtc_catalog_href_link(FILENAME_CATALOG_PRODUCT_INFO, 'info=p'. $inrec['pid']),
-        'IMAGE' => HTTP_SERVER.DIR_WS_CATALOG_INFO_IMAGES . $inrec2['image']);
+                 
+        $productsData[] = [
+            'QUANTITY' => $inrec['qty'],
+            'NAME' => $inrec2['name'],
+            'LINK' => xtc_catalog_href_link(FILENAME_CATALOG_PRODUCT_INFO, 'info=p'. $inrec['pid']),
+            'IMAGE' => HTTP_SERVER.DIR_WS_CATALOG_INFO_IMAGES . $inrec2['image']
+        ];
     }
 
     $cline .= "</td></tr>";
@@ -632,17 +678,17 @@ foreach ($_POST['custid'] as $cid) {
         }
     }
 
-    $cquery = xtc_db_query("select * from orders where customers_id = '".$cid."'" );
+    $cquery = xtc_db_query("SELECT * FROM orders WHERE customers_id = '" . $customerId . "'" );
 
     $smarty = new Smarty();
     $smarty->assign('language', $inrec['language']);
     $smarty->caching = false;
-    $smarty->template_dir = DIR_FS_CATALOG.'templates';
-    $smarty->compile_dir = DIR_FS_CATALOG.'templates_c';
-    $smarty->config_dir = DIR_FS_CATALOG.'lang';
-    $smarty->assign('tpl_path','templates/'.CURRENT_TEMPLATE.'/');
-    $smarty->assign('logo_path',HTTP_SERVER  . DIR_WS_CATALOG.'templates/'.CURRENT_TEMPLATE.'/img/');
-    $smarty->assign('products_data', $products_data);
+    $smarty->template_dir = DIR_FS_CATALOG . 'templates';
+    $smarty->compile_dir = DIR_FS_CATALOG . 'templates_c';
+    $smarty->config_dir = DIR_FS_CATALOG . 'lang';
+    $smarty->assign('tpl_path', 'templates/' . CURRENT_TEMPLATE . '/');
+    $smarty->assign('logo_path', HTTP_SERVER . DIR_WS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/img/');
+    $smarty->assign('products_data', $productsData);
     $smarty->assign('LOGIN', xtc_catalog_href_link(FILENAME_CATALOG_LOGIN, '', 'SSL'));
 
     //$custname = $inrec['fname']." ".$inrec['lname'];
@@ -666,49 +712,50 @@ foreach ($_POST['custid'] as $cid) {
     $smarty->assign('MESSAGE', $_POST['message']);
 
     $outEmailAddr = '"' . $custname . '" <' . $inrec['email'] . '>';
-    if( xtc_not_null(RCS_EMAIL_COPIES_TO) )
-    $outEmailAddr .= ', ' . RCS_EMAIL_COPIES_TO;
+    if (xtc_not_null(RCS_EMAIL_COPIES_TO)) {
+        $outEmailAddr .= ', ' . RCS_EMAIL_COPIES_TO;
+    }
 
     $smarty->caching = false;
 
-    $html_mail = $smarty->fetch(CURRENT_TEMPLATE.'/admin/mail/'.$inrec['language'].'/cart_mail.html');
-    $txt_mail = ($smarty->fetch(CURRENT_TEMPLATE.'/admin/mail/'.$inrec['language'].'/cart_mail.txt'));
+    $htmlMail = $smarty->fetch(CURRENT_TEMPLATE . '/admin/mail/' . $inrec['language'] . '/cart_mail.html');
+    $txtMail = $smarty->fetch(CURRENT_TEMPLATE . '/admin/mail/' . $inrec['language'] . '/cart_mail.txt');
 
     if ($inrec['email'] != '') {
-        xtc_php_mail(EMAIL_SUPPORT_ADDRESS, EMAIL_SUPPORT_NAME, $inrec['email'] , $custname , RCS_EMAIL_COPIES_TO, EMAIL_SUPPORT_REPLY_ADDRESS, EMAIL_SUPPORT_REPLY_ADDRESS_NAME, '', '', EMAIL_TEXT_SUBJECT, $html_mail, $txt_mail);
+        xtc_php_mail(EMAIL_SUPPORT_ADDRESS, EMAIL_SUPPORT_NAME, $inrec['email'] , $custname , RCS_EMAIL_COPIES_TO, EMAIL_SUPPORT_REPLY_ADDRESS, EMAIL_SUPPORT_REPLY_ADDRESS_NAME, '', '', EMAIL_TEXT_SUBJECT, $htmlMail, $txtMail);
     }
     // Debugging
 /*
     $fp = fopen('cart_mail.html', 'w');
-    fputs($fp, $html_mail);
+    fputs($fp, $htmlMail);
     fclose($fp);
     $fp = fopen('cart_mail.txt', 'w');
-    fputs($fp, $txt_mail);
+    fputs($fp, $txtMail);
     fclose($fp);
 */
     // See if a record for this customer already exists; if not create one and if so update it
-    $donequery = xtc_db_query("select * from ". TABLE_SCART ." where customers_id = '".$cid."'");
-    if (xtc_db_num_rows($donequery) == 0)
-    xtc_db_query("insert into " . TABLE_SCART . " (customers_id, dateadded, datemodified ) values ('" . $cid . "', '" . seadate('0') . "', '" . seadate('0') . "')");
-    else
-    xtc_db_query("update " . TABLE_SCART . " set datemodified = '" . seadate('0') . "' where customers_id = " . $cid );
-
+    $donequery = xtc_db_query("SELECT * FROM ". TABLE_SCART ." WHERE customers_id = '" . $customerId . "'");
+    if (xtc_db_num_rows($donequery) == 0) {
+        xtc_db_query("INSERT into " . TABLE_SCART . " (customers_id, dateadded, datemodified ) values ('" . $customerId . "', '" . seadate('0') . "', '" . seadate('0') . "')");
+    } else {
+        xtc_db_query("update " . TABLE_SCART . " set datemodified = '" . seadate('0') . "' WHERE customers_id = " . $customerId );
+    }
     echo $cline;
     $cline = "";
-    $text_total = RCS_SHOW_BRUTTO_PRICE == 'true'?TABLE_CART_TOTAL_BRUTTO:TABLE_CART_TOTAL;
+    $textTotal = RCS_SHOW_BRUTTO_PRICE == 'true' ? TABLE_CART_TOTAL_BRUTTO : TABLE_CART_TOTAL;
 }
-echo "<tr><td colspan=8 align='right' class='dataTableContent'><b>" . $text_total . "</b>" . $currencies->format($tprice) . "</td> </tr>";
-echo "<tr><td colspan=6 align='right'><a class=\"button\" href=" . xtc_href_link(FILENAME_RECOVER_CART_SALES, "action=delete&customer_id=" . $cid . "&tdate=" . $tdate) . ">" . BUTTON_DELETE . "</a></td>  </tr>\n";
+echo "<tr><td colspan=8 align='right' class='dataTableContent'><b>" . $textTotal . "</b>" . $currencies->format($tprice) . "</td> </tr>";
+echo "<tr><td colspan=6 align='right'><a class=\"button\" href=" . xtc_href_link(FILENAME_RECOVER_CART_SALES, "action=delete&customer_id=" . $customerId . "&tdate=" . $tdate) . ">" . BUTTON_DELETE . "</a></td>  </tr>\n";
 echo "<tr><td colspan=6 align=center><a href=".$PHP_SELF.">" . TEXT_RETURN . "</a></td></tr>";
-} else     //we are NOT doing an e-mail to some customers
-{
+} else { // we are NOT doing an e-mail to some customers
+
 ?>
         <!-- REPORT TABLE BEGIN //-->
             <tr>
               <td class="pageHeading" align="left" width="50%" colspan="4"><?php echo HEADING_TITLE; ?></td>
               <td class="pageHeading" align="right" width="50%" colspan="4">
                 <?php
-                echo xtc_draw_form('recover_cart_sales', 'recover_cart_sales.php', '', 'post', '').PHP_EOL;
+                echo xtc_draw_form('recover_cart_sales', 'recover_cart_sales.php', '', 'post', '') . PHP_EOL;
                 ?>
                   <table align="right" width="100%">
                     <tr class="dataTableContent" align="right">
@@ -719,7 +766,7 @@ echo "<tr><td colspan=6 align=center><a href=".$PHP_SELF.">" . TEXT_RETURN . "</
               </td>
             </tr>
 <?php
-echo xtc_draw_form('recover_cart_sales', 'recover_cart_sales.php', '', 'post', '').PHP_EOL;
+echo xtc_draw_form('recover_cart_sales', 'recover_cart_sales.php', '', 'post', '') . PHP_EOL;
 ?>
             <tr class="dataTableHeadingRow">
               <td class="dataTableHeadingContent" align="left" colspan="2" width="10%" nowrap><?php echo TABLE_HEADING_CONTACT; ?></td>
@@ -754,15 +801,17 @@ $curcus = "";
 $tprice = 0;
 $totalAll = 0;
 $first_line = true;
-$final_line = false;
+$finalLine = false;
 $skip = false;
 $knt = xtc_db_num_rows($query1);
 while ($query1Res = xtc_db_fetch_array($query1)) {
     $quantity = array();
     $quantityQuery = xtc_db_query("SELECT products_id pid, customers_basket_quantity qty FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_id=" . $query1Res['customers_id']);
+    
     while ($quantityResult = xtc_db_fetch_array($quantityQuery)) {
-        $quantity[(int)$quantityResult['pid']] += $quantityResult['qty'];
+        $quantity[(int) $quantityResult['pid']] += $quantityResult['qty'];
     }
+
     $query2 = xtc_db_query("SELECT cb.customers_id cid,
                                  cb.products_id pid,
                                  cb.customers_basket_quantity qty,
@@ -784,7 +833,7 @@ while ($query1Res = xtc_db_fetch_array($query1)) {
         // If this is a new customer, create the appropriate HTML
         if ($curcus != $inrec['cid']) {
             // output line
-            $final_line = true;
+            $finalLine = true;
             // set new cline and curcus
             $curcus = $inrec['cid'];
             if ($curcus != "") {
@@ -800,17 +849,18 @@ while ($query1Res = xtc_db_fetch_array($query1)) {
                 $customer = $inrec['fname'] . " " . $inrec['lname'];
                 $status = "";
 
-                $donequery = xtc_db_query("select * from ". TABLE_SCART ." where customers_id = '".$curcus."'");
+                $donequery = xtc_db_query("SELECT * FROM " . TABLE_SCART . " WHERE customers_id = '" . $curcus . "'");
                 $emailttl = seadate(RCS_EMAIL_TTL);
 
                 if (xtc_db_num_rows($donequery) > 0) {
                     $ttl = xtc_db_fetch_array($donequery);
-                    if( $ttl )
-                    {
-                        if( xtc_not_null($ttl['datemodified']) )    // allow for older scarts that have no datemodified
-                        $ttldate = $ttl['datemodified'];
-                        else
-                        $ttldate = $ttl['dateadded'];
+                    
+                    if ($ttl) {
+                        if (xtc_not_null($ttl['datemodified'])) { // allow for older scarts that have no datemodified
+                            $ttldate = $ttl['datemodified'];
+                        } else {
+                            $ttldate = $ttl['dateadded'];
+                        }
 
                         if ($emailttl <= $ttldate) {
                             $sentdate = $ttldate;
@@ -827,35 +877,30 @@ while ($query1Res = xtc_db_fetch_array($query1)) {
                 $ccquery = xtc_db_query('
         SELECT orders_id, orders_status
         FROM ' . TABLE_ORDERS . '
-        WHERE (customers_id = ' . (int)$curcus . '
+        WHERE (customers_id = ' . (int) $curcus . '
         OR customers_email_address like "' . $inrec['email'] .'"
         OR customers_name like "' . $inrec['fname'] . ' ' . $inrec['lname'] . '")
         AND date_purchased >= "' . $beforeDate . '"' );
-                if (xtc_db_num_rows($ccquery) > 0)
-                {
+                if (xtc_db_num_rows($ccquery) > 0) {
                     // We have a matching order; assume current customer but not for this order
                     $customer = '<font color=' . RCS_CURCUST_COLOR . '><b>' . $customer . '</b></font>';
 
                     // Now, look to see if one of the orders matches this current order's items
-                    while( $orec = xtc_db_fetch_array( $ccquery ) )
-                    {
-                        $ccquery = xtc_db_query( 'select products_id from ' . TABLE_ORDERS_PRODUCTS . ' where orders_id = ' . (int)$orec['orders_id'] . ' AND products_id = ' . (int)$inrec['pid'] );
-                        if( xtc_db_num_rows( $ccquery ) > 0 )
-                        {
-                            if( $orec['orders_status'] > RCS_PENDING_SALE_STATUS )
-                            $checked = 0;
+                    while ($orec = xtc_db_fetch_array($ccquery)) {
+                        $ccquery = xtc_db_query('SELECT products_id FROM ' . TABLE_ORDERS_PRODUCTS . ' WHERE orders_id = ' . (int) $orec['orders_id'] . ' AND products_id = ' . (int) $inrec['pid']);
+                        if (xtc_db_num_rows($ccquery) > 0 ) {
+                            if ($orec['orders_status'] > RCS_PENDING_SALE_STATUS ) {
+                                $checked = 0;
+                            }
 
                             // OK, we have a matching order; see if we should just skip this or show the status
-                            if( RCS_SKIP_MATCHED_CARTS == 'true' && !$checked )
-                            {
+                            if (RCS_SKIP_MATCHED_CARTS == 'true' && !$checked ) {
                                 $skip = true;    // reset flag & break us out of the while loop!
                                 break;
-                            }
-                            else
-                            {
+                            } else {
                                 // It's rare for the same customer to order the same item twice, so we probably have a matching order, show it
                                 $fcolor = RCS_MATCHED_ORDER_COLOR;
-                                $ccquery = xtc_db_query("select orders_status_name from " . TABLE_ORDERS_STATUS . " where language_id = " . (int)$_SESSION['languages_id'] . " AND orders_status_id = " . (int)$orec['orders_status'] );
+                                $ccquery = xtc_db_query("SELECT orders_status_name FROM " . TABLE_ORDERS_STATUS . " WHERE language_id = " . (int)$_SESSION['languages_id'] . " AND orders_status_id = " . (int)$orec['orders_status'] );
 
                                 if( $srec = xtc_db_fetch_array( $ccquery ) ) {
                                     $status = ' <a href="' . xtc_href_link(FILENAME_ORDERS, "oID=" . $orec['orders_id'] . "&action=edit") .  '">[' . $srec['orders_status_name'] . ']</a>';
@@ -865,13 +910,17 @@ while ($query1Res = xtc_db_fetch_array($query1)) {
                             }
                         }
                     }
-                    if( $skip )
-                    continue;    // got a matched cart, skip to next one
+
+                    if ($skip) {
+                        continue;    // got a matched cart, skip to next one
+                    }
                 }
                 $sentInfo = TEXT_NOT_CONTACTED;
 
-                if ($sentdate != '')
-                $sentInfo = cart_date_short($sentdate);
+                if ($sentdate != '') {
+                    $sentInfo = cart_date_short($sentdate);
+                }
+
                 $site = $inrec['site'] == 'confirm' ? TEXT_CONFIRM : ($inrec['site'] == 'payment' ? TEXT_PAYMENT : ($inrec['site'] == 'shipping' ? TEXT_SHIPPING : TEXT_CART));
                 //            $site = "-".$inrec['site']."-";
                 $cline = "
@@ -888,18 +937,17 @@ while ($query1Res = xtc_db_fetch_array($query1)) {
         }
 
         // We only have something to do for the product if the quantity selected was not zero!
-        if ($inrec['qty'] != 0)
-        {
+        if ($inrec['qty'] != 0) {
             // Get the product information (name, price, etc)
-            $query3 = xtc_db_query("select  p.products_price price,
+            $query3 = xtc_db_query("SELECT p.products_price price,
                                                           p.products_model model,
                                                           p.products_tax_class_id tax,
                                                           pd.products_name name
-                                            from    " . TABLE_PRODUCTS . " p,
+                                            FROM    " . TABLE_PRODUCTS . " p,
                                                           " . TABLE_PRODUCTS_DESCRIPTION . " pd
-                                              where   p.products_id = '" . (int)$inrec['pid'] . "'
-                                              and     pd.products_id = p.products_id
-                                              and     pd.language_id = " . (int)$_SESSION['languages_id'] );
+                                              WHERE   p.products_id = '" . (int)$inrec['pid'] . "'
+                                              AND     pd.products_id = p.products_id
+                                              AND     pd.language_id = " . (int)$_SESSION['languages_id'] );
             $inrec2 = xtc_db_fetch_array($query3);
 
             // Check to see if the product is on special, and if so use that pricing
@@ -907,25 +955,24 @@ while ($query1Res = xtc_db_fetch_array($query1)) {
             // BEGIN OF ATTRIBUTE DB CODE
             $prodAttribs = ''; // DO NOT DELETE
 
-            if (RCS_SHOW_ATTRIBUTES == 'true')
-            {
-                $attribquery = xtc_db_query("select  cba.products_id pid,
+            if (RCS_SHOW_ATTRIBUTES == 'true') {
+                $attribquery = xtc_db_query("SELECT cba.products_id pid,
                                                                      po.products_options_name poname,
                                                                      pov.products_options_values_name povname,
                                                                      pa.options_values_price price
-                                                       from    " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " cba,
+                                                       FROM    " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " cba,
                                                                      " . TABLE_PRODUCTS_OPTIONS . " po,
                                                                      " . TABLE_PRODUCTS_OPTIONS_VALUES . " pov,
                                                                      " . TABLE_PRODUCTS_ATTRIBUTES . " pa
-                                                       where   cba.products_id = '" . $inrec['pid'] . "'
-                                                       and         cba.customers_id = " . $curcus . "
-                                                       and         po.products_options_id = cba.products_options_id
-                                                       and         pov.products_options_values_id = cba.products_options_value_id
-                                                       and     pa.products_id = " . (int)$inrec['pid'] . "
-                                                       and     pa.options_id = cba.products_options_id
-                                                       and         pa.options_values_id = cba.products_options_value_id
-                                                       and       po.language_id = " . (int)$_SESSION['languages_id'] . "
-                                                       and         pov.language_id = " . (int)$_SESSION['languages_id']);
+                                                       WHERE   cba.products_id = '" . $inrec['pid'] . "'
+                                                       AND     cba.customers_id = " . $curcus . "
+                                                       AND     po.products_options_id = cba.products_options_id
+                                                       AND     pov.products_options_values_id = cba.products_options_value_id
+                                                       AND     pa.products_id = " . (int)$inrec['pid'] . "
+                                                       AND     pa.options_id = cba.products_options_id
+                                                       AND     pa.options_values_id = cba.products_options_value_id
+                                                       AND     po.language_id = " . (int)$_SESSION['languages_id'] . "
+                                                       AND     pov.language_id = " . (int)$_SESSION['languages_id']);
                 $hasAttributes = false;
 
                 if (xtc_db_num_rows($attribquery)) {
@@ -937,8 +984,12 @@ while ($query1Res = xtc_db_fetch_array($query1)) {
                     }
                 }
             }
-            if( $sprice == 0 ) $sprice = $inrec2['price'];
+
+            if( $sprice == 0 ) {
+                $sprice = $inrec2['price'];
+            }
             $sprice += $aprice;
+           
             if (RCS_SHOW_BRUTTO_PRICE == 'true') {
                 $tax = xtc_get_tax_rate($inrec2['tax']);
                 $sprice = xtc_add_tax($sprice, $tax);
@@ -946,8 +997,8 @@ while ($query1Res = xtc_db_fetch_array($query1)) {
 
             // END OF ATTRIBUTE DB CODE
             $tprice = $tprice + ($inrec['qty'] * $sprice);
-            $pprice_formated  = $currencies->format($sprice);
-            $tpprice_formated = $currencies->format(($inrec['qty'] * $sprice));
+            $ppriceFormated  = $currencies->format($sprice);
+            $tppriceFormated = $currencies->format(($inrec['qty'] * $sprice));
 
             $cline .= "<tr class='dataTableRow'>
                     <td class='dataTableContent' align='left' vAlign='top' colspan='2' width='12%' nowrap>" . ($inrec['bdate']<$ndate? " x":" &nbsp;") . "</td>
@@ -956,17 +1007,17 @@ while ($query1Res = xtc_db_fetch_array($query1)) {
                     " . $prodAttribs . "
                     </td>
                     <td class='dataTableContent' align='center' vAlign='top' width='5%' nowrap>" . $inrec['qty'] . "</td>
-                    <td class='dataTableContent' align='right'  vAlign='top' width='5%' nowrap>" . $pprice_formated . "</td>
-                    <td class='dataTableContent' align='right'  vAlign='top' width='10%' nowrap>" . $tpprice_formated . "</td>
+                    <td class='dataTableContent' align='right'  vAlign='top' width='5%' nowrap>" . $ppriceFormated . "</td>
+                    <td class='dataTableContent' align='right'  vAlign='top' width='10%' nowrap>" . $tppriceFormated . "</td>
                  </tr>";
         }
     }
-    if ($final_line) {
+    if ($finalLine) {
         $totalAll += $tprice;
-        $text_total = RCS_SHOW_BRUTTO_PRICE == 'true'?TABLE_CART_TOTAL_BRUTTO:TABLE_CART_TOTAL;
+        $textTotal = RCS_SHOW_BRUTTO_PRICE == 'true'?TABLE_CART_TOTAL_BRUTTO:TABLE_CART_TOTAL;
         $cline .= "       </td>
                         <tr>
-                          <td class='dataTableContent' align='right' colspan='8'><b>" . $text_total . "</b>" . $currencies->format($tprice) . "</td>
+                          <td class='dataTableContent' align='right' colspan='8'><b>" . $textTotal . "</b>" . $currencies->format($tprice) . "</td>
                         </tr>
                         <tr>
                           <td colspan='6' align='right'><a class=\"button\" href=" . xtc_href_link(FILENAME_RECOVER_CART_SALES,"action=delete&customer_id=$curcus&tdate=$tdate") . ">" . BUTTON_DELETE  . "</a><a class=\"button\" href=" . xtc_href_link(FILENAME_RECOVER_CART_SALES,"action=complete&customer_id=$curcus&tdate=$tdate") . ">" . BUTTON_COMPLETE  . "</a></td>
@@ -974,15 +1025,16 @@ while ($query1Res = xtc_db_fetch_array($query1)) {
         if (!$skip) {
             echo $cline;
         }
-        $final_line = false;
+
+        $finalLine = false;
     }
 }
-$totalAll_formated = $currencies->format($totalAll);
-$text_total = RCS_SHOW_BRUTTO_PRICE == 'true'?TABLE_GRAND_TOTAL_BRUTTO:TABLE_GRAND_TOTAL;
-$cline = "<tr></tr><td class='dataTableContent' align='right' colspan='8'><hr align=right width=55><b>" . $text_total . "</b>" . $totalAll_formated . "</td>
+$totalAllFormated = $currencies->format($totalAll);
+$textTotal = RCS_SHOW_BRUTTO_PRICE == 'true' ? TABLE_GRAND_TOTAL_BRUTTO : TABLE_GRAND_TOTAL;
+$cline = "<tr></tr><td class='dataTableContent' align='right' colspan='8'><hr align=right width=55><b>" . $textTotal . "</b>" . $totalAllFormated . "</td>
               </tr>";
 echo $cline;
-echo "<tr><td colspan=8><hr size=1 color=000080><b>". PSMSG ."</b><br>". xtc_draw_textarea_field('message', 'soft', '80', '5') ."<br>" . xtc_draw_selection_field('submit_button', 'submit', TEXT_SEND_EMAIL) . "</td></tr>";
+echo "<tr><td colspan=8><hr size=1 color=000080><b>" . PSMSG . "</b><br>" . xtc_draw_textarea_field('message', 'soft', '80', '5') . "<br>" . xtc_draw_selection_field('submit_button', 'submit', TEXT_SEND_EMAIL) . "</td></tr>";
 ?>
  </form>
 <?php }
