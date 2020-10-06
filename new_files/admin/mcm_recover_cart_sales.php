@@ -27,6 +27,7 @@ lane@ifd.com    www.osc-modsquad.com / www.ifd.com
 -----------------------------------------------------------------------------------------------*/
 
 use ModifiedCommunityModules\RecoverCartSales\Classes\Order;
+use currencies as Currencies;
 
 require_once 'includes/application_top.php';
 
@@ -45,7 +46,7 @@ require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'payment.php';
 require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'shipping.php';
 require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'order_total.php';
 
-$currencies = new currencies();
+$currencies = new Currencies();
 
 if (isset($_GET['action']) && $_GET['action'] == 'complete') {
     $customerId = (int) $_GET['customer_id'];
