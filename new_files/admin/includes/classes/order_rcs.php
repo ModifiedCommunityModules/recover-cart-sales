@@ -430,7 +430,7 @@ class Order
         for ($i = 0, $n = sizeof($products); $i < $n; $i++) {
             $product = $products[$i];
 
-            $productPrice = $xtPrice->xtcGetPrice($product['id'], $format = false, $product['quantity'], $product['tax_class_id'], '');
+            $productPrice = $xtPrice->xtcGetPrice($product['id'], false, $product['quantity'], $product['tax_class_id'], '');
             $productPrice += $xtPrice->xtcFormat($_SESSION['cart']->attributes_price($product['id']), false, $product['tax_class_id']);
 
             $this->products[$index] = [
