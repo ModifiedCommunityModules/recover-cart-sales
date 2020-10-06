@@ -88,7 +88,7 @@ class Order
         return xtc_db_fetch_array($query);
     }
 
-    private function buildInfoArray()
+    private function buildInfoArrayFromSession()
     {
         global $xtPrice;
 
@@ -216,7 +216,7 @@ class Order
         $billingAddress = $this->getBillingAddress($customerId, $customerAddress['customers_default_address_id']);
         $taxAddress = $this->getTaxAddress($customerId, $customerAddress['customers_default_address_id']);
 
-        $this->info = $this->buildInfoArray();
+        $this->info = $this->buildInfoArrayFromSession();
         $this->customer = $this->buildCustomerArrayFromCustomerAddress($customerAddress);
         $this->delivery = $this->buildDeliveryArrayFromShippingAddress($shippingAddress);
         $this->billing = $this->buildBillingFromBillingAddress($billingAddress);
