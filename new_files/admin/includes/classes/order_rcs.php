@@ -230,11 +230,7 @@ class Order
         $this->billing = $this->buildBillingFromBillingAddress($billingAddress);
 
         $index = 0;
-        // BOF - web28 - 2010-05-06 - PayPal API Modul / Paypal Express Modul
-        $this->taxDiscount = [];
-        // EOF - web28 - 2010-05-06 - PayPal API Modul / Paypal Express Modul
         $products = $_SESSION['cart']->get_products();
-        
         for ($i = 0, $n = sizeof($products); $i < $n; $i++) {
             $product = $products[$i];
 
