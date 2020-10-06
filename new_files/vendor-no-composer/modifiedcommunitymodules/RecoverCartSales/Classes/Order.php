@@ -1,15 +1,11 @@
 <?php
 /**
  * Recover Cart Sales
- *
- *  Copyright 2012 by ...
- *  Copyright 2011 by Erika Mustermann <erika.mustermann@example.com>
- *  Copyright 2010 by Max Mustermann <max.mustermann@example.com>
- * 
- *  Licensed under GNU General Public License 2.0 or later. 
+ *  
+ *  Licensed under GNU General Public License 2.0. 
  *  Some rights reserved. See LICENSE, README.md.
  *
- * @license GPL-2.0+ <https://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html>
+ * @license GPL-2.0 <https://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html>
  */
 
 namespace ModifiedCommunityModules\RecoverCartSales\Classes;
