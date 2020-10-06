@@ -1,0 +1,25 @@
+{
+    "name": "Offene Warenkörbe Plus",
+    "archiveName": "modifiedcommunitymodules/recover-cart-sales",
+    "sourceDir": "new_files",
+    "version": "auto",
+
+    "shortDescription": "Kurzbeschreibung für Offene Warenkörbe Plus",
+    "description": "Beschreibung Offene Warenkörbe Plus<br /><br />Für dieses Modul kann Support freundlich im modified Forum erfragt werden. Ein Anspruch auf Support besteht jedoch nicht. Alternativ kann ein Dienstleister kostenpflichtig beauftragt werden.",
+
+    "developer": "Von vielen Entwicklern",
+    "developerWebsite": "https://www.modified-shop.org/forum/index.php?topic=8612.0",
+    "website": "https://www.modified-shop.org/forum/index.php?topic=8612.0",
+
+    "price": "free",
+    "category": "promotion/marketing",
+
+    "require": {
+        "composer/autoload": "^1.0.0",
+        "robinthehood/modified-std-module": "^0.2.0"
+    },
+
+    "modifiedCompatibility": [
+        "2.0.5.1"
+    ]
+}
