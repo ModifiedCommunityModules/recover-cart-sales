@@ -26,10 +26,10 @@ Modified by Lane Roathe (recover_cart_sales.php,v 1.4d .. v2.11)
 lane@ifd.com    www.osc-modsquad.com / www.ifd.com
 -----------------------------------------------------------------------------------------------*/
 
-require 'includes/application_top.php';
-require DIR_WS_CLASSES . 'currencies.php';
-require DIR_FS_INC . 'xtc_image_button.inc.php';
-// require_once DIR_FS_EXTERNAL . 'phpmailer/class.phpmailer.php'; // Not needed if xtc_php_mail.inc.php is loaded
+
+require_once 'includes/application_top.php';
+require_once DIR_WS_CLASSES . 'currencies.php';
+require_once DIR_FS_INC . 'xtc_image_button.inc.php';
 require_once DIR_FS_INC . 'xtc_php_mail.inc.php';
 
 $currencies = new currencies();
