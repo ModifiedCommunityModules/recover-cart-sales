@@ -53,14 +53,24 @@ require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'order_total.php';
 
 $currencies = new Currencies();
 
-if (isset($_GET['action']) && $_GET['action'] == 'complete') {
-    $customerId = (int) $_GET['customer_id'];
+$action = $_GET['action'] ?? '';
+$getDelete = $_GET['delete'] ?? '';
+
+function getCustomerStatus(int $customerId, int $languageId): array
+{
+    $sql = "SELECT c.customers_status, cs.customers_status_name,  cs.customers_status_image, cs.customers_status_ot_discount_flag, cs.customers_status_ot_discount FROM " . TABLE_CUSTOMERS . " c, " . TABLE_CUSTOMERS_STATUS . " cs WHERE c.customers_status=cs.customers_status_id AND c.customers_id=" . (int) $customerId . " AND cs.language_id=" . (int) $languageId;
+
+    $query = xtc_db_query($sql);
+    return xtc_db_fetch_array($statusQuery);
+}
+
+if ($action == 'complete') {
+    $customerId = $_GET['customer_id'] ?? 0;
     $_SESSION['saved_cart'] = $_SESSION['cart'];
 
     $main = new Main();
 
-    $statusQuery = xtc_db_query("SELECT c.customers_status, cs.customers_status_name,  cs.customers_status_image, cs.customers_status_ot_discount_flag, cs.customers_status_ot_discount FROM " . TABLE_CUSTOMERS . " c, " . TABLE_CUSTOMERS_STATUS . " cs WHERE c.customers_status=cs.customers_status_id AND c.customers_id=" . $customerId . " AND cs.language_id=" . (int) $_SESSION['languages_id']);
-    $status = xtc_db_fetch_array($statusQuery);
+    $status = getCustomerStatus($customerId, $_SESSION['languages_id']);
 
     $xtPrice = new XtcPrice(DEFAULT_CURRENCY, $status['customers_status']);
     $rcsShoppingCart = new rcs_shopping_cart();
@@ -379,10 +389,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
     xtc_redirect(xtc_href_link(FILENAME_ORDERS, "oID=" . $insertId . "&action=edit"));
 }
 
-
-
 // Delete Entry Begin
-if ($_GET['action'] == 'delete') {
+if ($action == 'delete') {
     $customerId = (int) $_GET['customer_id'];
     xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_id=" . $customerId);
     xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " WHERE customers_id=" . $customerId);
@@ -391,7 +399,7 @@ if ($_GET['action'] == 'delete') {
     xtc_redirect(xtc_href_link(FILENAME_RECOVER_CART_SALES, 'delete=1&customer_id='. $_GET['customer_id'] . '&tdate=' . $_GET['tdate']));
 }
 
-if ($_GET['delete']) {
+if ($getDelete) {
     $messageStack->add(MESSAGE_STACK_CUSTOMER_ID . $_GET['customer_id'] . MESSAGE_STACK_DELETE_SUCCESS, 'success');
 }
 
