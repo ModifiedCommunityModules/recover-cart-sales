@@ -51,27 +51,23 @@ if (isset($_GET['action']) && $_GET['action']=='complete') {
     $cID = (int)$_GET['customer_id'];
     $_SESSION['saved_cart'] = $_SESSION['cart'];
 
-    // require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'main.php';
     $main = new main();
-        
-    // require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'xtcPrice.php';
+
     $statusQuery = xtc_db_query("SELECT c.customers_status, cs.customers_status_name,  cs.customers_status_image, cs.customers_status_ot_discount_flag, cs.customers_status_ot_discount FROM " . TABLE_CUSTOMERS . " c, " . TABLE_CUSTOMERS_STATUS . " cs WHERE c.customers_status=cs.customers_status_id AND c.customers_id=" . $cID . " AND cs.language_id=" . (int)$_SESSION['languages_id']);
     $status = xtc_db_fetch_array($statusQuery);
+
     $xtPrice = new xtcPrice(DEFAULT_CURRENCY, $status['customers_status']);
 
-    // require_once DIR_WS_CLASSES . 'shopping_cart.php';
-    // require_once DIR_WS_CLASSES . 'rcs_shopping_cart.php';
     $rcs_shopping_cart = new rcs_shopping_cart();
     $_SESSION['cart'] = new shoppingCart();
+
     $rcs_shopping_cart->restoreCustomersCart($_SESSION['cart'], $cID);
 
     // load selected payment module
     $_SESSION['payment'] = DEFAULT_RCS_PAYMENT;
-    // require DIR_WS_CLASSES . 'payment.php');
-    // require DIR_FS_CATALOG . DIR_WS_CLASSES . 'payment.php';
+
     $payment_modules = new payment($_SESSION['payment']);
 
-    //require DIR_WS_CLASSES . 'order_rcs.php';
     $order = new Order($cID);
 
     if ($order->billing['country']['iso_code_2'] != '' && $order->delivery['country']['iso_code_2'] == '') {
@@ -83,8 +79,7 @@ if (isset($_GET['action']) && $_GET['action']=='complete') {
     // load the selected shipping module
     $shipping_num_boxes = 1;
     $_SESSION['shipping'] = DEFAULT_RCS_SHIPPING;
-    // require_once DIR_WS_CLASSES . 'shipping.php';
-    // require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'shipping.php';
+
     $shipping_modules = new shipping($_SESSION['shipping']);
 
     list ($module, $method) = explode('_', $_SESSION['shipping']);
@@ -105,8 +100,6 @@ if (isset($_GET['action']) && $_GET['action']=='complete') {
     // load the before_process function from the payment modules
     //$payment_modules->before_process();
 
-    // require DIR_WS_CLASSES . 'order_total.php';
-    // require DIR_FS_CATALOG . DIR_WS_CLASSES . 'order_total.php';
     $order_total_modules = new order_total();
     //echo "<pre>"; print_r($order); exit;
     $order_totals = $order_total_modules->process();
