@@ -22,9 +22,9 @@
   lane@ifd.com www.osc-modsquad.com / www.ifd.com
 */
 
-define('MESSAGE_STACK_CUSTOMER_ID', 'Warenkorb f&uuml;r Kundennummer ');
-define('MESSAGE_STACK_DELETE_SUCCESS', ' erfolgreich gel&ouml;scht');
-define('HEADING_TITLE', 'Offene Warenk&ouml;rbe PLUS');
+define('MESSAGE_STACK_CUSTOMER_ID', 'Warenkorb für Kundennummer ');
+define('MESSAGE_STACK_DELETE_SUCCESS', ' erfolgreich gelöscht');
+define('HEADING_TITLE', 'Offene Warenkörbe PLUS');
 define('HEADING_EMAIL_SENT', 'E-mail Sende-Report');
 define('EMAIL_TEXT_SUBJECT', 'Anfrage von '.  STORE_NAME );
 define('DAYS_FIELD_PREFIX', 'Zeige die letzten ');
@@ -47,12 +47,12 @@ define('TABLE_GRAND_TOTAL_BRUTTO', 'Summe brutto Gesamt: ');
 define('TABLE_CART_TOTAL_BRUTTO', 'Summe brutto: ');
 define('TEXT_CURRENT_CUSTOMER', 'Kunde');
 define('TEXT_SEND_EMAIL', 'Sende E-mail');
-define('TEXT_RETURN', '[Klick hier um zur&uuml;ckzugehen]');
+define('TEXT_RETURN', '[Klick hier um zurückzugehen]');
 define('TEXT_NOT_CONTACTED', 'Nicht kontaktiert');
-define('PSMSG', 'Zus&auml;tzliche Nachricht (PS) am Ende der Mail: ');
+define('PSMSG', 'Zusätzliche Nachricht (PS) am Ende der Mail: ');
 
 define('TEXT_CART', 'Warenkorb');
 define('TEXT_SHIPPING', 'Versand');
 define('TEXT_PAYMENT', 'Zahlung');
-define('TEXT_CONFIRM', 'Best&auml;tigung');
+define('TEXT_CONFIRM', 'Bestätigung');
 define('TABLE_HEADING_OUT_DATE', 'Nicht im Zeitraum');
