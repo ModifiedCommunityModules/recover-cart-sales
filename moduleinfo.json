@@ -21,5 +21,11 @@
 
     "modifiedCompatibility": [
         "2.0.5.1"
-    ]
+    ],
+
+    "autoload": {
+        "psr-4": {
+            "ModifiedCommunityModules\\": "/vendor-no-composer/modifiedcommunitymodules"
+        }
+    }
 }
