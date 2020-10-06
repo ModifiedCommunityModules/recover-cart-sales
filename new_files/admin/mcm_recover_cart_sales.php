@@ -47,13 +47,13 @@ require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'order_total.php';
 
 $currencies = new currencies();
 
-if (isset($_GET['action']) && $_GET['action']=='complete') {
-    $cID = (int)$_GET['customer_id'];
+if (isset($_GET['action']) && $_GET['action'] == 'complete') {
+    $customerId = (int) $_GET['customer_id'];
     $_SESSION['saved_cart'] = $_SESSION['cart'];
 
     $main = new main();
 
-    $statusQuery = xtc_db_query("SELECT c.customers_status, cs.customers_status_name,  cs.customers_status_image, cs.customers_status_ot_discount_flag, cs.customers_status_ot_discount FROM " . TABLE_CUSTOMERS . " c, " . TABLE_CUSTOMERS_STATUS . " cs WHERE c.customers_status=cs.customers_status_id AND c.customers_id=" . $cID . " AND cs.language_id=" . (int)$_SESSION['languages_id']);
+    $statusQuery = xtc_db_query("SELECT c.customers_status, cs.customers_status_name,  cs.customers_status_image, cs.customers_status_ot_discount_flag, cs.customers_status_ot_discount FROM " . TABLE_CUSTOMERS . " c, " . TABLE_CUSTOMERS_STATUS . " cs WHERE c.customers_status=cs.customers_status_id AND c.customers_id=" . $customerId . " AND cs.language_id=" . (int)$_SESSION['languages_id']);
     $status = xtc_db_fetch_array($statusQuery);
 
     $xtPrice = new xtcPrice(DEFAULT_CURRENCY, $status['customers_status']);
@@ -61,14 +61,14 @@ if (isset($_GET['action']) && $_GET['action']=='complete') {
     $rcs_shopping_cart = new rcs_shopping_cart();
     $_SESSION['cart'] = new shoppingCart();
 
-    $rcs_shopping_cart->restoreCustomersCart($_SESSION['cart'], $cID);
+    $rcs_shopping_cart->restoreCustomersCart($_SESSION['cart'], $customerId);
 
     // load selected payment module
     $_SESSION['payment'] = DEFAULT_RCS_PAYMENT;
 
     $payment_modules = new payment($_SESSION['payment']);
 
-    $order = new Order($cID);
+    $order = new Order($customerId);
 
     if ($order->billing['country']['iso_code_2'] != '' && $order->delivery['country']['iso_code_2'] == '') {
         $_SESSION['delivery_zone'] = $order->billing['country']['iso_code_2'];
@@ -95,7 +95,7 @@ if (isset($_GET['action']) && $_GET['action']=='complete') {
     } else {
         $shipping_modules = MODULE_SHIPPING_INSTALLED;
     }
-    $order = new Order($cID);
+    $order = new Order($customerId);
 
     // load the before_process function from the payment modules
     //$payment_modules->before_process();
@@ -114,7 +114,7 @@ if (isset($_GET['action']) && $_GET['action']=='complete') {
     }
 
     $sql_data_array = array (
-    'customers_id' => $cID,
+    'customers_id' => $customerId,
     'customers_name' => $order->customer['firstname'].' '.$order->customer['lastname'],
     'customers_firstname' => $order->customer['firstname'],
     'customers_lastname' => $order->customer['lastname'],
@@ -319,9 +319,9 @@ if (isset($_GET['action']) && $_GET['action']=='complete') {
         $total_cost += $total_products_price;
     }
     if (RCS_DELETE_COMPLETED_ORDERS == 'true') {
-        xtc_db_query("delete from " . TABLE_CUSTOMERS_BASKET . " where customers_id=" . $cID);
-        xtc_db_query("delete from " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " where customers_id=" . $cID);
-        xtc_db_query("delete from " . TABLE_SCART . " where customers_id=" . $cID);
+        xtc_db_query("delete from " . TABLE_CUSTOMERS_BASKET . " where customers_id=" . $customerId);
+        xtc_db_query("delete from " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " where customers_id=" . $customerId);
+        xtc_db_query("delete from " . TABLE_SCART . " where customers_id=" . $customerId);
     }
     $_SESSION['cart'] = $_SESSION['saved_cart'];
     xtc_redirect(xtc_href_link(FILENAME_ORDERS, "oID=" . $insert_id . "&action=edit"));
@@ -331,10 +331,10 @@ if (isset($_GET['action']) && $_GET['action']=='complete') {
 
 // Delete Entry Begin
 if ($_GET['action']=='delete') {
-    $cID = (int)$_GET['customer_id'];
-    xtc_db_query("delete from " . TABLE_CUSTOMERS_BASKET . " where customers_id=" . $cID);
-    xtc_db_query("delete from " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " where customers_id=" . $cID);
-    xtc_db_query("delete from " . TABLE_SCART . " where customers_id=" . $cID);
+    $customerId = (int)$_GET['customer_id'];
+    xtc_db_query("delete from " . TABLE_CUSTOMERS_BASKET . " where customers_id=" . $customerId);
+    xtc_db_query("delete from " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " where customers_id=" . $customerId);
+    xtc_db_query("delete from " . TABLE_SCART . " where customers_id=" . $customerId);
 
     xtc_redirect(xtc_href_link(FILENAME_RECOVER_CART_SALES, 'delete=1&customer_id='. $_GET['customer_id'] . '&tdate=' . $_GET['tdate']));
 }
