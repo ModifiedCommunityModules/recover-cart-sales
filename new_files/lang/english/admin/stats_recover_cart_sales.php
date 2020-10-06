@@ -18,17 +18,17 @@
   lane@ifd.com www.osc-modsquad.com / www.ifd.com
 */
 
-define('HEADING_TITLE', 'Wiederhergestellte Warenk&ouml;rbe');
+define('HEADING_TITLE', 'Wiederhergestellte Warenkörbe');
 define('DAYS_FIELD_PREFIX', 'Zeige die letzten ');
 define('DAYS_FIELD_POSTFIX', ' Tage ');
 define('DAYS_FIELD_BUTTON', 'OK');
 define('TABLE_HEADING_SCART_ID', 'SCart ID');
-define('TABLE_HEADING_SCART_DATE', 'Hinzugef&uuml;gt am');
+define('TABLE_HEADING_SCART_DATE', 'Hinzugefügt am');
 define('TABLE_HEADING_CUSTOMER', 'Kundenname');
 define('TABLE_HEADING_ORDER_DATE', 'Bestelldatum');
 define('TABLE_HEADING_ORDER_STATUS', 'Status');
 define('TABLE_HEADING_ORDER_AMOUNT', 'Summe');
-define('TOTAL_RECORDS', 'In &Uuml;berpr&uuml;fung befindliche Datens&auml;tze:');
+define('TOTAL_RECORDS', 'In Überprüfung befindliche Datensätze:');
 define('TOTAL_SALES', 'Bestellungen:');
-define('TOTAL_SALES_EXPLANATION', ' (M&ouml;gliche Bestellungen von Kunden, die ihren Einkauf nicht beendet haben und per RCS informiert wurden)');
+define('TOTAL_SALES_EXPLANATION', ' (Mögliche Bestellungen von Kunden, die ihren Einkauf nicht beendet haben und per RCS informiert wurden)');
 define('TOTAL_RECOVERED', 'Total wiederhergestellt:');

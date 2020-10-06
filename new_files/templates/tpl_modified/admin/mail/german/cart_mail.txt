@@ -3,10 +3,10 @@ Melden sie sich hier an: {$LOGIN}
 {if $GENDER}Sehr geehrte{if $GENDER eq 'm'}r Herr{elseif $GENDER eq 'f'} Frau{else}(r) {$FIRSTNAME}{/if} {$LASTNAME},
 {else}Hallo,{/if}
 
-{if $NEW == true}vielen Dank für Ihren Besuch bei {$STORE_NAME} und Ihr uns entgegen gebrachtes Vertrauen.
-{else}vielen Dank für Ihren erneuten Besuch bei {$STORE_NAME} und Ihr wiederholtes uns entgegen gebrachtes Vertrauen.{/if}
+{if $NEW == true}vielen Dank fÃ¼r Ihren Besuch bei {$STORE_NAME} und Ihr uns entgegen gebrachtes Vertrauen.
+{else}vielen Dank fÃ¼r Ihren erneuten Besuch bei {$STORE_NAME} und Ihr wiederholtes uns entgegen gebrachtes Vertrauen.{/if}
 
-Wir haben gesehen, daß Sie bei Ihrem Besuch in unserem Onlineshop den Warenkorb mit folgenden Artikeln gefüllt haben, aber den Einkauf nicht vollständig durchgeführt haben.
+Wir haben gesehen, daÃŸ Sie bei Ihrem Besuch in unserem Onlineshop den Warenkorb mit folgenden Artikeln gefÃ¼llt haben, aber den Einkauf nicht vollstï¿½ndig durchgefÃ¼hrt haben.
 
 Inhalt Ihres Warenkorbes:
 
@@ -15,14 +15,14 @@ Inhalt Ihres Warenkorbes:
     {$product.LINK}
 {/foreach}
 
-Wir sind immer bemüht, unseren Service im Interesse unserer Kunden zu verbessern.
-Aus diesem Grund interessiert es uns natürlich, was die Ursachen dafür waren, Ihren Einkauf dieses Mal nicht bei  {$STORE_NAME} zu tätigen.
-Wir sind Ihnen daher sehr dankbar, wenn Sie uns mitteilen, ob Sie bei Ihrem Besuch in unserem Onlineshop Probleme oder Bedenken hatten, den Einkauf erfolgreich abzuschließen.
+Wir sind immer bemÃ¼ht, unseren Service im Interesse unserer Kunden zu verbessern.
+Aus diesem Grund interessiert es uns natÃ¼rlich, was die Ursachen dafÃ¼r waren, Ihren Einkauf dieses Mal nicht bei  {$STORE_NAME} zu tÃ¤tigen.
+Wir sind Ihnen daher sehr dankbar, wenn Sie uns mitteilen, ob Sie bei Ihrem Besuch in unserem Onlineshop Probleme oder Bedenken hatten, den Einkauf erfolgreich abzuschlieÃŸen.
 Unser Ziel ist es, Ihnen und anderen Kunden, den Einkauf bei {$STORE_NAME} leichter und besser zu gestalten.
 
-Nochmals vielen Dank für Ihre Zeit und Ihre Hilfe, den Onlineshop von {$STORE_NAME} zu verbessern.
+Nochmals vielen Dank fÃ¼r Ihre Zeit und Ihre Hilfe, den Onlineshop von {$STORE_NAME} zu verbessern.
 
-Mit freundlichen Grüßen
+Mit freundlichen GrÃ¼ÃŸen
 
 Ihr Team von {$STORE_NAME}
 {if $MESSAGE}
