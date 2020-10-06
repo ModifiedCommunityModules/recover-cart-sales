@@ -178,15 +178,31 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
     ];
 
     xtc_db_perform(TABLE_ORDERS, $sqlDataArray);
-    $insert_id = xtc_db_insert_id();
+    $insertId = xtc_db_insert_id();
     $_SESSION['tmp_oID'] = $insert_id;
     for ($i = 0, $n = sizeof($order_totals); $i < $n; $i ++) {
-        $sqlDataArray = array ('orders_id' => $insert_id, 'title' => $order_totals[$i]['title'], 'text' => $order_totals[$i]['text'], 'value' => $order_totals[$i]['value'], 'class' => $order_totals[$i]['code'], 'sort_order' => $order_totals[$i]['sort_order']);
+        $orderTotal = $order_totals[$i];
+
+        $sqlDataArray = [
+            'orders_id' => $insertId,
+            'title' => $orderTotal['title'],
+            'text' => $orderTotal['text'],
+            'value' => $orderTotal['value'],
+            'class' => $orderTotal['code'],
+            'sort_order' => $orderTotal['sort_order']
+        ];
+
         xtc_db_perform(TABLE_ORDERS_TOTAL, $sqlDataArray);
     }
 
-    $customer_notification = (SEND_EMAILS == 'true') ? '1' : '0';
-    $sqlDataArray = array ('orders_id' => $insert_id, 'orders_status_id' => $order->info['order_status'], 'date_added' => 'now()', 'customer_notified' => $customer_notification, 'comments' => $order->info['comments']);
+    $customerNotification = (SEND_EMAILS == 'true') ? '1' : '0';
+    $sqlDataArray = [
+        'orders_id' => $insertId, 
+        'orders_status_id' => $order->info['order_status'],
+        'date_added' => 'now()',
+        'customer_notified' => $customerNotification,
+        'comments' => $order->info['comments']
+    ];
     xtc_db_perform(TABLE_ORDERS_STATUS_HISTORY, $sqlDataArray);
 
     // initialized for the email confirmation
