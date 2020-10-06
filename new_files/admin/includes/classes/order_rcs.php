@@ -31,13 +31,7 @@ BMC 2003 for the CC CVV Module
 Released under the GNU General Public License
 ---------------------------------------------------------------------------------------*/
 
-// include needed functions
-// require_once DIR_FS_INC . 'xtc_date_long.inc.php';
-// require_once DIR_FS_INC . 'xtc_address_format.inc.php';
-// require_once DIR_FS_INC . 'xtc_get_country_name.inc.php';
-// require_once DIR_FS_INC . 'xtc_get_zone_code.inc.php';
 require_once DIR_FS_INC . 'xtc_get_tax_description.inc.php';
-
 
 class Order
 {
