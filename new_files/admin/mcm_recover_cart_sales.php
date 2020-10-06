@@ -408,18 +408,7 @@ $tdate = $_POST['tdate'];
 if ($tdate == '') {
     $tdate = RCS_BASE_DAYS;
 }
-require DIR_WS_INCLUDES . 'head.php';
-?>
 
-
-<!-- header //-->
-
-<?php require DIR_WS_INCLUDES . 'header.php'; ?>
-
-<!-- header_eof //-->
-
-<!-- body //-->
-<?php
 function seadate($day)
 {
     $rawtime = strtotime("-" . $day . " days");
@@ -481,6 +470,13 @@ function _GetCustomerSessions()
 }
 ?>
 
+<?php require DIR_WS_INCLUDES . 'head.php'; ?>
+
+<!-- header //-->
+<?php require DIR_WS_INCLUDES . 'header.php'; ?>
+
+
+<!-- body //-->
 <table border="0" width="100%" cellspacing="2" cellpadding="2">
   <tr>
         <td class="columnLeft2" width="<?php echo BOX_WIDTH; ?>" valign="top">
