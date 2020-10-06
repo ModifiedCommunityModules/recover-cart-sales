@@ -41,22 +41,17 @@ require_once DIR_FS_INC . 'xtc_get_tax_description.inc.php';
 
 class Order
 {
-    public $info;
-    public $totals;
-    public $products;
-    public $customer;
-    public $delivery;
+    public $info = [];
+    public $totals = [];
+    public $products = [];
+    public $customer = [];
+    public $delivery = [];
+    public $taxDiscount = [];
     public $contentType;
-    public $taxDiscount;
-
+    
     public function __construct($customerId)
     {
         global $xtPrice; //TODO: I think we do not need $xtPrice in this method
-        $this->info = [];
-        $this->totals = [];
-        $this->products = [];
-        $this->customer = [];
-        $this->delivery = [];
 
         $this->cart($customerId);
     }
