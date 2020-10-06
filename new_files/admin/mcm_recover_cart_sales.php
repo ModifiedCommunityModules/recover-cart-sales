@@ -57,16 +57,15 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
     $status = xtc_db_fetch_array($statusQuery);
 
     $xtPrice = new xtcPrice(DEFAULT_CURRENCY, $status['customers_status']);
-
-    $rcs_shopping_cart = new rcs_shopping_cart();
+    $rcsShoppingCart = new rcs_shopping_cart();
     $_SESSION['cart'] = new shoppingCart();
 
-    $rcs_shopping_cart->restoreCustomersCart($_SESSION['cart'], $customerId);
+    $rcsShoppingCart->restoreCustomersCart($_SESSION['cart'], $customerId);
 
     // load selected payment module
     $_SESSION['payment'] = DEFAULT_RCS_PAYMENT;
 
-    $payment_modules = new payment($_SESSION['payment']);
+    $paymentModules = new payment($_SESSION['payment']);
 
     $order = new Order($customerId);
 
@@ -80,11 +79,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
     $shipping_num_boxes = 1;
     $_SESSION['shipping'] = DEFAULT_RCS_SHIPPING;
 
-    $shipping_modules = new shipping($_SESSION['shipping']);
+    $shippingModules = new shipping($_SESSION['shipping']);
 
     list ($module, $method) = explode('_', $_SESSION['shipping']);
     if (is_object($$module)) {
-        $quote = $shipping_modules->quote($method, $module);
+        $quote = $shippingModules->quote($method, $module);
         if (isset ($quote['error'])) {
             unset ($_SESSION['shipping']);
         } else {
@@ -93,16 +92,16 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
             }
         }
     } else {
-        $shipping_modules = MODULE_SHIPPING_INSTALLED;
+        $shippingModules = MODULE_SHIPPING_INSTALLED;
     }
     $order = new Order($customerId);
 
     // load the before_process function from the payment modules
-    //$payment_modules->before_process();
+    //$paymentModules->before_process();
 
-    $order_total_modules = new order_total();
+    $orderTotalModules = new order_total();
     //echo "<pre>"; print_r($order); exit;
-    $order_totals = $order_total_modules->process();
+    $order_totals = $orderTotalModules->process();
 
     $tmp = false;
     $tmp_status = $order->info['order_status'];
@@ -113,81 +112,82 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
         $discount = '0.00';
     }
 
-    $sql_data_array = array (
-    'customers_id' => $customerId,
-    'customers_name' => $order->customer['firstname'].' '.$order->customer['lastname'],
-    'customers_firstname' => $order->customer['firstname'],
-    'customers_lastname' => $order->customer['lastname'],
-    'customers_cid' => $order->customer['csID'],
-    'customers_vat_id' => '',
-    'customers_company' => $order->customer['company'],
-    'customers_status' => $status['customers_status'],
-    'customers_status_name' => $status['customers_status_name'],
-    'customers_status_image' => $status['customers_status_image'],
-    'customers_status_discount' => $discount,
-    'customers_street_address' => $order->customer['street_address'],
-    'customers_suburb' => $order->customer['suburb'],
-    'customers_city' => $order->customer['city'],
-    'customers_postcode' => $order->customer['postcode'],
-    'customers_state' => $order->customer['state'],
-    'customers_country' => $order->customer['country']['title'],
-    'customers_telephone' => $order->customer['telephone'],
-    'customers_email_address' => $order->customer['email_address'],
-    'customers_address_format_id' => $order->customer['format_id'],
-    'delivery_name' => $order->delivery['firstname'].' '.$order->delivery['lastname'],
-    'delivery_firstname' => $order->delivery['firstname'],
-    'delivery_lastname' => $order->delivery['lastname'],
-    'delivery_company' => $order->delivery['company'],
-    'delivery_street_address' => $order->delivery['street_address'],
-    'delivery_suburb' => $order->delivery['suburb'],
-    'delivery_city' => $order->delivery['city'],
-    'delivery_postcode' => $order->delivery['postcode'],
-    'delivery_state' => $order->delivery['state'],
-    'delivery_country' => $order->delivery['country']['title'],
-    'delivery_country_iso_code_2' => $order->delivery['country']['iso_code_2'],
-    'delivery_address_format_id' => $order->delivery['format_id'],
-    'billing_name' => $order->billing['firstname'].' '.$order->billing['lastname'],
-    'billing_firstname' => $order->billing['firstname'],
-    'billing_lastname' => $order->billing['lastname'],
-    'billing_company' => $order->billing['company'],
-    'billing_street_address' => $order->billing['street_address'],
-    'billing_suburb' => $order->billing['suburb'],
-    'billing_city' => $order->billing['city'],
-    'billing_postcode' => $order->billing['postcode'],
-    'billing_state' => $order->billing['state'],
-    'billing_country' => $order->billing['country']['title'],
-    'billing_country_iso_code_2' => $order->billing['country']['iso_code_2'],
-    'billing_address_format_id' => $order->billing['format_id'],
-    'payment_method' => $order->info['payment_method'],
-    'payment_class' => $order->info['payment_class'],
-    'shipping_method' => $order->info['shipping_method'],
-    'shipping_class' => $order->info['shipping_class'],
-    //'cc_type' => $order->info['cc_type'],
-    //'cc_owner' => $order->info['cc_owner'],
-    //'cc_number' => $order->info['cc_number'],
-    //'cc_expires' => $order->info['cc_expires'],
-    //'cc_start' => $order->info['cc_start'],
-    //'cc_cvv' => $order->info['cc_cvv'],
-    //'cc_issue' => $order->info['cc_issue'],
-    'date_purchased' => 'now()',
-    'orders_status' => $tmp_status,
-    'currency' => $order->info['currency'],
-    'currency_value' => $order->info['currency_value'],
-    'customers_ip' => $customers_ip,
-    'language' => $_SESSION['language'],
-    'comments' => $order->info['comments']);
+    $sqlDataArray = [
+        'customers_id' => $customerId,
+        'customers_name' => $order->customer['firstname'].' '.$order->customer['lastname'],
+        'customers_firstname' => $order->customer['firstname'],
+        'customers_lastname' => $order->customer['lastname'],
+        'customers_cid' => $order->customer['csID'],
+        'customers_vat_id' => '',
+        'customers_company' => $order->customer['company'],
+        'customers_status' => $status['customers_status'],
+        'customers_status_name' => $status['customers_status_name'],
+        'customers_status_image' => $status['customers_status_image'],
+        'customers_status_discount' => $discount,
+        'customers_street_address' => $order->customer['street_address'],
+        'customers_suburb' => $order->customer['suburb'],
+        'customers_city' => $order->customer['city'],
+        'customers_postcode' => $order->customer['postcode'],
+        'customers_state' => $order->customer['state'],
+        'customers_country' => $order->customer['country']['title'],
+        'customers_telephone' => $order->customer['telephone'],
+        'customers_email_address' => $order->customer['email_address'],
+        'customers_address_format_id' => $order->customer['format_id'],
+        'delivery_name' => $order->delivery['firstname'].' '.$order->delivery['lastname'],
+        'delivery_firstname' => $order->delivery['firstname'],
+        'delivery_lastname' => $order->delivery['lastname'],
+        'delivery_company' => $order->delivery['company'],
+        'delivery_street_address' => $order->delivery['street_address'],
+        'delivery_suburb' => $order->delivery['suburb'],
+        'delivery_city' => $order->delivery['city'],
+        'delivery_postcode' => $order->delivery['postcode'],
+        'delivery_state' => $order->delivery['state'],
+        'delivery_country' => $order->delivery['country']['title'],
+        'delivery_country_iso_code_2' => $order->delivery['country']['iso_code_2'],
+        'delivery_address_format_id' => $order->delivery['format_id'],
+        'billing_name' => $order->billing['firstname'].' '.$order->billing['lastname'],
+        'billing_firstname' => $order->billing['firstname'],
+        'billing_lastname' => $order->billing['lastname'],
+        'billing_company' => $order->billing['company'],
+        'billing_street_address' => $order->billing['street_address'],
+        'billing_suburb' => $order->billing['suburb'],
+        'billing_city' => $order->billing['city'],
+        'billing_postcode' => $order->billing['postcode'],
+        'billing_state' => $order->billing['state'],
+        'billing_country' => $order->billing['country']['title'],
+        'billing_country_iso_code_2' => $order->billing['country']['iso_code_2'],
+        'billing_address_format_id' => $order->billing['format_id'],
+        'payment_method' => $order->info['payment_method'],
+        'payment_class' => $order->info['payment_class'],
+        'shipping_method' => $order->info['shipping_method'],
+        'shipping_class' => $order->info['shipping_class'],
+        //'cc_type' => $order->info['cc_type'],
+        //'cc_owner' => $order->info['cc_owner'],
+        //'cc_number' => $order->info['cc_number'],
+        //'cc_expires' => $order->info['cc_expires'],
+        //'cc_start' => $order->info['cc_start'],
+        //'cc_cvv' => $order->info['cc_cvv'],
+        //'cc_issue' => $order->info['cc_issue'],
+        'date_purchased' => 'now()',
+        'orders_status' => $tmp_status,
+        'currency' => $order->info['currency'],
+        'currency_value' => $order->info['currency_value'],
+        'customers_ip' => $customers_ip,
+        'language' => $_SESSION['language'],
+        'comments' => $order->info['comments']
+    ];
 
-    xtc_db_perform(TABLE_ORDERS, $sql_data_array);
+    xtc_db_perform(TABLE_ORDERS, $sqlDataArray);
     $insert_id = xtc_db_insert_id();
     $_SESSION['tmp_oID'] = $insert_id;
     for ($i = 0, $n = sizeof($order_totals); $i < $n; $i ++) {
-        $sql_data_array = array ('orders_id' => $insert_id, 'title' => $order_totals[$i]['title'], 'text' => $order_totals[$i]['text'], 'value' => $order_totals[$i]['value'], 'class' => $order_totals[$i]['code'], 'sort_order' => $order_totals[$i]['sort_order']);
-        xtc_db_perform(TABLE_ORDERS_TOTAL, $sql_data_array);
+        $sqlDataArray = array ('orders_id' => $insert_id, 'title' => $order_totals[$i]['title'], 'text' => $order_totals[$i]['text'], 'value' => $order_totals[$i]['value'], 'class' => $order_totals[$i]['code'], 'sort_order' => $order_totals[$i]['sort_order']);
+        xtc_db_perform(TABLE_ORDERS_TOTAL, $sqlDataArray);
     }
 
     $customer_notification = (SEND_EMAILS == 'true') ? '1' : '0';
-    $sql_data_array = array ('orders_id' => $insert_id, 'orders_status_id' => $order->info['order_status'], 'date_added' => 'now()', 'customer_notified' => $customer_notification, 'comments' => $order->info['comments']);
-    xtc_db_perform(TABLE_ORDERS_STATUS_HISTORY, $sql_data_array);
+    $sqlDataArray = array ('orders_id' => $insert_id, 'orders_status_id' => $order->info['order_status'], 'date_added' => 'now()', 'customer_notified' => $customer_notification, 'comments' => $order->info['comments']);
+    xtc_db_perform(TABLE_ORDERS_STATUS_HISTORY, $sqlDataArray);
 
     // initialized for the email confirmation
     $products_ordered = '';
@@ -231,9 +231,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
         // Update products_ordered (for bestsellers list)
         xtc_db_query("update ".TABLE_PRODUCTS." set products_ordered = products_ordered + ".sprintf('%d', $order->products[$i]['qty'])." where products_id = '".xtc_get_prid($order->products[$i]['id'])."'");
 
-        $sql_data_array = array ('orders_id' => $insert_id, 'products_id' => xtc_get_prid($order->products[$i]['id']), 'products_model' => $order->products[$i]['model'], 'products_name' => $order->products[$i]['name'],'products_shipping_time'=>$order->products[$i]['shipping_time'], 'products_price' => $order->products[$i]['price'], 'final_price' => $order->products[$i]['final_price'], 'products_tax' => $order->products[$i]['tax'], 'products_discount_made' => $order->products[$i]['discount_allowed'], 'products_quantity' => $order->products[$i]['qty'], 'allow_tax' => $_SESSION['customers_status']['customers_status_show_price_tax']);
+        $sqlDataArray = array ('orders_id' => $insert_id, 'products_id' => xtc_get_prid($order->products[$i]['id']), 'products_model' => $order->products[$i]['model'], 'products_name' => $order->products[$i]['name'],'products_shipping_time'=>$order->products[$i]['shipping_time'], 'products_price' => $order->products[$i]['price'], 'final_price' => $order->products[$i]['final_price'], 'products_tax' => $order->products[$i]['tax'], 'products_discount_made' => $order->products[$i]['discount_allowed'], 'products_quantity' => $order->products[$i]['qty'], 'allow_tax' => $_SESSION['customers_status']['customers_status_show_price_tax']);
 
-        xtc_db_perform(TABLE_ORDERS_PRODUCTS, $sql_data_array);
+        xtc_db_perform(TABLE_ORDERS_PRODUCTS, $sqlDataArray);
         $order_products_id = xtc_db_insert_id();
 
         // Aenderung Specials Quantity Anfang
@@ -251,7 +251,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
         }
         // Aenderung Ende
 
-        $order_total_modules->update_credit_account($i); // GV Code ICW ADDED FOR CREDIT CLASS SYSTEM
+        $orderTotalModules->update_credit_account($i); // GV Code ICW ADDED FOR CREDIT CLASS SYSTEM
         //------insert customer choosen option to order--------
         $attributes_exist = '0';
         $products_ordered_attributes = '';
@@ -304,12 +304,12 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
 
                 $attributes_values = xtc_db_fetch_array($attributes);
 
-                $sql_data_array = array ('orders_id' => $insert_id, 'orders_products_id' => $order_products_id, 'products_options' => $attributes_values['products_options_name'], 'products_options_values' => $attributes_values['products_options_values_name'], 'options_values_price' => $attributes_values['options_values_price'], 'price_prefix' => $attributes_values['price_prefix']);
-                xtc_db_perform(TABLE_ORDERS_PRODUCTS_ATTRIBUTES, $sql_data_array);
+                $sqlDataArray = array ('orders_id' => $insert_id, 'orders_products_id' => $order_products_id, 'products_options' => $attributes_values['products_options_name'], 'products_options_values' => $attributes_values['products_options_values_name'], 'options_values_price' => $attributes_values['options_values_price'], 'price_prefix' => $attributes_values['price_prefix']);
+                xtc_db_perform(TABLE_ORDERS_PRODUCTS_ATTRIBUTES, $sqlDataArray);
 
                 if ((DOWNLOAD_ENABLED == 'true') && isset ($attributes_values['products_attributes_filename']) && xtc_not_null($attributes_values['products_attributes_filename'])) {
-                    $sql_data_array = array ('orders_id' => $insert_id, 'orders_products_id' => $order_products_id, 'orders_products_filename' => $attributes_values['products_attributes_filename'], 'download_maxdays' => $attributes_values['products_attributes_maxdays'], 'download_count' => $attributes_values['products_attributes_maxcount']);
-                    xtc_db_perform(TABLE_ORDERS_PRODUCTS_DOWNLOAD, $sql_data_array);
+                    $sqlDataArray = array ('orders_id' => $insert_id, 'orders_products_id' => $order_products_id, 'orders_products_filename' => $attributes_values['products_attributes_filename'], 'download_maxdays' => $attributes_values['products_attributes_maxdays'], 'download_count' => $attributes_values['products_attributes_maxcount']);
+                    xtc_db_perform(TABLE_ORDERS_PRODUCTS_DOWNLOAD, $sqlDataArray);
                 }
             }
         }
