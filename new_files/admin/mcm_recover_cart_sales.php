@@ -110,7 +110,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
     //$paymentModules->before_process();
 
     $orderTotalModules = new OrderTotal();
-    //echo "<pre>"; print_r($order); exit;
     $orderTotals = $orderTotalModules->process();
 
     $tmp = false;
@@ -200,7 +199,6 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
             'class' => $orderTotal['code'],
             'sort_order' => $orderTotal['sort_order']
         ];
-
         xtc_db_perform(TABLE_ORDERS_TOTAL, $sqlDataArray);
     }
 
@@ -637,7 +635,7 @@ foreach ($_POST['custid'] as $customerId) {
                     <td class='dataTableContent' align='right'  width='10%' nowrap>" . $ppriceFormated . "</td>
                     <td class='dataTableContent' align='right'  width='10%' nowrap>" . $tppriceFormated . "</td>
                  </tr>";
-                 
+
         $productsData[] = [
             'QUANTITY' => $inrec['qty'],
             'NAME' => $inrec2['name'],
