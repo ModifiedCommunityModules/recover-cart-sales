@@ -51,8 +51,6 @@ class Order
     
     public function __construct($customerId)
     {
-        global $xtPrice; //TODO: I think we do not need $xtPrice in this method
-
         $this->cart($customerId);
     }
 
