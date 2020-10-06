@@ -428,28 +428,30 @@ class Order
         $products = $_SESSION['cart']->get_products();
         
         for ($i = 0, $n = sizeof($products); $i < $n; $i++) {
-            $productPrice = $xtPrice->xtcGetPrice($products[$i]['id'], $format = false, $products[$i]['quantity'], $products[$i]['tax_class_id'], '');
-            $productPrice += $xtPrice->xtcFormat($_SESSION['cart']->attributes_price($products[$i]['id']), false, $products[$i]['tax_class_id']);
+            $product = $products[$i];
+
+            $productPrice = $xtPrice->xtcGetPrice($product['id'], $format = false, $product['quantity'], $product['tax_class_id'], '');
+            $productPrice += $xtPrice->xtcFormat($_SESSION['cart']->attributes_price($product['id']), false, $product['tax_class_id']);
 
             $this->products[$index] = [
-                'qty' => $products[$i]['quantity'],
-                'name' => $products[$i]['name'],
-                'model' => $products[$i]['model'],
-                'tax_class_id'=> $products[$i]['tax_class_id'],
-                'tax' => xtc_get_tax_rate($products[$i]['tax_class_id'], $taxAddress['entry_country_id'], $taxAddress['entry_zone_id']),
-                'tax_description' => xtc_get_tax_description($products[$i]['tax_class_id'], $taxAddress['entry_country_id'], $taxAddress['entry_zone_id']),
+                'qty' => $product['quantity'],
+                'name' => $product['name'],
+                'model' => $product['model'],
+                'tax_class_id'=> $product['tax_class_id'],
+                'tax' => xtc_get_tax_rate($product['tax_class_id'], $taxAddress['entry_country_id'], $taxAddress['entry_zone_id']),
+                'tax_description' => xtc_get_tax_description($product['tax_class_id'], $taxAddress['entry_country_id'], $taxAddress['entry_zone_id']),
                 'price' =>  $productPrice ,
-                'final_price' => $productPrice * $products[$i]['quantity'],
-                'shipping_time'=>$products[$i]['shipping_time'],
-                'weight' => $products[$i]['weight'],
-                'id' => $products[$i]['id']
+                'final_price' => $productPrice * $product['quantity'],
+                'shipping_time'=>$product['shipping_time'],
+                'weight' => $product['weight'],
+                'id' => $product['id']
             ];
 
-            if ($products[$i]['attributes']) {
+            if ($product['attributes']) {
                 $subindex = 0;
-                reset($products[$i]['attributes']);
-                while (list($option, $value) = each($products[$i]['attributes'])) {
-                    $attributesQuery = xtc_db_query("SELECT popt.products_options_name, poval.products_options_values_name, pa.options_values_price, pa.price_prefix FROM " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa WHERE pa.products_id = '" . $products[$i]['id'] . "' AND pa.options_id = '" . $option . "' AND pa.options_id = popt.products_options_id AND pa.options_values_id = '" . $value . "' AND pa.options_values_id = poval.products_options_values_id AND popt.language_id = '" . $_SESSION['languages_id'] . "' AND poval.language_id = '" . $_SESSION['languages_id'] . "'");
+                reset($product['attributes']);
+                while (list($option, $value) = each($product['attributes'])) {
+                    $attributesQuery = xtc_db_query("SELECT popt.products_options_name, poval.products_options_values_name, pa.options_values_price, pa.price_prefix FROM " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa WHERE pa.products_id = '" . $product['id'] . "' AND pa.options_id = '" . $option . "' AND pa.options_id = popt.products_options_id AND pa.options_values_id = '" . $value . "' AND pa.options_values_id = poval.products_options_values_id AND popt.language_id = '" . $_SESSION['languages_id'] . "' AND poval.language_id = '" . $_SESSION['languages_id'] . "'");
                     $attributes = xtc_db_fetch_array($attributesQuery);
 
                     $this->products[$index]['attributes'][$subindex] = [
@@ -499,7 +501,7 @@ class Order
                 if ($_SESSION['customers_status']['customers_status_ot_discount_flag'] == 1) {
                     // BOF - web28 - 2010-05-06 - PayPal API Modul / Paypal Express Modul
                     //$this->info['tax'] += ($shownPriceTax / 100) * ($productTax);
-                    $this->taxDiscount[$products[$i]['tax_class_id']] += $shownPriceTax / 100 * $productTax;
+                    $this->taxDiscount[$product['tax_class_id']] += $shownPriceTax / 100 * $productTax;
                     // EOF - web28 - 2010-05-06 - PayPal API Modul / Paypal Express Modul
                     //$this->info['tax_groups'][TAX_NO_TAX . "$productTaxDescription"] += ($shownPriceTax / 100) * ($productTax);
                     $this->info['tax_groups'][$taxIndex] += $shownPriceTax / 100 * $productTax;
