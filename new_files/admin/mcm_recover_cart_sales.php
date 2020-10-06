@@ -32,6 +32,7 @@ use main as Main;
 use xtcPrice as XtcPrice;
 use order_total as OrderTotal;
 use shipping as Shipping;
+use payment as Payment;
 
 require_once 'includes/application_top.php';
 
@@ -70,7 +71,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
     // load selected payment module
     $_SESSION['payment'] = DEFAULT_RCS_PAYMENT;
 
-    $paymentModules = new payment($_SESSION['payment']);
+    $paymentModules = new Payment($_SESSION['payment']);
 
     $order = new Order($customerId);
 
