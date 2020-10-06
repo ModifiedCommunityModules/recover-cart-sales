@@ -51,7 +51,7 @@ class Order
 
     public function __construct($customerId)
     {
-        global $xtPrice;
+        global $xtPrice; //TODO: I think we do not need $xtPrice in this method
         $this->info = [];
         $this->totals = [];
         $this->products = [];
@@ -441,7 +441,7 @@ class Order
             $productPrice = $xtPrice->xtcGetPrice($product['id'], false, $product['quantity'], $product['tax_class_id'], '');
             $productPrice += $xtPrice->xtcFormat($_SESSION['cart']->attributes_price($product['id']), false, $product['tax_class_id']);
 
-            $this->products[$index] = [
+            $this->products[$index] = [ // TODO: Maybe we can use [] instead of [$index]
                 'qty' => $product['quantity'],
                 'name' => $product['name'],
                 'model' => $product['model'],
@@ -458,11 +458,11 @@ class Order
             if ($product['attributes']) {
                 $subindex = 0;
                 reset($product['attributes']);
-                while (list($optionId, $optionValueId) = each($product['attributes'])) {
+                while (list($optionId, $optionValueId) = each($product['attributes'])) { // TODO: Maybe we can foreach
                     
                     $attributes = $this->getAttributes($product['id'], $optionId, $optionValueId, $_SESSION['languages_id']);
 
-                    $this->products[$index]['attributes'][$subindex] = [
+                    $this->products[$index]['attributes'][$subindex] = [ // TODO: Maybe we can use [] instead of [$subindex]
                         'option' => $attributes['products_options_name'],
                         'value' => $attributes['products_options_values_name'],
                         'option_id' => $optionId,
