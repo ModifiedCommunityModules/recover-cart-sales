@@ -60,201 +60,6 @@ class Order
 
         $this->cart($customerId);
     }
-    
-    // function query($order_id) {
-
-    //     $order_id = xtc_db_prepare_input($order_id);
-
-    //     $order_query = xtc_db_query("SELECT
-    //                                 *
-    //                                 FROM " . TABLE_ORDERS . " WHERE
-    //                                 orders_id = '" . xtc_db_input($order_id) . "'");
-
-    //     $order = xtc_db_fetch_array($order_query);
-
-    //     $totals_query = xtc_db_query("SELECT * FROM " . TABLE_ORDERS_TOTAL . " WHERE orders_id = '" . xtc_db_input($order_id) . "' order by sort_order");
-    //     while ($totals = xtc_db_fetch_array($totals_query)) {
-    //         $this->totals[] = array('title' => $totals['title'],
-    //         'text' =>$totals['text'],
-    //         'value'=>$totals['value']);
-    //     }
-
-    //     $order_total_query = xtc_db_query("SELECT text FROM " . TABLE_ORDERS_TOTAL . " WHERE orders_id = '" . $order_id . "' AND class = 'ot_total'");
-    //     $order_total = xtc_db_fetch_array($order_total_query);
-
-    //     $shipping_method_query = xtc_db_query("SELECT title FROM " . TABLE_ORDERS_TOTAL . " WHERE orders_id = '" . $order_id . "' AND class = 'ot_shipping'");
-    //     $shipping_method = xtc_db_fetch_array($shipping_method_query);
-
-    //     $order_status_query = xtc_db_query("SELECT orders_status_name FROM " . TABLE_ORDERS_STATUS . " WHERE orders_status_id = '" . $order['orders_status'] . "' AND language_id = '" . $_SESSION['languages_id'] . "'");
-    //     $order_status = xtc_db_fetch_array($order_status_query);
-
-    //     $this->info = array('currency' => $order['currency'],
-    //         'currency_value' => $order['currency_value'],
-    //         'payment_method' => $order['payment_method'],
-    //         'cc_type' => $order['cc_type'],
-    //         'cc_owner' => $order['cc_owner'],
-    //         'cc_number' => $order['cc_number'],
-    //         'cc_expires' => $order['cc_expires'],
-    //         // BMC CC Mod Start
-    //         'cc_start' => $order['cc_start'],
-    //         'cc_issue' => $order['cc_issue'],
-    //         'cc_cvv' => $order['cc_cvv'],
-    //         // BMC CC Mod End
-    //         'date_purchased' => $order['date_purchased'],
-    //         'orders_status' => $order_status['orders_status_name'],
-    //         'last_modified' => $order['last_modified'],
-    //         'total' => strip_tags($order_total['text']),
-    //         'shipping_method' => ((substr($shipping_method['title'], -1) == ':') ? substr(strip_tags($shipping_method['title']), 0, -1) : strip_tags($shipping_method['title'])),
-    //         'comments' => $order['comments']
-    //     );
-
-    //     $this->customer = array('id' => $order['customers_id'],
-    //         'name' => $order['customers_name'],
-    //         'firstname' => $order['customers_firstname'],
-    //         'lastname' => $order['customers_lastname'],
-    //         'csID' => $order['customers_cid'],
-    //         'company' => $order['customers_company'],
-    //         'street_address' => $order['customers_street_address'],
-    //         'suburb' => $order['customers_suburb'],
-    //         'city' => $order['customers_city'],
-    //         'postcode' => $order['customers_postcode'],
-    //         'state' => $order['customers_state'],
-    //         'country' => $order['customers_country'],
-    //         'format_id' => $order['customers_address_format_id'],
-    //         'telephone' => $order['customers_telephone'],
-    //         'email_address' => $order['customers_email_address']
-    //     );
-
-    //     $this->delivery = array('name' => $order['delivery_name'],
-    //         'firstname' => $order['delivery_firstname'],
-    //         'lastname' => $order['delivery_lastname'],
-    //         'company' => $order['delivery_company'],
-    //         'street_address' => $order['delivery_street_address'],
-    //         'suburb' => $order['delivery_suburb'],
-    //         'city' => $order['delivery_city'],
-    //         'postcode' => $order['delivery_postcode'],
-    //         'state' => $order['delivery_state'],
-    //         'country' => $order['delivery_country'],
-    //         'format_id' => $order['delivery_address_format_id']
-    //     );
-
-    //     if (empty($this->delivery['name']) && empty($this->delivery['street_address'])) {
-    //         $this->delivery = false;
-    //     }
-
-    //     $this->billing = array('name' => $order['billing_name'],
-    //         'firstname' => $order['billing_firstname'],
-    //         'lastname' => $order['billing_lastname'],
-    //         'company' => $order['billing_company'],
-    //         'street_address' => $order['billing_street_address'],
-    //         'suburb' => $order['billing_suburb'],
-    //         'city' => $order['billing_city'],
-    //         'postcode' => $order['billing_postcode'],
-    //         'state' => $order['billing_state'],
-    //         'country' => $order['billing_country'],
-    //         'format_id' => $order['billing_address_format_id']
-    //     );
-
-    //     $index = 0;
-    //     $orders_products_query = xtc_db_query("SELECT * FROM " . TABLE_ORDERS_PRODUCTS . " WHERE orders_id = '" . xtc_db_input($order_id) . "'");
-    //     while ($orders_products = xtc_db_fetch_array($orders_products_query)) {
-    //         $this->products[$index] = array('qty' => $orders_products['products_quantity'],
-    //             'id' => $orders_products['products_id'],
-    //             'name' => $orders_products['products_name'],
-    //             'model' => $orders_products['products_model'],
-    //             'tax' => $orders_products['products_tax'],
-    //             'price'=>$orders_products['products_price'],
-    //             'shipping_time'=>$orders_products['products_shipping_time'],
-    //             'final_price' => $orders_products['final_price']
-    //         );
-
-    //         $subindex = 0;
-    //         $attributesQuery = xtc_db_query("SELECT * FROM " . TABLE_ORDERS_PRODUCTS_ATTRIBUTES . " WHERE orders_id = '" . xtc_db_input($order_id) . "' AND orders_products_id = '" . $orders_products['orders_products_id'] . "'");
-    //         if (xtc_db_num_rows($attributesQuery)) {
-    //             while ($attributes = xtc_db_fetch_array($attributesQuery)) {
-    //                 $this->products[$index]['attributes'][$subindex] = array('option' => $attributes['products_options'],
-    //                     'value' => $attributes['products_options_values'],
-    //                     'prefix' => $attributes['price_prefix'],
-    //                     'price' => $attributes['options_values_price']
-    //                 );
-
-    //                 $subindex++;
-    //             }
-    //         }
-
-    //         $this->info['tax_groups']["{$this->products[$index]['tax']}"] = '1';
-
-    //         $index++;
-    //     }
-    // }
-
-    // function getOrderData($oID) {
-    //     global $xtPrice;
-
-    //     require_once DIR_FS_INC . 'xtc_get_attributes_model.inc.php';
-
-    //     $order_query = "SELECT
-    //                 products_id,
-    //                 orders_products_id,
-    //                 products_model,
-    //                 products_name,
-    //                 final_price,
-    //                   products_shipping_time,
-    //                 products_quantity
-    //                 FROM ".TABLE_ORDERS_PRODUCTS."
-    //                 WHERE orders_id='".(int) $oID."'";
-    //     $order_data = array ();
-    //     $order_query = xtc_db_query($order_query);
-    //     while ($order_data_values = xtc_db_fetch_array($order_query)) {
-    //         $attributesQuery = "SELECT
-    //                   products_options,
-    //                   products_options_values,
-    //                   price_prefix,
-    //                   options_values_price
-    //                   FROM ".TABLE_ORDERS_PRODUCTS_ATTRIBUTES."
-    //                   WHERE orders_products_id='".$order_data_values['orders_products_id']."'";
-    //         $attributes_data = '';
-    //         $attributes_model = '';
-    //         $attributesQuery = xtc_db_query($attributesQuery);
-    //         while ($attributes_data_values = xtc_db_fetch_array($attributesQuery)) {
-    //             $attributes_data .= '<br />'.$attributes_data_values['products_options'].':'.$attributes_data_values['products_options_values'];
-    //             $attributes_model .= '<br />'.xtc_get_attributes_model($order_data_values['products_id'], $attributes_data_values['products_options_values'],$attributes_data_values['products_options']);
-    //         }
-            
-    //         $order_data[] = array ('PRODUCTS_MODEL' => $order_data_values['products_model'], 'PRODUCTS_NAME' => $order_data_values['products_name'],'PRODUCTS_SHIPPING_TIME' => $order_data_values['products_shipping_time'], 'PRODUCTS_ATTRIBUTES' => $attributes_data, 'PRODUCTS_ATTRIBUTES_MODEL' => $attributes_model, 'PRODUCTS_PRICE' => $xtPrice->xtcFormat($order_data_values['final_price'], true),'PRODUCTS_SINGLE_PRICE' => $xtPrice->xtcFormat($order_data_values['final_price']/$order_data_values['products_quantity'], true), 'PRODUCTS_QTY' => $order_data_values['products_quantity']);
-
-    //     }
-
-    //     return $order_data;
-    // }
-
-    // function getTotalData($oID) {
-    //     global $xtPrice,$db;
-
-    //     // get order_total data
-    //     $oder_total_query = "SELECT
-    //             title,
-    //             text,
-    //                     class,
-    //                     value,
-    //             sort_order
-    //             FROM ".TABLE_ORDERS_TOTAL."
-    //             WHERE orders_id='".(int) $oID."'
-    //             ORDER BY sort_order ASC";
-
-    //     $order_total = array ();
-    //     $oder_total_query = xtc_db_query($oder_total_query);
-    //     while ($oder_total_values = xtc_db_fetch_array($oder_total_query)) {
-
-
-    //         $order_total[] = array ('TITLE' => $oder_total_values['title'], 'CLASS' => $oder_total_values['class'], 'VALUE' => $oder_total_values['value'], 'TEXT' => $oder_total_values['text']);
-    //         if ($oder_total_values['class'] = 'ot_total')
-    //             $total = $oder_total_values['value'];
-
-    //     }
-
-    //     return array('data'=>$order_total,'total'=>$total);
-    // }
 
     private function getCustomerAddress($customerId)
     {
@@ -542,4 +347,199 @@ class Order
             }
         }
     }
+
+    // function query($order_id) {
+
+    //     $order_id = xtc_db_prepare_input($order_id);
+
+    //     $order_query = xtc_db_query("SELECT
+    //                                 *
+    //                                 FROM " . TABLE_ORDERS . " WHERE
+    //                                 orders_id = '" . xtc_db_input($order_id) . "'");
+
+    //     $order = xtc_db_fetch_array($order_query);
+
+    //     $totals_query = xtc_db_query("SELECT * FROM " . TABLE_ORDERS_TOTAL . " WHERE orders_id = '" . xtc_db_input($order_id) . "' order by sort_order");
+    //     while ($totals = xtc_db_fetch_array($totals_query)) {
+    //         $this->totals[] = array('title' => $totals['title'],
+    //         'text' =>$totals['text'],
+    //         'value'=>$totals['value']);
+    //     }
+
+    //     $order_total_query = xtc_db_query("SELECT text FROM " . TABLE_ORDERS_TOTAL . " WHERE orders_id = '" . $order_id . "' AND class = 'ot_total'");
+    //     $order_total = xtc_db_fetch_array($order_total_query);
+
+    //     $shipping_method_query = xtc_db_query("SELECT title FROM " . TABLE_ORDERS_TOTAL . " WHERE orders_id = '" . $order_id . "' AND class = 'ot_shipping'");
+    //     $shipping_method = xtc_db_fetch_array($shipping_method_query);
+
+    //     $order_status_query = xtc_db_query("SELECT orders_status_name FROM " . TABLE_ORDERS_STATUS . " WHERE orders_status_id = '" . $order['orders_status'] . "' AND language_id = '" . $_SESSION['languages_id'] . "'");
+    //     $order_status = xtc_db_fetch_array($order_status_query);
+
+    //     $this->info = array('currency' => $order['currency'],
+    //         'currency_value' => $order['currency_value'],
+    //         'payment_method' => $order['payment_method'],
+    //         'cc_type' => $order['cc_type'],
+    //         'cc_owner' => $order['cc_owner'],
+    //         'cc_number' => $order['cc_number'],
+    //         'cc_expires' => $order['cc_expires'],
+    //         // BMC CC Mod Start
+    //         'cc_start' => $order['cc_start'],
+    //         'cc_issue' => $order['cc_issue'],
+    //         'cc_cvv' => $order['cc_cvv'],
+    //         // BMC CC Mod End
+    //         'date_purchased' => $order['date_purchased'],
+    //         'orders_status' => $order_status['orders_status_name'],
+    //         'last_modified' => $order['last_modified'],
+    //         'total' => strip_tags($order_total['text']),
+    //         'shipping_method' => ((substr($shipping_method['title'], -1) == ':') ? substr(strip_tags($shipping_method['title']), 0, -1) : strip_tags($shipping_method['title'])),
+    //         'comments' => $order['comments']
+    //     );
+
+    //     $this->customer = array('id' => $order['customers_id'],
+    //         'name' => $order['customers_name'],
+    //         'firstname' => $order['customers_firstname'],
+    //         'lastname' => $order['customers_lastname'],
+    //         'csID' => $order['customers_cid'],
+    //         'company' => $order['customers_company'],
+    //         'street_address' => $order['customers_street_address'],
+    //         'suburb' => $order['customers_suburb'],
+    //         'city' => $order['customers_city'],
+    //         'postcode' => $order['customers_postcode'],
+    //         'state' => $order['customers_state'],
+    //         'country' => $order['customers_country'],
+    //         'format_id' => $order['customers_address_format_id'],
+    //         'telephone' => $order['customers_telephone'],
+    //         'email_address' => $order['customers_email_address']
+    //     );
+
+    //     $this->delivery = array('name' => $order['delivery_name'],
+    //         'firstname' => $order['delivery_firstname'],
+    //         'lastname' => $order['delivery_lastname'],
+    //         'company' => $order['delivery_company'],
+    //         'street_address' => $order['delivery_street_address'],
+    //         'suburb' => $order['delivery_suburb'],
+    //         'city' => $order['delivery_city'],
+    //         'postcode' => $order['delivery_postcode'],
+    //         'state' => $order['delivery_state'],
+    //         'country' => $order['delivery_country'],
+    //         'format_id' => $order['delivery_address_format_id']
+    //     );
+
+    //     if (empty($this->delivery['name']) && empty($this->delivery['street_address'])) {
+    //         $this->delivery = false;
+    //     }
+
+    //     $this->billing = array('name' => $order['billing_name'],
+    //         'firstname' => $order['billing_firstname'],
+    //         'lastname' => $order['billing_lastname'],
+    //         'company' => $order['billing_company'],
+    //         'street_address' => $order['billing_street_address'],
+    //         'suburb' => $order['billing_suburb'],
+    //         'city' => $order['billing_city'],
+    //         'postcode' => $order['billing_postcode'],
+    //         'state' => $order['billing_state'],
+    //         'country' => $order['billing_country'],
+    //         'format_id' => $order['billing_address_format_id']
+    //     );
+
+    //     $index = 0;
+    //     $orders_products_query = xtc_db_query("SELECT * FROM " . TABLE_ORDERS_PRODUCTS . " WHERE orders_id = '" . xtc_db_input($order_id) . "'");
+    //     while ($orders_products = xtc_db_fetch_array($orders_products_query)) {
+    //         $this->products[$index] = array('qty' => $orders_products['products_quantity'],
+    //             'id' => $orders_products['products_id'],
+    //             'name' => $orders_products['products_name'],
+    //             'model' => $orders_products['products_model'],
+    //             'tax' => $orders_products['products_tax'],
+    //             'price'=>$orders_products['products_price'],
+    //             'shipping_time'=>$orders_products['products_shipping_time'],
+    //             'final_price' => $orders_products['final_price']
+    //         );
+
+    //         $subindex = 0;
+    //         $attributesQuery = xtc_db_query("SELECT * FROM " . TABLE_ORDERS_PRODUCTS_ATTRIBUTES . " WHERE orders_id = '" . xtc_db_input($order_id) . "' AND orders_products_id = '" . $orders_products['orders_products_id'] . "'");
+    //         if (xtc_db_num_rows($attributesQuery)) {
+    //             while ($attributes = xtc_db_fetch_array($attributesQuery)) {
+    //                 $this->products[$index]['attributes'][$subindex] = array('option' => $attributes['products_options'],
+    //                     'value' => $attributes['products_options_values'],
+    //                     'prefix' => $attributes['price_prefix'],
+    //                     'price' => $attributes['options_values_price']
+    //                 );
+
+    //                 $subindex++;
+    //             }
+    //         }
+
+    //         $this->info['tax_groups']["{$this->products[$index]['tax']}"] = '1';
+
+    //         $index++;
+    //     }
+    // }
+
+    // function getOrderData($oID) {
+    //     global $xtPrice;
+
+    //     require_once DIR_FS_INC . 'xtc_get_attributes_model.inc.php';
+
+    //     $order_query = "SELECT
+    //                 products_id,
+    //                 orders_products_id,
+    //                 products_model,
+    //                 products_name,
+    //                 final_price,
+    //                   products_shipping_time,
+    //                 products_quantity
+    //                 FROM ".TABLE_ORDERS_PRODUCTS."
+    //                 WHERE orders_id='".(int) $oID."'";
+    //     $order_data = array ();
+    //     $order_query = xtc_db_query($order_query);
+    //     while ($order_data_values = xtc_db_fetch_array($order_query)) {
+    //         $attributesQuery = "SELECT
+    //                   products_options,
+    //                   products_options_values,
+    //                   price_prefix,
+    //                   options_values_price
+    //                   FROM ".TABLE_ORDERS_PRODUCTS_ATTRIBUTES."
+    //                   WHERE orders_products_id='".$order_data_values['orders_products_id']."'";
+    //         $attributes_data = '';
+    //         $attributes_model = '';
+    //         $attributesQuery = xtc_db_query($attributesQuery);
+    //         while ($attributes_data_values = xtc_db_fetch_array($attributesQuery)) {
+    //             $attributes_data .= '<br />'.$attributes_data_values['products_options'].':'.$attributes_data_values['products_options_values'];
+    //             $attributes_model .= '<br />'.xtc_get_attributes_model($order_data_values['products_id'], $attributes_data_values['products_options_values'],$attributes_data_values['products_options']);
+    //         }
+            
+    //         $order_data[] = array ('PRODUCTS_MODEL' => $order_data_values['products_model'], 'PRODUCTS_NAME' => $order_data_values['products_name'],'PRODUCTS_SHIPPING_TIME' => $order_data_values['products_shipping_time'], 'PRODUCTS_ATTRIBUTES' => $attributes_data, 'PRODUCTS_ATTRIBUTES_MODEL' => $attributes_model, 'PRODUCTS_PRICE' => $xtPrice->xtcFormat($order_data_values['final_price'], true),'PRODUCTS_SINGLE_PRICE' => $xtPrice->xtcFormat($order_data_values['final_price']/$order_data_values['products_quantity'], true), 'PRODUCTS_QTY' => $order_data_values['products_quantity']);
+
+    //     }
+
+    //     return $order_data;
+    // }
+
+    // function getTotalData($oID) {
+    //     global $xtPrice,$db;
+
+    //     // get order_total data
+    //     $oder_total_query = "SELECT
+    //             title,
+    //             text,
+    //                     class,
+    //                     value,
+    //             sort_order
+    //             FROM ".TABLE_ORDERS_TOTAL."
+    //             WHERE orders_id='".(int) $oID."'
+    //             ORDER BY sort_order ASC";
+
+    //     $order_total = array ();
+    //     $oder_total_query = xtc_db_query($oder_total_query);
+    //     while ($oder_total_values = xtc_db_fetch_array($oder_total_query)) {
+
+
+    //         $order_total[] = array ('TITLE' => $oder_total_values['title'], 'CLASS' => $oder_total_values['class'], 'VALUE' => $oder_total_values['value'], 'TEXT' => $oder_total_values['text']);
+    //         if ($oder_total_values['class'] = 'ot_total')
+    //             $total = $oder_total_values['value'];
+
+    //     }
+
+    //     return array('data'=>$order_total,'total'=>$total);
+    // }
 }
