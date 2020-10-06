@@ -28,6 +28,10 @@ lane@ifd.com    www.osc-modsquad.com / www.ifd.com
 
 use ModifiedCommunityModules\RecoverCartSales\Classes\Order;
 use currencies as Currencies;
+use main as Main;
+use xtcPrice as XtcPrice;
+use order_total as OrderTotal;
+use shipping as Shipping;
 
 require_once 'includes/application_top.php';
 
@@ -52,12 +56,12 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
     $customerId = (int) $_GET['customer_id'];
     $_SESSION['saved_cart'] = $_SESSION['cart'];
 
-    $main = new main();
+    $main = new Main();
 
     $statusQuery = xtc_db_query("SELECT c.customers_status, cs.customers_status_name,  cs.customers_status_image, cs.customers_status_ot_discount_flag, cs.customers_status_ot_discount FROM " . TABLE_CUSTOMERS . " c, " . TABLE_CUSTOMERS_STATUS . " cs WHERE c.customers_status=cs.customers_status_id AND c.customers_id=" . $customerId . " AND cs.language_id=" . (int)$_SESSION['languages_id']);
     $status = xtc_db_fetch_array($statusQuery);
 
-    $xtPrice = new xtcPrice(DEFAULT_CURRENCY, $status['customers_status']);
+    $xtPrice = new XtcPrice(DEFAULT_CURRENCY, $status['customers_status']);
     $rcsShoppingCart = new rcs_shopping_cart();
     $_SESSION['cart'] = new shoppingCart();
 
@@ -80,7 +84,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
     $shipping_num_boxes = 1;
     $_SESSION['shipping'] = DEFAULT_RCS_SHIPPING;
 
-    $shippingModules = new shipping($_SESSION['shipping']);
+    $shippingModules = new Shipping($_SESSION['shipping']);
 
     list ($module, $method) = explode('_', $_SESSION['shipping']);
     if (is_object($$module)) {
@@ -100,7 +104,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
     // load the before_process function from the payment modules
     //$paymentModules->before_process();
 
-    $orderTotalModules = new order_total();
+    $orderTotalModules = new OrderTotal();
     //echo "<pre>"; print_r($order); exit;
     $order_totals = $orderTotalModules->process();
 
