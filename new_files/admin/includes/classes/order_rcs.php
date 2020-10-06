@@ -450,15 +450,16 @@ class Order
             if ($product['attributes']) {
                 $subindex = 0;
                 reset($product['attributes']);
-                while (list($option, $value) = each($product['attributes'])) {
-                    $attributesQuery = xtc_db_query("SELECT popt.products_options_name, poval.products_options_values_name, pa.options_values_price, pa.price_prefix FROM " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa WHERE pa.products_id = '" . $product['id'] . "' AND pa.options_id = '" . $option . "' AND pa.options_id = popt.products_options_id AND pa.options_values_id = '" . $value . "' AND pa.options_values_id = poval.products_options_values_id AND popt.language_id = '" . $_SESSION['languages_id'] . "' AND poval.language_id = '" . $_SESSION['languages_id'] . "'");
+                while (list($optionId, $optionValueId) = each($product['attributes'])) {
+                    
+                    $attributesQuery = xtc_db_query("SELECT popt.products_options_name, poval.products_options_values_name, pa.options_values_price, pa.price_prefix FROM " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa WHERE pa.products_id = '" . $product['id'] . "' AND pa.options_id = '" . $optionId . "' AND pa.options_id = popt.products_options_id AND pa.options_values_id = '" . $optionValueId . "' AND pa.options_values_id = poval.products_options_values_id AND popt.language_id = '" . $_SESSION['languages_id'] . "' AND poval.language_id = '" . $_SESSION['languages_id'] . "'");
                     $attributes = xtc_db_fetch_array($attributesQuery);
 
                     $this->products[$index]['attributes'][$subindex] = [
                         'option' => $attributes['products_options_name'],
                         'value' => $attributes['products_options_values_name'],
-                        'option_id' => $option,
-                        'value_id' => $value,
+                        'option_id' => $optionId,
+                        'value_id' => $optionValueId,
                         'prefix' => $attributes['price_prefix'],
                         'price' => $attributes['options_values_price']
                     ];
