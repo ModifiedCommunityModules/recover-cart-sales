@@ -24,6 +24,9 @@ class McmRecoverCartSales extends StdModule
     public function install()
     {
         parent::install();
+
+        $this->setAdminAccess('mcm_recover_cart_sales');
+        $this->setAdminAccess('mcm_recover_cart_sales_stats');
     }
 
     public function remove()
