@@ -84,7 +84,7 @@ require DIR_WS_INCLUDES . 'head.php';
                                         $ndate = seadate($tdate);
                                     ?>
                                     
-                                    <?php echo xtc_draw_form('stats_recover_cart_sales', 'stats_recover_cart_sales.php', '', 'post', '') . PHP_EOL; ?>
+                                    <?php echo xtc_draw_form('mcm_recover_cart_sales_stats', 'mcm_recover_cart_sales_stats.php', '', 'post', '') . PHP_EOL; ?>
                                         <table align="right" width="100%">
                                             <tr class="dataTableContent" align="right">
                                                 <td nowrap>
