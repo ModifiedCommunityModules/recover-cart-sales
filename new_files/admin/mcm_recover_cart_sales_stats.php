@@ -77,7 +77,7 @@ require DIR_WS_INCLUDES . 'head.php';
                                 <td class="pageHeading" align="left"><?php echo HEADING_TITLE; ?></td>
                                 <td class="pageHeading" align="right">
                                     <?php
-                                        $tdate = isset($_POST['tdate']) ? $_POST['tdate'] : '';
+                                        $tdate = $_POST['tdate'] ?? '';
                                         if ($tdate == '') {
                                             $tdate = RCS_REPORT_DAYS;
                                         }
