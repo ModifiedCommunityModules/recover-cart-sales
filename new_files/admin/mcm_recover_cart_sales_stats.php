@@ -18,8 +18,8 @@ lane@ifd.com	www.osc-modsquad.com / www.ifd.com
 */
 use currencies as Currencies;
 
-require 'includes/application_top.php';
-require DIR_WS_CLASSES . 'currencies.php';
+require_once 'includes/application_top.php';
+require_once DIR_WS_CLASSES . 'currencies.php';
 
 $currencies = new Currencies();
 
@@ -28,17 +28,20 @@ function xtc_date_order_stat($rawDate)
     if ($rawDate == '') {
         return false;
     }
+
     $year = substr($rawDate, 2, 2);
-    $month = (int)substr($rawDate, 4, 2);
-    $day = (int)substr($rawDate, 6, 2);
+    $month = (int) substr($rawDate, 4, 2);
+    $day = (int) substr($rawDate, 6, 2);
+    
     return date(DATE_FORMAT, mktime(0, 0, 0, $month, $day, $year));
 }
 
 function seadate($day)
 {
     $ts = date("U");
-    $rawTime = strtotime("-".$day." days", $ts);
+    $rawTime = strtotime("-" . $day . " days", $ts);
     $ndate = date("Ymd", $rawTime);
+    
     return $ndate;
 }
 
@@ -74,7 +77,7 @@ require DIR_WS_INCLUDES . 'head.php';
                                 <td class="pageHeading" align="left"><?php echo HEADING_TITLE; ?></td>
                                 <td class="pageHeading" align="right">
                                     <?php
-                                        $tdate = isset($_POST['tdate'])?$_POST['tdate']:'';
+                                        $tdate = isset($_POST['tdate']) ? $_POST['tdate'] : '';
                                         if ($tdate == '') {
                                             $tdate = RCS_REPORT_DAYS;
                                         }
@@ -103,7 +106,7 @@ require DIR_WS_INCLUDES . 'head.php';
                     $custlist = '';
 
                     // Query database for abandoned carts within our timeframe
-                    $conquery = xtc_db_query("select * from ". TABLE_SCART ." where dateadded >= '".$ndate."' order by dateadded DESC" );
+                    $conquery = xtc_db_query("select * from " . TABLE_SCART . " where dateadded >= '" . $ndate . "' order by dateadded DESC");
                     $rc_cnt = xtc_db_num_rows($conquery);
 
                     // Loop though each one and process it
@@ -111,7 +114,7 @@ require DIR_WS_INCLUDES . 'head.php';
                         $inrec = xtc_db_fetch_array($conquery);
                         $cid = $inrec['customers_id'];
                         // we have to get the customer data in order to better locate matching orders
-                        $query1 = xtc_db_query("select c.customers_firstname, c.customers_lastname, c.customers_email_address from ".TABLE_CUSTOMERS." c where c.customers_id ='".$cid."'");
+                        $query1 = xtc_db_query("select c.customers_firstname, c.customers_lastname, c.customers_email_address from " . TABLE_CUSTOMERS . " c where c.customers_id ='" . $cid . "'");
                         $crec = xtc_db_fetch_array($query1);
 
                         // Query DB for the FIRST order that matches this customer ID and came after the abandoned cart
@@ -120,48 +123,48 @@ require DIR_WS_INCLUDES . 'head.php';
                         $orders = xtc_db_fetch_array($orders_query);
 
                         // If we got a match, create the table entry to display the information
-                        if( $orders )
-                        {
+                        if ($orders) {
                             $custknt++;
                             $total_recovered += $orders['value'];
                             $custknt % 2 ? $class = RCS_REPORT_EVEN_STYLE : $class = RCS_REPORT_ODD_STYLE;
-                            $custlist .= "<tr class=".$class.">".
-                            "<td class=datatablecontent align=right>".$inrec['scartid']."</td>".
-                            "<td>&nbsp;</td>".
-                            "<td class=datatablecontent align=center>".xtc_date_order_stat($inrec['dateadded'])."</td>".
-                            "<td>&nbsp;</td>".
-                            "<td class=datatablecontent><a href='" . xtc_href_link(FILENAME_CUSTOMERS, 'search=' . $crec['customers_lastname'], 'NONSSL') . "'>".$crec['customers_firstname']." ".$crec['customers_lastname']."</a></td>".
-                            "<td class=datatablecontent>".xtc_date_short($orders['date_purchased'])."</td>".
-                            "<td class=datatablecontent align=center>".$orders['orders_status_name']."</td>".
-                            "<td class=datatablecontent align=right>".strip_tags($orders['order_total'])."</td>".
-                            "<td>&nbsp;</td>".
-                            "</tr>";
+                            $custlist .= "<tr class=" . $class . ">" .
+                                "<td class=datatablecontent align=right>" . $inrec['scartid'] . "</td>".
+                                "<td>&nbsp;</td>" .
+                                "<td class=datatablecontent align=center>" . xtc_date_order_stat($inrec['dateadded']) . "</td>" .
+                                "<td>&nbsp;</td>" .
+                                "<td class=datatablecontent><a href='" . xtc_href_link(FILENAME_CUSTOMERS, 'search=' . $crec['customers_lastname'], 'NONSSL') . "'>" . $crec['customers_firstname'] . " " . $crec['customers_lastname'] . "</a></td>" .
+                                "<td class=datatablecontent>" . xtc_date_short($orders['date_purchased']) . "</td>" .
+                                "<td class=datatablecontent align=center>" . $orders['orders_status_name'] . "</td>" .
+                                "<td class=datatablecontent align=right>" . strip_tags($orders['order_total']) . "</td>" .
+                                "<td>&nbsp;</td>" .
+                                "</tr>";
                         }
                     }
-                    $cline =  "<tr><td height=\"15\" COLSPAN=8> </td></tr>".
-                    "<tr>".
-                    "<td align=right COLSPAN=3 class=main><b>". TOTAL_RECORDS ."</b></td>".
-                    "<td>&nbsp;</td>".
-                    "<td align=left COLSPAN=5 class=main>". $rc_cnt ."</td>".
-                    "</tr>".
-                    "<tr>".
-                    "<td align=right COLSPAN=3 class=main><b>". TOTAL_SALES ."</b></td>".
-                    "<td>&nbsp;</td>".
-                    "<td align=left COLSPAN=5 class=main>". $custknt . TOTAL_SALES_EXPLANATION ." </td>".
-                    "</tr>".
-                    "<tr><td height=\"12\" COLSPAN=6> </td></tr>";
+
+                    $cline =  "<tr><td height=\"15\" COLSPAN=8> </td></tr>" .
+                        "<tr>" .
+                        "<td align=right COLSPAN=3 class=main><b>" . TOTAL_RECORDS . "</b></td>".
+                        "<td>&nbsp;</td>".
+                        "<td align=left COLSPAN=5 class=main>" . $rc_cnt . "</td>".
+                        "</tr>".
+                        "<tr>".
+                        "<td align=right COLSPAN=3 class=main><b>" . TOTAL_SALES . "</b></td>" .
+                        "<td>&nbsp;</td>" .
+                        "<td align=left COLSPAN=5 class=main>". $custknt . TOTAL_SALES_EXPLANATION . " </td>" .
+                        "</tr>" .
+                        "<tr><td height=\"12\" COLSPAN=6> </td></tr>";
                     echo $cline;
                 ?>
 
                 <tr class="dataTableHeadingRow">	<!-- Header -->
-                    <td width="7%" class="dataTableHeadingContent" align="right"><?php echo TABLE_HEADING_SCART_ID ?></td>
+                    <td width="7%" class="dataTableHeadingContent" align="right"><?php echo TABLE_HEADING_SCART_ID; ?></td>
                     <td width="1%" class="dataTableHeadingContent">&nbsp;</td>
-                    <td width="10%" class="dataTableHeadingContent" align="center"><?php echo TABLE_HEADING_SCART_DATE ?></td>
+                    <td width="10%" class="dataTableHeadingContent" align="center"><?php echo TABLE_HEADING_SCART_DATE; ?></td>
                     <td width="1%" class="dataTableHeadingContent">&nbsp;</td>
-                    <td width="50%" class="dataTableHeadingContent"><?php echo TABLE_HEADING_CUSTOMER ?></td>
-                    <td width="10%" class="dataTableHeadingContent"><?php echo TABLE_HEADING_ORDER_DATE ?></td>
-                    <td width="10%" class="dataTableHeadingContent" align="center"><?php echo TABLE_HEADING_ORDER_STATUS ?></td>
-                    <td width="10%" class="dataTableHeadingContent" align="right"><?php echo TABLE_HEADING_ORDER_AMOUNT ?></td>
+                    <td width="50%" class="dataTableHeadingContent"><?php echo TABLE_HEADING_CUSTOMER; ?></td>
+                    <td width="10%" class="dataTableHeadingContent"><?php echo TABLE_HEADING_ORDER_DATE; ?></td>
+                    <td width="10%" class="dataTableHeadingContent" align="center"><?php echo TABLE_HEADING_ORDER_STATUS; ?></td>
+                    <td width="10%" class="dataTableHeadingContent" align="right"><?php echo TABLE_HEADING_ORDER_AMOUNT; ?></td>
                     <td width="1%" class="dataTableHeadingContent">&nbsp;</td>
                 </tr>
                 
@@ -172,9 +175,9 @@ require DIR_WS_INCLUDES . 'head.php';
                 </tr>
             
                 <tr class="main">
-                    <td align="right" valign="center" colspan=4 class="main"><b><?php echo TOTAL_RECOVERED ?>&nbsp;</b></font></td>
-                    <td align=left colspan=3 class="main"><b><?php echo $rc_cnt ? xtc_round(($custknt / $rc_cnt) * 100, 2) : 0 ?>%</b></font></td>
-                    <td class="main" align="right"><b><?php echo $currencies->format(xtc_round($total_recovered, 2)) ?></b></font></td>
+                    <td align="right" valign="center" colspan=4 class="main"><b><?php echo TOTAL_RECOVERED; ?>&nbsp;</b></font></td>
+                    <td align=left colspan=3 class="main"><b><?php echo $rc_cnt ? xtc_round(($custknt / $rc_cnt) * 100, 2) : 0; ?>%</b></font></td>
+                    <td class="main" align="right"><b><?php echo $currencies->format(xtc_round($total_recovered, 2)); ?></b></font></td>
                     <td class="main">&nbsp;</td>
                 </tr>
                 Done!
