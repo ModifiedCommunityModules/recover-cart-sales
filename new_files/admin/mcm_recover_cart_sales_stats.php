@@ -106,7 +106,7 @@ require DIR_WS_INCLUDES . 'head.php';
                     $custlist = '';
 
                     // Query database for abandoned carts within our timeframe
-                    $conquery = xtc_db_query("select * from " . TABLE_SCART . " where dateadded >= '" . $ndate . "' order by dateadded DESC");
+                    $conquery = xtc_db_query("SELECT * FROM " . TABLE_SCART . " WHERE dateadded >= '" . $ndate . "' ORDER BY dateadded DESC");
                     $rc_cnt = xtc_db_num_rows($conquery);
 
                     // Loop though each one and process it
@@ -114,11 +114,11 @@ require DIR_WS_INCLUDES . 'head.php';
                         $inrec = xtc_db_fetch_array($conquery);
                         $cid = $inrec['customers_id'];
                         // we have to get the customer data in order to better locate matching orders
-                        $query1 = xtc_db_query("select c.customers_firstname, c.customers_lastname, c.customers_email_address from " . TABLE_CUSTOMERS . " c where c.customers_id ='" . $cid . "'");
+                        $query1 = xtc_db_query("SELECT c.customers_firstname, c.customers_lastname, c.customers_email_address FROM " . TABLE_CUSTOMERS . " c WHERE c.customers_id ='" . $cid . "'");
                         $crec = xtc_db_fetch_array($query1);
 
                         // Query DB for the FIRST order that matches this customer ID and came after the abandoned cart
-                        $orders_query_raw = "select o.orders_id, o.customers_id, o.date_purchased, s.orders_status_name, ot.text as order_total, ot.value from " . TABLE_ORDERS . " o left join " . TABLE_ORDERS_TOTAL . " ot on (o.orders_id = ot.orders_id), " . TABLE_ORDERS_STATUS . " s where (o.customers_id = " . (int)$cid . ' OR o.customers_email_address like "' . $crec['customers_email_address'] .'" OR o.customers_name like "' . $crec['customers_firstname'] . ' ' . $crec['customers_lastname'] . '") and o.orders_status >= ' . RCS_PENDING_SALE_STATUS . ' and s.orders_status_id = o.orders_status and o.date_purchased >= "' . $inrec['dateadded'] . '" and ot.class = "ot_total"';
+                        $orders_query_raw = "SELECT o.orders_id, o.customers_id, o.date_purchased, s.orders_status_name, ot.text as order_total, ot.value FROM " . TABLE_ORDERS . " o LEFT JOIN " . TABLE_ORDERS_TOTAL . " ot ON (o.orders_id = ot.orders_id), " . TABLE_ORDERS_STATUS . " s WHERE (o.customers_id = " . (int)$cid . ' OR o.customers_email_address like "' . $crec['customers_email_address'] .'" OR o.customers_name like "' . $crec['customers_firstname'] . ' ' . $crec['customers_lastname'] . '") AND o.orders_status >= ' . RCS_PENDING_SALE_STATUS . ' AND s.orders_status_id = o.orders_status AND o.date_purchased >= "' . $inrec['dateadded'] . '" AND ot.class = "ot_total"';
                         $orders_query = xtc_db_query($orders_query_raw);
                         $orders = xtc_db_fetch_array($orders_query);
 
