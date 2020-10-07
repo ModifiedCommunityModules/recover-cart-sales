@@ -101,38 +101,40 @@ require DIR_WS_INCLUDES . 'head.php';
 
                 <?php
                     // Init vars
-                    $custknt = 0;
-                    $total_recovered = 0;
-                    $custlist = '';
+                    $customerCount = 0;
+                    $totalRecovered = 0;
+                    $customerList = '';
 
                     // Query database for abandoned carts within our timeframe
                     $conquery = xtc_db_query("SELECT * FROM " . TABLE_SCART . " WHERE dateadded >= '" . $ndate . "' ORDER BY dateadded DESC");
-                    $rc_cnt = xtc_db_num_rows($conquery);
+                    $recoverdCount = xtc_db_num_rows($conquery);
 
                     // Loop though each one and process it
-                    for ($i = 0; $i < $rc_cnt; $i++) {
-                        $inrec = xtc_db_fetch_array($conquery);
-                        $cid = $inrec['customers_id'];
+                    for ($i = 0; $i < $recoverdCount; $i++) {
+                        $row = xtc_db_fetch_array($conquery);
+                        $customerId = $row['customers_id'];
+                        
                         // we have to get the customer data in order to better locate matching orders
-                        $query1 = xtc_db_query("SELECT c.customers_firstname, c.customers_lastname, c.customers_email_address FROM " . TABLE_CUSTOMERS . " c WHERE c.customers_id ='" . $cid . "'");
-                        $crec = xtc_db_fetch_array($query1);
+                        $query1 = xtc_db_query("SELECT c.customers_firstname, c.customers_lastname, c.customers_email_address FROM " . TABLE_CUSTOMERS . " c WHERE c.customers_id ='" . $customerId . "'");
+                        $customerRecord = xtc_db_fetch_array($query1);
 
                         // Query DB for the FIRST order that matches this customer ID and came after the abandoned cart
-                        $orders_query_raw = "SELECT o.orders_id, o.customers_id, o.date_purchased, s.orders_status_name, ot.text as order_total, ot.value FROM " . TABLE_ORDERS . " o LEFT JOIN " . TABLE_ORDERS_TOTAL . " ot ON (o.orders_id = ot.orders_id), " . TABLE_ORDERS_STATUS . " s WHERE (o.customers_id = " . (int)$cid . ' OR o.customers_email_address like "' . $crec['customers_email_address'] .'" OR o.customers_name like "' . $crec['customers_firstname'] . ' ' . $crec['customers_lastname'] . '") AND o.orders_status >= ' . RCS_PENDING_SALE_STATUS . ' AND s.orders_status_id = o.orders_status AND o.date_purchased >= "' . $inrec['dateadded'] . '" AND ot.class = "ot_total"';
-                        $orders_query = xtc_db_query($orders_query_raw);
-                        $orders = xtc_db_fetch_array($orders_query);
+                        $ordersQueryRaw = "SELECT o.orders_id, o.customers_id, o.date_purchased, s.orders_status_name, ot.text as order_total, ot.value FROM " . TABLE_ORDERS . " o LEFT JOIN " . TABLE_ORDERS_TOTAL . " ot ON (o.orders_id = ot.orders_id), " . TABLE_ORDERS_STATUS . " s WHERE (o.customers_id = " . (int) $customerId . ' OR o.customers_email_address like "' . $customerRecord['customers_email_address'] .'" OR o.customers_name like "' . $customerRecord['customers_firstname'] . ' ' . $customerRecord['customers_lastname'] . '") AND o.orders_status >= ' . RCS_PENDING_SALE_STATUS . ' AND s.orders_status_id = o.orders_status AND o.date_purchased >= "' . $row['dateadded'] . '" AND ot.class = "ot_total"';
+                        
+                        $ordersQuery = xtc_db_query($ordersQueryRaw);
+                        $orders = xtc_db_fetch_array($ordersQuery);
 
                         // If we got a match, create the table entry to display the information
                         if ($orders) {
-                            $custknt++;
-                            $total_recovered += $orders['value'];
-                            $custknt % 2 ? $class = RCS_REPORT_EVEN_STYLE : $class = RCS_REPORT_ODD_STYLE;
-                            $custlist .= '<tr class="' . $class . '">' .
-                                '<td class="datatablecontent" align="right">' . $inrec['scartid'] . '</td>'.
+                            $customerCount++;
+                            $totalRecovered += $orders['value'];
+                            $customerCount % 2 ? $class = RCS_REPORT_EVEN_STYLE : $class = RCS_REPORT_ODD_STYLE;
+                            $customerList .= '<tr class="' . $class . '">' .
+                                '<td class="datatablecontent" align="right">' . $row['scartid'] . '</td>'.
                                 '<td>&nbsp;</td>' .
-                                '<td class="datatablecontent" align="center">' . xtc_date_order_stat($inrec['dateadded']) . '</td>' .
+                                '<td class="datatablecontent" align="center">' . xtc_date_order_stat($row['dateadded']) . '</td>' .
                                 '<td>&nbsp;</td>' .
-                                '<td class="datatablecontent"><a href="' . xtc_href_link(FILENAME_CUSTOMERS, 'search=' . $crec['customers_lastname'], 'NONSSL') . '">' . $crec['customers_firstname'] . ' ' . $crec['customers_lastname'] . '</a></td>' .
+                                '<td class="datatablecontent"><a href="' . xtc_href_link(FILENAME_CUSTOMERS, 'search=' . $customerRecord['customers_lastname'], 'NONSSL') . '">' . $customerRecord['customers_firstname'] . ' ' . $customerRecord['customers_lastname'] . '</a></td>' .
                                 '<td class="datatablecontent">' . xtc_date_short($orders['date_purchased']) . '</td>' .
                                 '<td class="datatablecontent" align="center">' . $orders['orders_status_name'] . '</td>' .
                                 '<td class="datatablecontent" align="right">' . strip_tags($orders['order_total']) . '</td>' .
@@ -141,19 +143,19 @@ require DIR_WS_INCLUDES . 'head.php';
                         }
                     }
 
-                    $cline =  '<tr><td height="15" colspan="8"> </td></tr>' .
+                    $currentLine =  '<tr><td height="15" colspan="8"> </td></tr>' .
                         '<tr>' .
                         '<td align="right" colspan="3" class="main"><b>' . TOTAL_RECORDS . '</b></td>'.
                         '<td>&nbsp;</td>'.
-                        '<td align="left" colspan="5" class="main">' . $rc_cnt . '</td>'.
+                        '<td align="left" colspan="5" class="main">' . $recoverdCount . '</td>'.
                         '</tr>'.
                         '<tr>'.
                         '<td align="right" colspan="3" class="main"><b>' . TOTAL_SALES . '</b></td>' .
                         '<td>&nbsp;</td>' .
-                        '<td align="left" colspan="5" class="main">'. $custknt . TOTAL_SALES_EXPLANATION . '</td>' .
+                        '<td align="left" colspan="5" class="main">'. $customerCount . TOTAL_SALES_EXPLANATION . '</td>' .
                         '</tr>' .
                         '<tr><td height="12" colspan="6"> </td></tr>';
-                    echo $cline;
+                    echo $currentLine;
                 ?>
 
                 <tr class="dataTableHeadingRow">	<!-- Header -->
@@ -168,7 +170,7 @@ require DIR_WS_INCLUDES . 'head.php';
                     <td width="1%" class="dataTableHeadingContent">&nbsp;</td>
                 </tr>
                 
-                <?php echo $custlist;	// BODY: <tr> sections with recovered cart data ?>
+                <?php echo $customerList;	// BODY: <tr> sections with recovered cart data ?>
             
                 <tr>
                     <td colspan="9" valign="bottom"><hr width="100%" size="1" color="#800000" noshade></td>
@@ -176,8 +178,8 @@ require DIR_WS_INCLUDES . 'head.php';
             
                 <tr class="main">
                     <td align="right" valign="center" colspan="4" class="main"><b><?php echo TOTAL_RECOVERED; ?>&nbsp;</b></font></td>
-                    <td align="left" colspan="3" class="main"><b><?php echo $rc_cnt ? xtc_round(($custknt / $rc_cnt) * 100, 2) : 0; ?>%</b></font></td>
-                    <td class="main" align="right"><b><?php echo $currencies->format(xtc_round($total_recovered, 2)); ?></b></font></td>
+                    <td align="left" colspan="3" class="main"><b><?php echo $recoverdCount ? xtc_round(($customerCount / $recoverdCount) * 100, 2) : 0; ?>%</b></font></td>
+                    <td class="main" align="right"><b><?php echo $currencies->format(xtc_round($totalRecovered, 2)); ?></b></font></td>
                     <td class="main">&nbsp;</td>
                 </tr>
                 Done!
