@@ -127,32 +127,32 @@ require DIR_WS_INCLUDES . 'head.php';
                             $custknt++;
                             $total_recovered += $orders['value'];
                             $custknt % 2 ? $class = RCS_REPORT_EVEN_STYLE : $class = RCS_REPORT_ODD_STYLE;
-                            $custlist .= "<tr class=" . $class . ">" .
-                                "<td class=datatablecontent align=right>" . $inrec['scartid'] . "</td>".
-                                "<td>&nbsp;</td>" .
-                                "<td class=datatablecontent align=center>" . xtc_date_order_stat($inrec['dateadded']) . "</td>" .
-                                "<td>&nbsp;</td>" .
-                                "<td class=datatablecontent><a href='" . xtc_href_link(FILENAME_CUSTOMERS, 'search=' . $crec['customers_lastname'], 'NONSSL') . "'>" . $crec['customers_firstname'] . " " . $crec['customers_lastname'] . "</a></td>" .
-                                "<td class=datatablecontent>" . xtc_date_short($orders['date_purchased']) . "</td>" .
-                                "<td class=datatablecontent align=center>" . $orders['orders_status_name'] . "</td>" .
-                                "<td class=datatablecontent align=right>" . strip_tags($orders['order_total']) . "</td>" .
-                                "<td>&nbsp;</td>" .
-                                "</tr>";
+                            $custlist .= '<tr class="' . $class . '">' .
+                                '<td class="datatablecontent" align="right">' . $inrec['scartid'] . '</td>'.
+                                '<td>&nbsp;</td>' .
+                                '<td class="datatablecontent" align="center">' . xtc_date_order_stat($inrec['dateadded']) . '</td>' .
+                                '<td>&nbsp;</td>' .
+                                '<td class="datatablecontent"><a href="' . xtc_href_link(FILENAME_CUSTOMERS, 'search=' . $crec['customers_lastname'], 'NONSSL') . '">' . $crec['customers_firstname'] . ' ' . $crec['customers_lastname'] . '</a></td>' .
+                                '<td class="datatablecontent">' . xtc_date_short($orders['date_purchased']) . '</td>' .
+                                '<td class="datatablecontent" align="center">' . $orders['orders_status_name'] . '</td>' .
+                                '<td class="datatablecontent" align="right">' . strip_tags($orders['order_total']) . '</td>' .
+                                '<td>&nbsp;</td>' .
+                                '</tr>';
                         }
                     }
 
-                    $cline =  "<tr><td height=\"15\" COLSPAN=8> </td></tr>" .
-                        "<tr>" .
-                        "<td align=right COLSPAN=3 class=main><b>" . TOTAL_RECORDS . "</b></td>".
-                        "<td>&nbsp;</td>".
-                        "<td align=left COLSPAN=5 class=main>" . $rc_cnt . "</td>".
-                        "</tr>".
-                        "<tr>".
-                        "<td align=right COLSPAN=3 class=main><b>" . TOTAL_SALES . "</b></td>" .
-                        "<td>&nbsp;</td>" .
-                        "<td align=left COLSPAN=5 class=main>". $custknt . TOTAL_SALES_EXPLANATION . " </td>" .
-                        "</tr>" .
-                        "<tr><td height=\"12\" COLSPAN=6> </td></tr>";
+                    $cline =  '<tr><td height="15" colspan="8"> </td></tr>' .
+                        '<tr>' .
+                        '<td align="right" colspan="3" class="main"><b>' . TOTAL_RECORDS . '</b></td>'.
+                        '<td>&nbsp;</td>'.
+                        '<td align="left" colspan="5" class="main">' . $rc_cnt . '</td>'.
+                        '</tr>'.
+                        '<tr>'.
+                        '<td align="right" colspan="3" class="main"><b>' . TOTAL_SALES . '</b></td>' .
+                        '<td>&nbsp;</td>' .
+                        '<td align="left" colspan="5" class="main">'. $custknt . TOTAL_SALES_EXPLANATION . '</td>' .
+                        '</tr>' .
+                        '<tr><td height="12" colspan="6"> </td></tr>';
                     echo $cline;
                 ?>
 
@@ -171,12 +171,12 @@ require DIR_WS_INCLUDES . 'head.php';
                 <?php echo $custlist;	// BODY: <tr> sections with recovered cart data ?>
             
                 <tr>
-                    <td colspan=9 valign="bottom"><hr width="100%" size="1" color="#800000" noshade></td>
+                    <td colspan="9" valign="bottom"><hr width="100%" size="1" color="#800000" noshade></td>
                 </tr>
             
                 <tr class="main">
-                    <td align="right" valign="center" colspan=4 class="main"><b><?php echo TOTAL_RECOVERED; ?>&nbsp;</b></font></td>
-                    <td align=left colspan=3 class="main"><b><?php echo $rc_cnt ? xtc_round(($custknt / $rc_cnt) * 100, 2) : 0; ?>%</b></font></td>
+                    <td align="right" valign="center" colspan="4" class="main"><b><?php echo TOTAL_RECOVERED; ?>&nbsp;</b></font></td>
+                    <td align="left" colspan="3" class="main"><b><?php echo $rc_cnt ? xtc_round(($custknt / $rc_cnt) * 100, 2) : 0; ?>%</b></font></td>
                     <td class="main" align="right"><b><?php echo $currencies->format(xtc_round($total_recovered, 2)); ?></b></font></td>
                     <td class="main">&nbsp;</td>
                 </tr>
