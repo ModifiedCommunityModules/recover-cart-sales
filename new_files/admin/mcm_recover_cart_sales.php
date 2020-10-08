@@ -38,8 +38,6 @@ require_once 'includes/application_top.php';
 
 // Load from admin
 require_once DIR_WS_CLASSES . 'currencies.php';
-require_once DIR_WS_CLASSES . 'shopping_cart.php';
-require_once DIR_WS_CLASSES . 'rcs_shopping_cart.php';
 require_once DIR_WS_CLASSES . 'order_rcs.php';
 
 // Load from frontend
@@ -50,6 +48,12 @@ require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'xtcPrice.php';
 require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'payment.php';
 require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'shipping.php';
 require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'order_total.php';
+require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'shopping_cart.php';
+require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'rcs_shopping_cart.php';
+
+// var_dump(DIR_FS_INC);
+// var_dump(DIR_FS_CATALOG . DIR_WS_CLASSES);
+// die();
 
 $currencies = new Currencies();
 
