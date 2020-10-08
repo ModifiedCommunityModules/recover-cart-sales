@@ -26,19 +26,21 @@ Modified by Lane Roathe (recover_cart_sales.php,v 1.4d .. v2.11)
 lane@ifd.com    www.osc-modsquad.com / www.ifd.com
 -----------------------------------------------------------------------------------------------*/
 
-use ModifiedCommunityModules\RecoverCartSales\Classes\Order;
 use currencies as Currencies;
 use main as Main;
 use xtcPrice as XtcPrice;
 use order_total as OrderTotal;
 use shipping as Shipping;
 use payment as Payment;
+use shoppingCart as ShoppingCart;
+use ModifiedCommunityModules\RecoverCartSales\Classes\Order;
+use ModifiedCommunityModules\RecoverCartSales\Classes\ShoppingCart as RcsShoppingCart;
 
 require_once 'includes/application_top.php';
+require_once DIR_FS_DOCUMENT_ROOT . '/vendor-no-composer/autoload.php';
 
 // Load from admin
 require_once DIR_WS_CLASSES . 'currencies.php';
-require_once DIR_WS_CLASSES . 'order_rcs.php';
 
 // Load from frontend
 require_once DIR_FS_INC . 'xtc_image_button.inc.php';
@@ -49,11 +51,6 @@ require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'payment.php';
 require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'shipping.php';
 require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'order_total.php';
 require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'shopping_cart.php';
-require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'rcs_shopping_cart.php';
-
-// var_dump(DIR_FS_INC);
-// var_dump(DIR_FS_CATALOG . DIR_WS_CLASSES);
-// die();
 
 $currencies = new Currencies();
 
@@ -77,8 +74,8 @@ if ($action == 'complete') {
     $status = getCustomerStatus($customerId, $_SESSION['languages_id']);
 
     $xtPrice = new XtcPrice(DEFAULT_CURRENCY, $status['customers_status']);
-    $rcsShoppingCart = new rcs_shopping_cart();
-    $_SESSION['cart'] = new shoppingCart();
+    $rcsShoppingCart = new RcsShoppingCart();
+    $_SESSION['cart'] = new ShoppingCart();
 
     $rcsShoppingCart->restoreCustomersCart($_SESSION['cart'], $customerId);
 
