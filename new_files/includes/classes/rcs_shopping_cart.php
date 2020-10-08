@@ -10,7 +10,8 @@
    Released under the GNU General Public License 
    ---------------------------------------------------------------------------------------*/
 
-class rcs_shopping_cart { 
+class rcs_shopping_cart
+{ 
   
     //--- BEGIN DEFAULT CLASS METHODS ---//
     function __construct()
