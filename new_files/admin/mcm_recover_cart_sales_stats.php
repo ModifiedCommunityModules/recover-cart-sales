@@ -14,7 +14,7 @@ Modifed by Aalst (recover_cart_sales.php,v 1.2 .. 1.36)
 aalst@aalst.com
 
 Modified by Lane Roathe (recover_cart_sales.php,v 1.4d .. v2.11)
-lane@ifd.com	www.osc-modsquad.com / www.ifd.com
+lane@ifd.com    www.osc-modsquad.com / www.ifd.com
 */
 use currencies as Currencies;
 
@@ -158,7 +158,7 @@ require DIR_WS_INCLUDES . 'head.php';
                     echo $currentLine;
                 ?>
 
-                <tr class="dataTableHeadingRow">	<!-- Header -->
+                <tr class="dataTableHeadingRow">    <!-- Header -->
                     <td width="7%" class="dataTableHeadingContent" align="right"><?php echo TABLE_HEADING_SCART_ID; ?></td>
                     <td width="1%" class="dataTableHeadingContent">&nbsp;</td>
                     <td width="10%" class="dataTableHeadingContent" align="center"><?php echo TABLE_HEADING_SCART_DATE; ?></td>
@@ -170,7 +170,7 @@ require DIR_WS_INCLUDES . 'head.php';
                     <td width="1%" class="dataTableHeadingContent">&nbsp;</td>
                 </tr>
                 
-                <?php echo $customerList;	// BODY: <tr> sections with recovered cart data ?>
+                <?php echo $customerList;    // BODY: <tr> sections with recovered cart data ?>
             
                 <tr>
                     <td colspan="9" valign="bottom"><hr width="100%" size="1" color="#800000" noshade></td>
