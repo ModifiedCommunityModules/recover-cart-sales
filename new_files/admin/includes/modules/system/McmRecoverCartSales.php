@@ -27,6 +27,17 @@ class McmRecoverCartSales extends StdModule
 
         $this->setAdminAccess('mcm_recover_cart_sales');
         $this->setAdminAccess('mcm_recover_cart_sales_stats');
+
+        // Tabelle erstellen
+        xtc_db_query("CREATE TABLE `mcm_recover_cart_sales` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `customers_id` int(11) NOT NULL,
+            `date_added` varchar(8) NOT NULL,
+            `date_modified` varchar(8) NOT NULL,
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `customers_id` (`customers_id`)
+          ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+        );
     }
 
     public function remove()

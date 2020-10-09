@@ -106,7 +106,7 @@ require DIR_WS_INCLUDES . 'head.php';
                     $customerList = '';
 
                     // Query database for abandoned carts within our timeframe
-                    $conquery = xtc_db_query("SELECT * FROM " . TABLE_SCART . " WHERE dateadded >= '" . $ndate . "' ORDER BY dateadded DESC");
+                    $conquery = xtc_db_query("SELECT * FROM " . TABLE_MCM_RECOVER_CART_SALES . " WHERE date_added >= '" . $ndate . "' ORDER BY date_added DESC");
                     $recoverdCount = xtc_db_num_rows($conquery);
 
                     // Loop though each one and process it
@@ -119,7 +119,7 @@ require DIR_WS_INCLUDES . 'head.php';
                         $customerRecord = xtc_db_fetch_array($query1);
 
                         // Query DB for the FIRST order that matches this customer ID and came after the abandoned cart
-                        $ordersQueryRaw = "SELECT o.orders_id, o.customers_id, o.date_purchased, s.orders_status_name, ot.text as order_total, ot.value FROM " . TABLE_ORDERS . " o LEFT JOIN " . TABLE_ORDERS_TOTAL . " ot ON (o.orders_id = ot.orders_id), " . TABLE_ORDERS_STATUS . " s WHERE (o.customers_id = " . (int) $customerId . ' OR o.customers_email_address like "' . $customerRecord['customers_email_address'] .'" OR o.customers_name like "' . $customerRecord['customers_firstname'] . ' ' . $customerRecord['customers_lastname'] . '") AND o.orders_status >= ' . RCS_PENDING_SALE_STATUS . ' AND s.orders_status_id = o.orders_status AND o.date_purchased >= "' . $row['dateadded'] . '" AND ot.class = "ot_total"';
+                        $ordersQueryRaw = "SELECT o.orders_id, o.customers_id, o.date_purchased, s.orders_status_name, ot.text as order_total, ot.value FROM " . TABLE_ORDERS . " o LEFT JOIN " . TABLE_ORDERS_TOTAL . " ot ON (o.orders_id = ot.orders_id), " . TABLE_ORDERS_STATUS . " s WHERE (o.customers_id = " . (int) $customerId . ' OR o.customers_email_address like "' . $customerRecord['customers_email_address'] .'" OR o.customers_name like "' . $customerRecord['customers_firstname'] . ' ' . $customerRecord['customers_lastname'] . '") AND o.orders_status >= ' . RCS_PENDING_SALE_STATUS . ' AND s.orders_status_id = o.orders_status AND o.date_purchased >= "' . $row['date_added'] . '" AND ot.class = "ot_total"';
                         
                         $ordersQuery = xtc_db_query($ordersQueryRaw);
                         $orders = xtc_db_fetch_array($ordersQuery);
@@ -130,9 +130,9 @@ require DIR_WS_INCLUDES . 'head.php';
                             $totalRecovered += $orders['value'];
                             $customerCount % 2 ? $class = RCS_REPORT_EVEN_STYLE : $class = RCS_REPORT_ODD_STYLE;
                             $customerList .= '<tr class="' . $class . '">' .
-                                '<td class="datatablecontent" align="right">' . $row['scartid'] . '</td>'.
+                                '<td class="datatablecontent" align="right">' . $row['id'] . '</td>'.
                                 '<td>&nbsp;</td>' .
-                                '<td class="datatablecontent" align="center">' . xtc_date_order_stat($row['dateadded']) . '</td>' .
+                                '<td class="datatablecontent" align="center">' . xtc_date_order_stat($row['date_added']) . '</td>' .
                                 '<td>&nbsp;</td>' .
                                 '<td class="datatablecontent"><a href="' . xtc_href_link(FILENAME_CUSTOMERS, 'search=' . $customerRecord['customers_lastname'], 'NONSSL') . '">' . $customerRecord['customers_firstname'] . ' ' . $customerRecord['customers_lastname'] . '</a></td>' .
                                 '<td class="datatablecontent">' . xtc_date_short($orders['date_purchased']) . '</td>' .

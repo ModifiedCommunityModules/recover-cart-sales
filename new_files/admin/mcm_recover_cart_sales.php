@@ -459,7 +459,7 @@ if ($action == 'complete') {
     if (RCS_DELETE_COMPLETED_ORDERS == 'true') {
         xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_id=" . $customerId);
         xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " WHERE customers_id=" . $customerId);
-        xtc_db_query("DELETE FROM " . TABLE_SCART . " WHERE customers_id=" . $customerId);
+        xtc_db_query("DELETE FROM " . TABLE_MCM_RECOVER_CART_SALES . " WHERE customers_id=" . $customerId);
     }
 
     $_SESSION['cart'] = $_SESSION['saved_cart'];
@@ -471,7 +471,7 @@ if ($action == 'delete') {
     $customerId = (int) $_GET['customer_id'];
     xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_id=" . $customerId);
     xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " WHERE customers_id=" . $customerId);
-    xtc_db_query("DELETE FROM " . TABLE_SCART . " WHERE customers_id=" . $customerId);
+    xtc_db_query("DELETE FROM " . TABLE_MCM_RECOVER_CART_SALES . " WHERE customers_id=" . $customerId);
 
     xtc_redirect(xtc_href_link(FILENAME_RECOVER_CART_SALES, 'delete=1&customer_id='. $_GET['customer_id'] . '&tdate=' . $_GET['tdate']));
 }
@@ -756,11 +756,11 @@ if ($tdate == '') {
                         */
 
                         // See if a record for this customer already exists; if not create one and if so update it
-                        $doneQuery = xtc_db_query("SELECT * FROM ". TABLE_SCART ." WHERE customers_id = '" . $customerId . "'");
+                        $doneQuery = xtc_db_query("SELECT * FROM ". TABLE_MCM_RECOVER_CART_SALES ." WHERE customers_id = '" . $customerId . "'");
                         if (xtc_db_num_rows($doneQuery) == 0) {
-                            xtc_db_query("INSERT into " . TABLE_SCART . " (customers_id, dateadded, datemodified ) values ('" . $customerId . "', '" . seadate('0') . "', '" . seadate('0') . "')");
+                            xtc_db_query("INSERT into " . TABLE_MCM_RECOVER_CART_SALES . " (customers_id, date_added, date_modified ) values ('" . $customerId . "', '" . seadate('0') . "', '" . seadate('0') . "')");
                         } else {
-                            xtc_db_query("update " . TABLE_SCART . " set datemodified = '" . seadate('0') . "' WHERE customers_id = " . $customerId );
+                            xtc_db_query("update " . TABLE_MCM_RECOVER_CART_SALES . " set date_modified = '" . seadate('0') . "' WHERE customers_id = " . $customerId );
                         }
                         echo $currentLine;
                         $currentLine = "";
@@ -872,17 +872,17 @@ if ($tdate == '') {
                                             $customerFullName = $basketEntryOfCustomer['fname'] . " " . $basketEntryOfCustomer['lname'];
                                             $status = "";
 
-                                            $doneQuery = xtc_db_query("SELECT * FROM " . TABLE_SCART . " WHERE customers_id = '" . $currentCustomerId . "'");
+                                            $doneQuery = xtc_db_query("SELECT * FROM " . TABLE_MCM_RECOVER_CART_SALES . " WHERE customers_id = '" . $currentCustomerId . "'");
                                             $emailttl = seadate(RCS_EMAIL_TTL);
 
                                             if (xtc_db_num_rows($doneQuery) > 0) {
                                                 $ttl = xtc_db_fetch_array($doneQuery);
                                                 
                                                 if ($ttl) {
-                                                    if (xtc_not_null($ttl['datemodified'])) { // allow for older scarts that have no datemodified
-                                                        $ttldate = $ttl['datemodified'];
+                                                    if (xtc_not_null($ttl['date_modified'])) { // allow for older scarts that have no datemodified
+                                                        $ttldate = $ttl['date_modified'];
                                                     } else {
-                                                        $ttldate = $ttl['dateadded'];
+                                                        $ttldate = $ttl['date_added'];
                                                     }
 
                                                     if ($emailttl <= $ttldate) {
