@@ -1,4 +1,6 @@
 <?php
+require_once DIR_FS_INC . 'mcm_recover_cart_sales.inc.php';
+
 $site = '';
 switch ($checkout_position[$current_page]) {
     case '1':
