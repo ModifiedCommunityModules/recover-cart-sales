@@ -7,7 +7,7 @@ if (!defined('MODULE_MCM_RECOVER_CART_SALES_STATUS') || MODULE_MCM_RECOVER_CART_
 
 $add_contents[BOX_HEADING_STATISTICS][] = [ 
     'admin_access_name' => 'mcm_recover_cart_sales_stats',          // Eintrag fuer Adminrechte
-    'filename'          => FILENAME_MCM_RECOVER_CART_SALES_STATS,   // Dateiname der neuen Admindatei
+    'filename'          => 'mcm_recover_cart_sales_stats.php',   // Dateiname der neuen Admindatei
     'boxname'           => BOX_REPORTS_RECOVER_CART_SALES,          // Anzeigename im Menue
     'parameter'         => '',                                      // zusaetzliche Parameter z.B. 'set=export'
     'ssl'               => ''                                       // SSL oder NONSSL, kein Eintrag = NONSSL
@@ -15,7 +15,7 @@ $add_contents[BOX_HEADING_STATISTICS][] = [
 
 $add_contents[BOX_HEADING_TOOLS][] = [
     'admin_access_name' => 'mcm_recover_cart_sales',                // Eintrag fuer Adminrechte
-    'filename'          => FILENAME_MCM_RECOVER_CART_SALES,         // Dateiname der neuen Admindatei
+    'filename'          => 'mcm_recover_cart_sales.php',         // Dateiname der neuen Admindatei
     'boxname'           => BOX_TOOLS_RECOVER_CART,                  // Anzeigename im Menue
     'parameter'         => '',                                      // zusaetzliche Parameter z.B. 'set=export'
     'ssl'               => ''                                       // SSL oder NONSSL, kein Eintrag = NONSSL

@@ -661,7 +661,7 @@ if ($tdate == '') {
                             $productsData[] = [
                                 'QUANTITY' => $inrec['qty'],
                                 'NAME' => $inrec2['name'],
-                                'LINK' => xtc_catalog_href_link(FILENAME_CATALOG_PRODUCT_INFO, 'info=p'. $inrec['pid']),
+                                'LINK' => xtc_catalog_href_link('product_info.php', 'info=p'. $inrec['pid']),
                                 'IMAGE' => HTTP_SERVER.DIR_WS_CATALOG_INFO_IMAGES . $inrec2['image']
                             ];
                         }
@@ -709,7 +709,7 @@ if ($tdate == '') {
                         $smarty->assign('tpl_path', 'templates/' . CURRENT_TEMPLATE . '/');
                         $smarty->assign('logo_path', HTTP_SERVER . DIR_WS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/img/');
                         $smarty->assign('products_data', $productsData);
-                        $smarty->assign('LOGIN', xtc_catalog_href_link(FILENAME_CATALOG_LOGIN, '', 'SSL'));
+                        $smarty->assign('LOGIN', xtc_catalog_href_link('login.php', '', 'SSL'));
 
                         //$custname = $inrec['fname']." ".$inrec['lname'];
                         if (RCS_EMAIL_FRIENDLY == 'true') {
