@@ -22,6 +22,8 @@
   lane@ifd.com www.osc-modsquad.com / www.ifd.com
 */
 
+// modified loads this file only if admin/mcm_recover_cart_sales.php is loaded
+
 define('MESSAGE_STACK_CUSTOMER_ID', 'Warenkorb für Kundennummer ');
 define('MESSAGE_STACK_DELETE_SUCCESS', ' erfolgreich gelöscht');
 define('HEADING_TITLE', 'Offene Warenkörbe PLUS');

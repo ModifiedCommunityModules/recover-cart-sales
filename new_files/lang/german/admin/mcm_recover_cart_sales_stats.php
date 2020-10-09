@@ -18,6 +18,8 @@
   lane@ifd.com www.osc-modsquad.com / www.ifd.com
 */
 
+// modified loads this file only if admin/mcm_recover_cart_sales_stats.php is loaded
+
 define('HEADING_TITLE', 'Wiederhergestellte Warenkörbe');
 define('DAYS_FIELD_PREFIX', 'Zeige die letzten ');
 define('DAYS_FIELD_POSTFIX', ' Tage ');
