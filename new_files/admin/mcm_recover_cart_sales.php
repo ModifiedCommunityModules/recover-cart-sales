@@ -65,6 +65,82 @@ function getCustomerStatus(int $customerId, int $languageId): array
     return xtc_db_fetch_array($statusQuery);
 }
 
+function xtc_get_products_special_price_ow($productId, $customerId, $qty = 1)
+{
+    $customerGroupQuery = xtc_db_query("SELECT customers_status FROM " . TABLE_CUSTOMERS . " WHERE customers_id = '" . $customerId . "'");
+    $customerGroup = xtc_db_fetch_array($customerGroupQuery);
+    $personalQuery = xtc_db_query("SELECT personal_offer FROM " . TABLE_PERSONAL_OFFERS_BY . $customerGroup['customers_status'] . " WHERE products_id = " . (int) $productId . " AND quantity <= " . (int) $qty . " ORDER BY quantity DESC LIMIT 1");
+    
+    if (xtc_db_num_rows($personalQuery)) {
+        $personal = xtc_db_fetch_array($personalQuery);
+        return $personal['personal_offer'];
+    }
+
+    $productQuery = xtc_db_query("SELECT specials_new_products_price FROM " . TABLE_SPECIALS . " WHERE products_id = '" . (int) $productId . "' AND status");
+    $product = xtc_db_fetch_array($productQuery);
+    return $product['specials_new_products_price'];
+}
+
+function seadate($day)
+{
+    $rawtime = strtotime("-" . $day . " days");
+    $ndate = date("Ymd", $rawtime);
+    return $ndate;
+}
+
+function cart_date_short($raw_date)
+{
+    if ( ($raw_date == '00000000') || ($raw_date == '') ) {
+        return false;
+    }
+
+    $year = substr($raw_date, 0, 4);
+    $month = (int) substr($raw_date, 4, 2);
+    $day = (int) substr($raw_date, 6, 2);
+
+    if (@date('Y', mktime(0, 0, 0, $month, $day, $year)) == $year) {
+        return date(DATE_FORMAT, mktime(0, 0, 0, $month, $day, $year));
+    } else {
+        return preg_replace('#2037' . '$#', $year, date(DATE_FORMAT, mktime(0, 0, 0, $month, $day, 2037)));  
+    }
+}
+
+// This will return a list of customers with sessions. Handles either the mysql or file case
+// Returns an empty array if the check sessions flag is not true (empty array means same SQL statement can be used)
+function getCustomerSessions()
+{
+    $customerSessionIds = [];
+
+    if (RCS_CHECK_SESSIONS == 'true' ) {
+        if (STORE_SESSIONS == 'mysql') {
+            // --- DB RECORDS ---
+            $sesquery = xtc_db_query("SELECT value FROM " . TABLE_SESSIONS . " WHERE 1");
+            while ($ses = xtc_db_fetch_array($sesquery)) {
+                if ( preg_match( "/customer_id[^\"]*\"([0-9]*)\"/", $ses['value'], $custval ) )
+                $customerSessionIds[] = $custval[1];
+            }
+        } else {
+            if ($handle = opendir(xtc_session_save_path())) {
+                while (false !== ($file = readdir($handle)) ) {
+                    if ($file != "." && $file != "..") {
+                        $file = xtc_session_save_path() . '/' . $file;    // create full path to file!
+                        if ($fp = fopen($file, 'r')) {
+                            $val = fread($fp, filesize($file));
+                            fclose($fp);
+
+                            if (preg_match( "/customer_id[^\"]*\"([0-9]*)\"/", $val, $custval)) {
+                                $customerSessionIds[] = $custval[1];
+                            }
+                        }
+                    }
+                }
+                closedir($handle);
+            }
+        }
+    }
+    return $customerSessionIds;
+}
+
 if ($action == 'complete') {
     $customerId = $_GET['customer_id'] ?? 0;
     $_SESSION['saved_cart'] = $_SESSION['cart'];
@@ -408,66 +484,6 @@ if ($getDelete) {
 $tdate = $_POST['tdate'];
 if ($tdate == '') {
     $tdate = RCS_BASE_DAYS;
-}
-
-function seadate($day)
-{
-    $rawtime = strtotime("-" . $day . " days");
-    $ndate = date("Ymd", $rawtime);
-    return $ndate;
-}
-
-function cart_date_short($raw_date)
-{
-    if ( ($raw_date == '00000000') || ($raw_date == '') ) {
-        return false;
-    }
-
-    $year = substr($raw_date, 0, 4);
-    $month = (int) substr($raw_date, 4, 2);
-    $day = (int) substr($raw_date, 6, 2);
-
-    if (@date('Y', mktime(0, 0, 0, $month, $day, $year)) == $year) {
-        return date(DATE_FORMAT, mktime(0, 0, 0, $month, $day, $year));
-    } else {
-        return preg_replace('#2037' . '$#', $year, date(DATE_FORMAT, mktime(0, 0, 0, $month, $day, 2037)));  
-    }
-}
-
-// This will return a list of customers with sessions. Handles either the mysql or file case
-// Returns an empty array if the check sessions flag is not true (empty array means same SQL statement can be used)
-function getCustomerSessions()
-{
-    $customerSessionIds = [];
-
-    if (RCS_CHECK_SESSIONS == 'true' ) {
-        if (STORE_SESSIONS == 'mysql') {
-            // --- DB RECORDS ---
-            $sesquery = xtc_db_query("SELECT value FROM " . TABLE_SESSIONS . " WHERE 1");
-            while ($ses = xtc_db_fetch_array($sesquery)) {
-                if ( preg_match( "/customer_id[^\"]*\"([0-9]*)\"/", $ses['value'], $custval ) )
-                $customerSessionIds[] = $custval[1];
-            }
-        } else {
-            if ($handle = opendir(xtc_session_save_path())) {
-                while (false !== ($file = readdir($handle)) ) {
-                    if ($file != "." && $file != "..") {
-                        $file = xtc_session_save_path() . '/' . $file;    // create full path to file!
-                        if ($fp = fopen($file, 'r')) {
-                            $val = fread($fp, filesize($file));
-                            fclose($fp);
-
-                            if (preg_match( "/customer_id[^\"]*\"([0-9]*)\"/", $val, $custval)) {
-                                $customerSessionIds[] = $custval[1];
-                            }
-                        }
-                    }
-                }
-                closedir($handle);
-            }
-        }
-    }
-    return $customerSessionIds;
 }
 ?>
 
