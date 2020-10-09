@@ -1,6 +1,10 @@
 <?php
-// Offener Warenkorb Plus
-// Recover Cart Sales
+// modified loads this file in the hole admin area
+
+// buttons
+define('BUTTON_COMPLETE', 'Bestellung abschließen');
+
+// configuration
 define('RCS_BASE_DAYS_TITLE', 'Zeitraum');
 define('RCS_BASE_DAYS_DESC', 'Anzahl der vergangenen Tage für nicht abgeschlossene Warenkörbe.');
 define('RCS_REPORT_DAYS_TITLE', 'Verkaufsbericht Zeitraum');
@@ -43,3 +47,10 @@ define('DEFAULT_RCS_SHIPPING_TITLE', 'Standard-Versandart');
 define('DEFAULT_RCS_SHIPPING_DESC', 'Modulname der Versandart für das abschlie&szlig;en der Bestellung (z.B. dp_dp).');
 define('RCS_DELETE_COMPLETED_ORDERS_TITLE', 'Bestellte Warenkörbe löschen');
 define('RCS_DELETE_COMPLETED_ORDERS_DESC', 'Soll der Warenkorb im Zuge des Bestellabschlusses automatisch gelöscht werden?');
+
+// miscellaneous
+define('BOX_CONFIGURATION_33', 'Offene Warenkörbe');
+define('BOX_REPORTS_RECOVER_CART_SALES', 'Wiederhergestellte Warenkörbe');
+define('BOX_TOOLS_RECOVER_CART', 'Offene Warenkörbe');
+define('TAX_ADD_TAX','inkl. ');
+define('TAX_NO_TAX','zzgl. ');
