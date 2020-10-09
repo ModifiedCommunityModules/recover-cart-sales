@@ -1,5 +1,9 @@
 <?php
-defined( '_VALID_XTC' ) or die( 'Direct Access to this location is not allowed.' );
+defined('_VALID_XTC') or die('Direct Access to this location is not allowed.');
+
+if (!defined('MODULE_MCM_RECOVER_CART_SALES_STATUS') || MODULE_MCM_RECOVER_CART_SALES_STATUS != 'true') {
+    return;
+}
 
 $add_contents[BOX_HEADING_STATISTICS][] = [ 
     'admin_access_name' => 'mcm_recover_cart_sales_stats',          // Eintrag fuer Adminrechte
