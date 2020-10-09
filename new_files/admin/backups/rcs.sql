@@ -2,9 +2,10 @@ DELETE FROM `configuration_group` WHERE `configuration_group_title` LIKE 'Recove
 DELETE FROM `configuration` WHERE `configuration_key` LIKE 'RCS_%';
 DELETE FROM `configuration` WHERE `configuration_key` LIKE 'DEFAULT_RCS_%';
 
-DROP TABLE IF EXISTS `scart`;
-CREATE TABLE `scart` (
-   `scartid` INT( 11 ) NOT NULL AUTO_INCREMENT, `customers_id` INT( 11 ) NOT NULL UNIQUE, `dateadded` VARCHAR( 8 ) NOT NULL, `datemodified` VARCHAR( 8 ) NOT NULL, PRIMARY KEY ( `scartid` ));
+DROP TABLE IF EXISTS `mcm_recover_cart_sales`;
+-- CREATE TABLE `mcm_recover_cart_sales` (
+--    `scartid` INT( 11 ) NOT NULL AUTO_INCREMENT, `customers_id` INT( 11 ) NOT NULL UNIQUE, `dateadded` VARCHAR( 8 ) NOT NULL, `datemodified` VARCHAR( 8 ) NOT NULL, PRIMARY KEY ( `scartid` ));
+
 INSERT INTO `configuration_group` ( `configuration_group_id` , `configuration_group_title` , `configuration_group_description` , `sort_order` , `visible` )
    VALUES ('33', 'Recover Cart Sales', 'Recover Cart Sales (RCS) Configuration Values', '33', '1');
 INSERT INTO `configuration` ( `configuration_id` , `configuration_key` , `configuration_value` , `configuration_group_id` , `sort_order` , `last_modified` , `date_added` , `use_function` , `set_function` )
@@ -50,11 +51,11 @@ INSERT INTO `configuration` ( `configuration_id` , `configuration_key` , `config
 INSERT INTO `configuration` ( `configuration_id` , `configuration_key` , `configuration_value` , `configuration_group_id` , `sort_order` , `last_modified` , `date_added` , `use_function` , `set_function` )
    VALUES (NULL, 'RCS_DELETE_COMPLETED_ORDERS', 'true', 33, 97, NULL, NOW(), '', "xtc_cfg_select_option(array('true', 'false'),");
 
-ALTER TABLE `customers_basket` ADD `checkout_site` ENUM( 'cart', 'shipping', 'payment', 'confirm' ) NOT NULL DEFAULT 'cart';
-ALTER TABLE `customers_basket` ADD `language` VARCHAR(32) NULL DEFAULT NULL;
+-- ALTER TABLE `customers_basket` ADD `checkout_site` ENUM( 'cart', 'shipping', 'payment', 'confirm' ) NOT NULL DEFAULT 'cart';
+-- ALTER TABLE `customers_basket` ADD `language` VARCHAR(32) NULL DEFAULT NULL;
 
-ALTER TABLE `admin_access` ADD `recover_cart_sales` INT( 1 ) DEFAULT '0' NOT NULL ;
-UPDATE `admin_access` SET `recover_cart_sales` = '1' WHERE `customers_id` = '1' LIMIT 1 ;
+-- ALTER TABLE `admin_access` ADD `recover_cart_sales` INT( 1 ) DEFAULT '0' NOT NULL ;
+-- UPDATE `admin_access` SET `recover_cart_sales` = '1' WHERE `customers_id` = '1' LIMIT 1 ;
 
-ALTER TABLE `admin_access` ADD `stats_recover_cart_sales` INT( 1 ) DEFAULT '0' NOT NULL ;
-UPDATE `admin_access` SET `stats_recover_cart_sales` = '1' WHERE `customers_id` = '1' LIMIT 1 ;
+-- ALTER TABLE `admin_access` ADD `stats_recover_cart_sales` INT( 1 ) DEFAULT '0' NOT NULL ;
+-- UPDATE `admin_access` SET `stats_recover_cart_sales` = '1' WHERE `customers_id` = '1' LIMIT 1 ;
