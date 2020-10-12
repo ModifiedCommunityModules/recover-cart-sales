@@ -73,7 +73,7 @@ class McmRecoverCartSales extends StdModule
 
         // INSERT INTO `configuration` ( `configuration_id` , `configuration_key` , `configuration_value` , `configuration_group_id` , `sort_order` , `last_modified` , `date_added` , `use_function` , `set_function` )
         //     VALUES (NULL, 'RCS_SHOW_ATTRIBUTES', 'false',  33, 40, NULL, NOW(), '', "xtc_cfg_select_option(array('true', 'false'),");
-        $this->addConfigurationSelect('HOW_ATTRIBUTES', 'false', 33, 40);
+        $this->addConfigurationSelect('SHOW_ATTRIBUTES', 'false', 33, 40);
 
         // INSERT INTO `configuration` ( `configuration_id` , `configuration_key` , `configuration_value` , `configuration_group_id` , `sort_order` , `last_modified` , `date_added` , `use_function` , `set_function` )
         //     VALUES (NULL, 'RCS_CHECK_SESSIONS', 'false', 33, 40, NULL, NOW(), '', "xtc_cfg_select_option(array('true', 'false'),");
@@ -133,7 +133,7 @@ class McmRecoverCartSales extends StdModule
 
         // INSERT INTO `configuration` ( `configuration_id` , `configuration_key` , `configuration_value` , `configuration_group_id` , `sort_order` , `last_modified` , `date_added` , `use_function` , `set_function` )
         //     VALUES (NULL, 'RCS_DELETE_COMPLETED_ORDERS', 'true', 33, 97, NULL, NOW(), '', "xtc_cfg_select_option(array('true', 'false'),");
-        $this->addConfigurationSelect('DELETE_COMPLETED_ORDERS', '', 33, 97);
+        $this->addConfigurationSelect('DELETE_COMPLETED_ORDERS', 'true', 33, 97);
     }
 
     public function remove()
@@ -145,7 +145,7 @@ class McmRecoverCartSales extends StdModule
         $this->deleteConfiguration('EMAIL_TTL');
         $this->deleteConfiguration('EMAIL_FRIENDLY');
         $this->deleteConfiguration('EMAIL_COPIES_TO');
-        $this->deleteConfiguration('HOW_ATTRIBUTES');
+        $this->deleteConfiguration('SHOW_ATTRIBUTES');
         $this->deleteConfiguration('CHECK_SESSIONS');
         $this->deleteConfiguration('CURCUST_COLOR');
         $this->deleteConfiguration('UNCONTACTED_COLOR');
