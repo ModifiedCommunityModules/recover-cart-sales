@@ -53,6 +53,7 @@ require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'order_total.php';
 require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'shopping_cart.php';
 
 $currencies = new Currencies();
+$configuration = new Configuration('MODULE_MCM_RECOVER_CART_SALES');
 
 $action = $_GET['action'] ?? '';
 $getDelete = $_GET['delete'] ?? '';
@@ -109,9 +110,10 @@ function cart_date_short($raw_date)
 // Returns an empty array if the check sessions flag is not true (empty array means same SQL statement can be used)
 function getCustomerSessions()
 {
+    $configuration = new Configuration('MODULE_MCM_RECOVER_CART_SALES');
     $customerSessionIds = [];
 
-    if (RCS_CHECK_SESSIONS == 'true' ) {
+    if ($configuration->checkSessions == 'true' ) {
         if (STORE_SESSIONS == 'mysql') {
             // --- DB RECORDS ---
             $sesquery = xtc_db_query("SELECT value FROM " . TABLE_SESSIONS . " WHERE 1");
@@ -156,7 +158,7 @@ if ($action == 'complete') {
     $rcsShoppingCart->restoreCustomersCart($_SESSION['cart'], $customerId);
 
     // load selected payment module
-    $_SESSION['payment'] = DEFAULT_RCS_PAYMENT;
+    $_SESSION['payment'] = $configuration->defaultPayment;
 
     $paymentModules = new Payment($_SESSION['payment']);
 
@@ -170,7 +172,7 @@ if ($action == 'complete') {
 
     // load the selected shipping module
     $shipping_num_boxes = 1;
-    $_SESSION['shipping'] = DEFAULT_RCS_SHIPPING;
+    $_SESSION['shipping'] = $configuration->defaultShipping;
 
     $shippingModules = new Shipping($_SESSION['shipping']);
 
@@ -456,7 +458,7 @@ if ($action == 'complete') {
         $totalCost += $totalProductsPrice;
     }
 
-    if (RCS_DELETE_COMPLETED_ORDERS == 'true') {
+    if ($configuration->deleteCompletedOrders == 'true') {
         xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_id=" . $customerId);
         xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " WHERE customers_id=" . $customerId);
         xtc_db_query("DELETE FROM " . TABLE_MCM_RECOVER_CART_SALES . " WHERE customers_id=" . $customerId);
@@ -483,7 +485,7 @@ if ($getDelete) {
 // Delete Entry End
 $tdate = $_POST['tdate'];
 if ($tdate == '') {
-    $tdate = RCS_BASE_DAYS;
+    $tdate = $configuration->baseDays;
 }
 ?>
 
@@ -572,7 +574,7 @@ if ($tdate == '') {
         
                             if ($lastCustomerId != $customerId) {
                                 if ($lastCustomerId != "") {
-                                    $textTotal = RCS_SHOW_BRUTTO_PRICE == 'true' ? TABLE_CART_TOTAL_BRUTTO : TABLE_CART_TOTAL;
+                                    $textTotal = $configuration->showBruttoPrice == 'true' ? TABLE_CART_TOTAL_BRUTTO : TABLE_CART_TOTAL;
                                     $currentLine .= "
                                         <tr>
                                             <td class='dataTableContent' align='right' colspan='6' nowrap><b>" . $textTotal . "</b>" . $currencies->format($totalPrice) . "</td>
@@ -606,7 +608,7 @@ if ($tdate == '') {
         
                             // BEGIN OF ATTRIBUTE DB CODE
                             $productAttributes = ''; // DO NOT DELETE
-                            if (RCS_SHOW_ATTRIBUTES == 'true') {
+                            if ($configuration->showAttributes == 'true') {
                                 $attributeQuery = xtc_db_query("SELECT cba.products_id pid,
                                                 po.products_options_name poname,
                                                 pov.products_options_values_name povname,
@@ -641,7 +643,7 @@ if ($tdate == '') {
                             }
                             $specialPrice += $attributePrice;
         
-                            if (RCS_SHOW_BRUTTO_PRICE == 'true') {
+                            if ($configuration->showBruttoPrice == 'true') {
                                 $tax = xtc_get_tax_rate($inrec2['tax']);
                                 $specialPrice = xtc_add_tax($specialPrice, $tax);
                             }
@@ -712,7 +714,7 @@ if ($tdate == '') {
                         $smarty->assign('LOGIN', xtc_catalog_href_link('login.php', '', 'SSL'));
 
                         //$custname = $inrec['fname']." ".$inrec['lname'];
-                        if (RCS_EMAIL_FRIENDLY == 'true') {
+                        if ($configuration->emailFriendly == 'true') {
                             $smarty->assign('GENDER', $inrec['customers_gender']);
                             $smarty->assign('FIRSTNAME', $inrec['fname']);
                             $smarty->assign('LASTNAME', $inrec['lname']);
@@ -732,8 +734,8 @@ if ($tdate == '') {
                         $smarty->assign('MESSAGE', $_POST['message']);
 
                         $outEmailAddr = '"' . $custname . '" <' . $inrec['email'] . '>';
-                        if (xtc_not_null(RCS_EMAIL_COPIES_TO)) {
-                            $outEmailAddr .= ', ' . RCS_EMAIL_COPIES_TO;
+                        if (xtc_not_null($configuration->emailCopiesTo)) {
+                            $outEmailAddr .= ', ' . $configuration->emailCopiesTo;
                         }
 
                         $smarty->caching = false;
@@ -742,7 +744,7 @@ if ($tdate == '') {
                         $txtMail = $smarty->fetch(CURRENT_TEMPLATE . '/admin/mail/' . $inrec['language'] . '/cart_mail.txt');
 
                         if ($inrec['email'] != '') {
-                            xtc_php_mail(EMAIL_SUPPORT_ADDRESS, EMAIL_SUPPORT_NAME, $inrec['email'] , $custname , RCS_EMAIL_COPIES_TO, EMAIL_SUPPORT_REPLY_ADDRESS, EMAIL_SUPPORT_REPLY_ADDRESS_NAME, '', '', EMAIL_TEXT_SUBJECT, $htmlMail, $txtMail);
+                            xtc_php_mail(EMAIL_SUPPORT_ADDRESS, EMAIL_SUPPORT_NAME, $inrec['email'] , $custname , $configuration->emailCopiesTo, EMAIL_SUPPORT_REPLY_ADDRESS, EMAIL_SUPPORT_REPLY_ADDRESS_NAME, '', '', EMAIL_TEXT_SUBJECT, $htmlMail, $txtMail);
                         }
 
                         // Debugging
@@ -764,7 +766,7 @@ if ($tdate == '') {
                         }
                         echo $currentLine;
                         $currentLine = "";
-                        $textTotal = RCS_SHOW_BRUTTO_PRICE == 'true' ? TABLE_CART_TOTAL_BRUTTO : TABLE_CART_TOTAL;
+                        $textTotal = $configuration->showBruttoPrice == 'true' ? TABLE_CART_TOTAL_BRUTTO : TABLE_CART_TOTAL;
                     }
 
                     echo "<tr><td colspan=8 align='right' class='dataTableContent'><b>" . $textTotal . "</b>" . $currencies->format($totalPrice) . "</td> </tr>";
@@ -863,17 +865,17 @@ if ($tdate == '') {
                                             $totalPrice = 0;
 
                                             // change the color on those we have contacted add customer tag to customers
-                                            $backgroundColor = RCS_UNCONTACTED_COLOR;
+                                            $backgroundColor = $configuration->uncontacedColor;
                                             $checked = 1;    // assume we'll send an email
                                             $new = 1;
                                             $skip = false;
                                             $sentdate = "";
-                                            $beforeDate = RCS_CARTS_MATCH_ALL_DATES == 'true' ? '0' : $basketEntryOfCustomer['bdate'];
+                                            $beforeDate = $configuration->cartsMatchAllDates == 'true' ? '0' : $basketEntryOfCustomer['bdate'];
                                             $customerFullName = $basketEntryOfCustomer['fname'] . " " . $basketEntryOfCustomer['lname'];
                                             $status = "";
 
                                             $doneQuery = xtc_db_query("SELECT * FROM " . TABLE_MCM_RECOVER_CART_SALES . " WHERE customers_id = '" . $currentCustomerId . "'");
-                                            $emailttl = seadate(RCS_EMAIL_TTL);
+                                            $emailttl = seadate($configuration->emailTtl);
 
                                             if (xtc_db_num_rows($doneQuery) > 0) {
                                                 $ttl = xtc_db_fetch_array($doneQuery);
@@ -887,7 +889,7 @@ if ($tdate == '') {
 
                                                     if ($emailttl <= $ttldate) {
                                                         $sentdate = $ttldate;
-                                                        $backgroundColor = RCS_CONTACTED_COLOR;
+                                                        $backgroundColor = $configuration->contactedColor;
                                                         $checked = 0;
                                                         $new = 0;
                                                     }
@@ -907,23 +909,23 @@ if ($tdate == '') {
 
                                             if (xtc_db_num_rows($ccquery) > 0) {
                                                 // We have a matching order; assume current customer but not for this order
-                                                $customerFullNameFormated = '<font color=' . RCS_CURCUST_COLOR . '><b>' . $customerFullName . '</b></font>';
+                                                $customerFullNameFormated = '<font color=' . $configuration->curcustColor . '><b>' . $customerFullName . '</b></font>';
 
                                                 // Now, look to see if one of the orders matches this current order's items
                                                 while ($orec = xtc_db_fetch_array($ccquery)) {
                                                     $ccquery = xtc_db_query('SELECT products_id FROM ' . TABLE_ORDERS_PRODUCTS . ' WHERE orders_id = ' . (int) $orec['orders_id'] . ' AND products_id = ' . (int) $basketEntryOfCustomer['pid']);
                                                     if (xtc_db_num_rows($ccquery) > 0 ) {
-                                                        if ($orec['orders_status'] > RCS_PENDING_SALE_STATUS ) {
+                                                        if ($orec['orders_status'] > $configuration->pendingSalesStatus ) {
                                                             $checked = 0;
                                                         }
 
                                                         // OK, we have a matching order; see if we should just skip this or show the status
-                                                        if (RCS_SKIP_MATCHED_CARTS == 'true' && !$checked ) {
+                                                        if ($configuration->skipMatchedCarts == 'true' && !$checked ) {
                                                             $skip = true;    // reset flag & break us out of the while loop!
                                                             break;
                                                         } else {
                                                             // It's rare for the same customer to order the same item twice, so we probably have a matching order, show it
-                                                            $backgroundColor = RCS_MATCHED_ORDER_COLOR;
+                                                            $backgroundColor = $configuration->matchedOrderColor;
                                                             $ccquery = xtc_db_query("SELECT orders_status_name FROM " . TABLE_ORDERS_STATUS . " WHERE language_id = " . (int)$_SESSION['languages_id'] . " AND orders_status_id = " . (int)$orec['orders_status'] );
 
                                                             if( $srec = xtc_db_fetch_array( $ccquery ) ) {
@@ -950,7 +952,7 @@ if ($tdate == '') {
 
                                             $currentLine = "
                                             <tr bgcolor=" . $backgroundColor . ">
-                                            <td class='dataTableContent' align='center' width='1%'>" . xtc_draw_checkbox_field('custid[]', $currentCustomerId, RCS_AUTO_CHECK == 'true' ? $checked : 0) . "</td>
+                                            <td class='dataTableContent' align='center' width='1%'>" . xtc_draw_checkbox_field('custid[]', $currentCustomerId, $configuration->autoCheck == 'true' ? $checked : 0) . "</td>
                                             <td class='dataTableContent' align='left' width='9%' nowrap><b>" . $sentInfo . "</b></td>
                                             <td class='dataTableContent' align='left' width='15%' nowrap> " . xtc_date_short($basketEntryOfCustomer['bdate']) . "</td>
                                             <td class='dataTableContent' align='left' width='30%' nowrap><a href='" . xtc_href_link(FILENAME_CUSTOMERS, 'search=' . $basketEntryOfCustomer['lname'], 'NONSSL') . "'>" . $customerFullNameFormated . "</a>".$status."</td>
@@ -980,7 +982,7 @@ if ($tdate == '') {
                                         // BEGIN OF ATTRIBUTE DB CODE
                                         $productAttributes = ''; // DO NOT DELETE
 
-                                        if (RCS_SHOW_ATTRIBUTES == 'true') {
+                                        if ($configuration->showAttributes == 'true') {
                                             $attributeQuery = xtc_db_query("SELECT cba.products_id pid,
                                                                                                 po.products_options_name poname,
                                                                                                 pov.products_options_values_name povname,
@@ -1015,7 +1017,7 @@ if ($tdate == '') {
                                         }
                                         $specialPrice += $attributePrice;
             
-                                        if (RCS_SHOW_BRUTTO_PRICE == 'true') {
+                                        if ($configuration->showBruttoPrice == 'true') {
                                             $tax = xtc_get_tax_rate($inrec2['tax']);
                                             $specialPrice = xtc_add_tax($specialPrice, $tax);
                                         }
@@ -1040,7 +1042,7 @@ if ($tdate == '') {
         
                                 if ($finalLine) {
                                     $totalPriceOfAllCarts += $totalPrice;
-                                    $textTotal = RCS_SHOW_BRUTTO_PRICE == 'true'?TABLE_CART_TOTAL_BRUTTO:TABLE_CART_TOTAL;
+                                    $textTotal = $configuration->showBruttoPrice == 'true' ? TABLE_CART_TOTAL_BRUTTO : TABLE_CART_TOTAL;
                                     $currentLine .= "       </td>
                                                     <tr>
                                                     <td class='dataTableContent' align='right' colspan='8'><b>" . $textTotal . "</b>" . $currencies->format($totalPrice) . "</td>
@@ -1057,7 +1059,7 @@ if ($tdate == '') {
                             }
 
                             $totalPriceOfAllCartsFormated = $currencies->format($totalPriceOfAllCarts);
-                            $textTotal = RCS_SHOW_BRUTTO_PRICE == 'true' ? TABLE_GRAND_TOTAL_BRUTTO : TABLE_GRAND_TOTAL;
+                            $textTotal = $configuration->showBruttoPrice == 'true' ? TABLE_GRAND_TOTAL_BRUTTO : TABLE_GRAND_TOTAL;
                             $currentLine = "<tr></tr><td class='dataTableContent' align='right' colspan='8'><hr align=right width=55><b>" . $textTotal . "</b>" . $totalPriceOfAllCartsFormated . "</td>
                                         </tr>";
                 

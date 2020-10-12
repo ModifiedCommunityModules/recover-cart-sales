@@ -22,6 +22,7 @@ require_once 'includes/application_top.php';
 require_once DIR_WS_CLASSES . 'currencies.php';
 
 $currencies = new Currencies();
+$configuration = new Configuration('MODULE_MCM_RECOVER_CART_SALES');
 
 function xtc_date_order_stat($rawDate)
 {
@@ -79,7 +80,7 @@ require DIR_WS_INCLUDES . 'head.php';
                                     <?php
                                         $tdate = $_POST['tdate'] ?? '';
                                         if ($tdate == '') {
-                                            $tdate = RCS_REPORT_DAYS;
+                                            $tdate = $configuration->reportDays;
                                         }
                                         $ndate = seadate($tdate);
                                     ?>
@@ -119,7 +120,7 @@ require DIR_WS_INCLUDES . 'head.php';
                         $customerRecord = xtc_db_fetch_array($query1);
 
                         // Query DB for the FIRST order that matches this customer ID and came after the abandoned cart
-                        $ordersQueryRaw = "SELECT o.orders_id, o.customers_id, o.date_purchased, s.orders_status_name, ot.text as order_total, ot.value FROM " . TABLE_ORDERS . " o LEFT JOIN " . TABLE_ORDERS_TOTAL . " ot ON (o.orders_id = ot.orders_id), " . TABLE_ORDERS_STATUS . " s WHERE (o.customers_id = " . (int) $customerId . ' OR o.customers_email_address like "' . $customerRecord['customers_email_address'] .'" OR o.customers_name like "' . $customerRecord['customers_firstname'] . ' ' . $customerRecord['customers_lastname'] . '") AND o.orders_status >= ' . RCS_PENDING_SALE_STATUS . ' AND s.orders_status_id = o.orders_status AND o.date_purchased >= "' . $row['date_added'] . '" AND ot.class = "ot_total"';
+                        $ordersQueryRaw = "SELECT o.orders_id, o.customers_id, o.date_purchased, s.orders_status_name, ot.text as order_total, ot.value FROM " . TABLE_ORDERS . " o LEFT JOIN " . TABLE_ORDERS_TOTAL . " ot ON (o.orders_id = ot.orders_id), " . TABLE_ORDERS_STATUS . " s WHERE (o.customers_id = " . (int) $customerId . ' OR o.customers_email_address like "' . $customerRecord['customers_email_address'] .'" OR o.customers_name like "' . $customerRecord['customers_firstname'] . ' ' . $customerRecord['customers_lastname'] . '") AND o.orders_status >= ' . $configuration->pendingSalesStatus . ' AND s.orders_status_id = o.orders_status AND o.date_purchased >= "' . $row['date_added'] . '" AND ot.class = "ot_total"';
                         
                         $ordersQuery = xtc_db_query($ordersQueryRaw);
                         $orders = xtc_db_fetch_array($ordersQuery);
@@ -128,7 +129,7 @@ require DIR_WS_INCLUDES . 'head.php';
                         if ($orders) {
                             $customerCount++;
                             $totalRecovered += $orders['value'];
-                            $customerCount % 2 ? $class = RCS_REPORT_EVEN_STYLE : $class = RCS_REPORT_ODD_STYLE;
+                            $customerCount % 2 ? $class = $configuration->reportEvenStyle : $class = $configuration->reportOddStyle;
                             $customerList .= '<tr class="' . $class . '">' .
                                 '<td class="datatablecontent" align="right">' . $row['id'] . '</td>'.
                                 '<td>&nbsp;</td>' .
