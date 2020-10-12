@@ -139,5 +139,27 @@ class McmRecoverCartSales extends StdModule
     public function remove()
     {
         parent::remove();
+
+        $this->deleteConfiguration('BASE_DAYS');
+        $this->deleteConfiguration('REPORT_DAYS');
+        $this->deleteConfiguration('EMAIL_TTL');
+        $this->deleteConfiguration('EMAIL_FRIENDLY');
+        $this->deleteConfiguration('EMAIL_COPIES_TO');
+        $this->deleteConfiguration('HOW_ATTRIBUTES');
+        $this->deleteConfiguration('CHECK_SESSIONS');
+        $this->deleteConfiguration('CURCUST_COLOR');
+        $this->deleteConfiguration('UNCONTACTED_COLOR');
+        $this->deleteConfiguration('CONTACTED_COLOR');
+        $this->deleteConfiguration('MATCHED_ORDER_COLOR');
+        $this->deleteConfiguration('SKIP_MATCHED_CARTS');
+        $this->deleteConfiguration('AUTO_CHECK');
+        $this->deleteConfiguration('CARTS_MATCH_ALL_DATES');
+        $this->deleteConfiguration('PENDING_SALE_STATUS');
+        $this->deleteConfiguration('REPORT_EVEN_STYLE');
+        $this->deleteConfiguration('REPORT_ODD_STYLE');
+        $this->deleteConfiguration('SHOW_BRUTTO_PRICE');
+        $this->deleteConfiguration('DEFAULT_SHIPPING');
+        $this->deleteConfiguration('DEFAULT_PAYMENT');
+        $this->deleteConfiguration('DELETE_COMPLETED_ORDERS');
     }
 }
