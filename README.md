@@ -6,6 +6,10 @@ Source modified Forum: [Offene Warenkörbe PLUS](https://www.modified-shop.org/f
 ## Requirements
 PHP 7.0 or above
 
+## Installation
+We recommend installing the module via the [MMLC](https://module-loader.de).
+*(Experienced developers can also install the module manually without MMLC. For this the required dependencies and autoloads must be also installed manually.)*
+
 ## Authors
 - 2020 by Robin Wieschendorf (robinwieschendorf.de) - transferred to Github and entered in MMLC
 - 2009-2013 by modified (www.modified-shop.org)
