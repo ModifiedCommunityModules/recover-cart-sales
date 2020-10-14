@@ -1,4 +1,12 @@
 <?php
+/**
+ * Recover Cart Sales
+ *  
+ *  Licensed under GNU General Public License 2.0. 
+ *  Some rights reserved. See LICENSE, README.md.
+ *
+ * @license GPL-2.0 <https://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html>
+ */
 
 class RecoverCartSales
 {
