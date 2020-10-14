@@ -476,7 +476,7 @@ if ($action == 'delete') {
     xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " WHERE customers_id=" . $customerId);
     xtc_db_query("DELETE FROM " . TABLE_MCM_RECOVER_CART_SALES . " WHERE customers_id=" . $customerId);
 
-    xtc_redirect(xtc_href_link(FILENAME_RECOVER_CART_SALES, 'delete=1&customer_id='. $_GET['customer_id'] . '&tdate=' . $_GET['tdate']));
+    xtc_redirect(xtc_href_link('mcm_recover_cart_sales.php', 'delete=1&customer_id='. $_GET['customer_id'] . '&tdate=' . $_GET['tdate']));
 }
 
 if ($getDelete) {
@@ -581,7 +581,7 @@ if ($tdate == '') {
                                             <td class='dataTableContent' align='right' colspan='6' nowrap><b>" . $textTotal . "</b>" . $currencies->format($totalPrice) . "</td>
                                         </tr>
                                         <tr>
-                                            <td colspan='6' align='right'><a class=\"button\" href=" . xtc_href_link(FILENAME_RECOVER_CART_SALES, "action=delete&customer_id=" . $customerId . "&tdate=" . $tdate) . ">" . BUTTON_DELETE . "</a></td>
+                                            <td colspan='6' align='right'><a class=\"button\" href=" . xtc_href_link('mcm_recover_cart_sales.php', "action=delete&customer_id=" . $customerId . "&tdate=" . $tdate) . ">" . BUTTON_DELETE . "</a></td>
                                         </tr>\n";
                                     echo $currentLine;
                                 }
@@ -771,7 +771,7 @@ if ($tdate == '') {
                     }
 
                     echo "<tr><td colspan=8 align='right' class='dataTableContent'><b>" . $textTotal . "</b>" . $currencies->format($totalPrice) . "</td> </tr>";
-                    echo "<tr><td colspan=6 align='right'><a class=\"button\" href=" . xtc_href_link(FILENAME_RECOVER_CART_SALES, "action=delete&customer_id=" . $customerId . "&tdate=" . $tdate) . ">" . BUTTON_DELETE . "</a></td>  </tr>\n";
+                    echo "<tr><td colspan=6 align='right'><a class=\"button\" href=" . xtc_href_link('mcm_recover_cart_sales.php', "action=delete&customer_id=" . $customerId . "&tdate=" . $tdate) . ">" . BUTTON_DELETE . "</a></td>  </tr>\n";
                     echo "<tr><td colspan=6 align=center><a href=".$PHP_SELF.">" . TEXT_RETURN . "</a></td></tr>";
                 
                 } else { // we are NOT doing an e-mail to some customers ?>
@@ -1049,7 +1049,7 @@ if ($tdate == '') {
                                                     <td class='dataTableContent' align='right' colspan='8'><b>" . $textTotal . "</b>" . $currencies->format($totalPrice) . "</td>
                                                     </tr>
                                                     <tr>
-                                                    <td colspan='6' align='right'><a class=\"button\" href=" . xtc_href_link(FILENAME_RECOVER_CART_SALES,"action=delete&customer_id=$currentCustomerId&tdate=$tdate") . ">" . BUTTON_DELETE  . "</a><a class=\"button\" href=" . xtc_href_link(FILENAME_RECOVER_CART_SALES,"action=complete&customer_id=$currentCustomerId&tdate=$tdate") . ">" . BUTTON_COMPLETE  . "</a></td>
+                                                    <td colspan='6' align='right'><a class=\"button\" href=" . xtc_href_link('mcm_recover_cart_sales.php',"action=delete&customer_id=$currentCustomerId&tdate=$tdate") . ">" . BUTTON_DELETE  . "</a><a class=\"button\" href=" . xtc_href_link('mcm_recover_cart_sales.php',"action=complete&customer_id=$currentCustomerId&tdate=$tdate") . ">" . BUTTON_COMPLETE  . "</a></td>
                                                     </tr>\n";
                                     if (!$skip) {
                                         echo $currentLine;
