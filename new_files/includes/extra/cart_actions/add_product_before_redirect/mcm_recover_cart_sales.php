@@ -3,6 +3,7 @@ if (!defined('MODULE_MCM_RECOVER_CART_SALES_STATUS') || MODULE_MCM_RECOVER_CART_
     return;
 }
 
-require_once DIR_FS_INC . 'mcm_recover_cart_sales.inc.php';
+use ModifiedCommunityModules\RecoverCartSales\Classes\RecoverCartSales;
+require_once DIR_FS_DOCUMENT_ROOT . '/vendor-no-composer/autoload.php';
 
-xtc_checkout_site('cart');
+RecoverCartSales::checkoutSite('cart');
