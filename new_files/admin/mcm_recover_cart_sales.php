@@ -741,8 +741,8 @@ if ($tdate == '') {
 
                         $smarty->caching = false;
 
-                        $htmlMail = $smarty->fetch(CURRENT_TEMPLATE . '/admin/mail/' . $inrec['language'] . '/cart_mail.html');
-                        $txtMail = $smarty->fetch(CURRENT_TEMPLATE . '/admin/mail/' . $inrec['language'] . '/cart_mail.txt');
+                        $htmlMail = $smarty->fetch(CURRENT_TEMPLATE . '/admin/mail/' . $inrec['language'] . '/mcm_reover_cart_sales.html');
+                        $txtMail = $smarty->fetch(CURRENT_TEMPLATE . '/admin/mail/' . $inrec['language'] . '/mcm_reover_cart_sales.txt');
 
                         if ($inrec['email'] != '') {
                             xtc_php_mail(EMAIL_SUPPORT_ADDRESS, EMAIL_SUPPORT_NAME, $inrec['email'] , $custname , $rcsConfiguration->emailCopiesTo, EMAIL_SUPPORT_REPLY_ADDRESS, EMAIL_SUPPORT_REPLY_ADDRESS_NAME, '', '', EMAIL_TEXT_SUBJECT, $htmlMail, $txtMail);
@@ -750,10 +750,10 @@ if ($tdate == '') {
 
                         // Debugging
                         /*
-                            $fp = fopen('cart_mail.html', 'w');
+                            $fp = fopen('mcm_reover_cart_sales.html', 'w');
                             fputs($fp, $htmlMail);
                             fclose($fp);
-                            $fp = fopen('cart_mail.txt', 'w');
+                            $fp = fopen('mcm_reover_cart_sales.txt', 'w');
                             fputs($fp, $txtMail);
                             fclose($fp);
                         */
