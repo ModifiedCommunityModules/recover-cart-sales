@@ -26,6 +26,12 @@ Modified by Lane Roathe (recover_cart_sales.php,v 1.4d .. v2.11)
 lane@ifd.com    www.osc-modsquad.com / www.ifd.com
 -----------------------------------------------------------------------------------------------*/
 
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
+// restore_error_handler();
+// restore_exception_handler();
+
 use currencies as Currencies;
 use main as Main;
 use xtcPrice as XtcPrice;
@@ -64,7 +70,7 @@ function getCustomerStatus(int $customerId, int $languageId): array
     $sql = "SELECT c.customers_status, cs.customers_status_name,  cs.customers_status_image, cs.customers_status_ot_discount_flag, cs.customers_status_ot_discount FROM " . TABLE_CUSTOMERS . " c, " . TABLE_CUSTOMERS_STATUS . " cs WHERE c.customers_status=cs.customers_status_id AND c.customers_id=" . (int) $customerId . " AND cs.language_id=" . (int) $languageId;
 
     $query = xtc_db_query($sql);
-    return xtc_db_fetch_array($statusQuery);
+    return xtc_db_fetch_array($query);
 }
 
 function xtc_get_products_special_price_ow($productId, $customerId, $qty = 1)
@@ -780,7 +786,7 @@ if ($tdate == '') {
                     <tr>
                         <td class="pageHeading" align="left" width="50%" colspan="4"><?php echo HEADING_TITLE; ?></td>
                         <td class="pageHeading" align="right" width="50%" colspan="4">
-                            <?php echo xtc_draw_form('recover_cart_sales', 'recover_cart_sales.php', '', 'post', '') . PHP_EOL; ?>
+                            <?php echo xtc_draw_form('recover_cart_sales', 'mcm_recover_cart_sales.php', '', 'post', '') . PHP_EOL; ?>
                                 <table align="right" width="100%">
                                     <tr class="dataTableContent" align="right">
                                         <td><?php echo DAYS_FIELD_PREFIX; ?><input type=text size=4 width=4 value=<?php echo $tdate; ?> name=tdate><?php echo DAYS_FIELD_POSTFIX; ?><input type=submit value="<?php echo DAYS_FIELD_BUTTON; ?>"></td>
@@ -790,7 +796,7 @@ if ($tdate == '') {
                         </td>
                     </tr>
                     
-                    <?php echo xtc_draw_form('recover_cart_sales', 'recover_cart_sales.php', '', 'post', '') . PHP_EOL; ?>
+                    <?php echo xtc_draw_form('recover_cart_sales', 'mcm_recover_cart_sales.php', '', 'post', '') . PHP_EOL; ?>
                         <tr class="dataTableHeadingRow">
                             <td class="dataTableHeadingContent" align="left" colspan="2" width="10%" nowrap><?php echo TABLE_HEADING_CONTACT; ?></td>
                             <td class="dataTableHeadingContent" align="left" colspan="1" width="15%" nowrap><?php echo TABLE_HEADING_DATE; ?></td>
@@ -882,7 +888,7 @@ if ($tdate == '') {
                                                 $ttl = xtc_db_fetch_array($doneQuery);
                                                 
                                                 if ($ttl) {
-                                                    if (xtc_not_null($ttl['date_modified'])) { // allow for older scarts that have no datemodified
+                                                    if (xtc_not_null($ttl['date_modified'])) { // allow for older mcm_recover_cart_sales that have no date_modified
                                                         $ttldate = $ttl['date_modified'];
                                                     } else {
                                                         $ttldate = $ttl['date_added'];

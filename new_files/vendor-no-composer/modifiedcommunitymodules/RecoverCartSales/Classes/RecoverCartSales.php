@@ -7,12 +7,15 @@
  *
  * @license GPL-2.0 <https://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html>
  */
+namespace ModifiedCommunityModules\RecoverCartSales\Classes;
 
 class RecoverCartSales
 {
     public static function checkoutSite($site)
     {
-        if (!$_SESSION['customer_id']) {
+        $customerId = $_SESSION['customer_id'] ?? null;
+
+        if (!$customerId) {
             return false;
         }
 
@@ -20,7 +23,7 @@ class RecoverCartSales
             return false;
         }
 
-        $query = xtc_db_query("SELECT checkout_site FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_id = " . $_SESSION['customer_id']);
+        $query = xtc_db_query("SELECT checkout_site FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_id = " . $customerId);
         $result = xtc_db_fetch_array($query);
         
         self::compareSite($site, $result['checkout_site']);
