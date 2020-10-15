@@ -1,8 +1,8 @@
 -- DELETE FROM `configuration_group` WHERE `configuration_group_title` LIKE 'Recover Cart Sales';
-DELETE FROM `configuration` WHERE `configuration_key` LIKE 'RCS_%';
-DELETE FROM `configuration` WHERE `configuration_key` LIKE 'DEFAULT_RCS_%';
+-- DELETE FROM `configuration` WHERE `configuration_key` LIKE 'RCS_%';
+-- DELETE FROM `configuration` WHERE `configuration_key` LIKE 'DEFAULT_RCS_%';
 
-DROP TABLE IF EXISTS `mcm_recover_cart_sales`;
+-- DROP TABLE IF EXISTS `mcm_recover_cart_sales`;
 -- CREATE TABLE `mcm_recover_cart_sales` (
 --    `scartid` INT( 11 ) NOT NULL AUTO_INCREMENT, `customers_id` INT( 11 ) NOT NULL UNIQUE, `dateadded` VARCHAR( 8 ) NOT NULL, `datemodified` VARCHAR( 8 ) NOT NULL, PRIMARY KEY ( `scartid` ));
 
