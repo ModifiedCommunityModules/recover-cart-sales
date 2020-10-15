@@ -98,7 +98,7 @@ function seadate($day)
 
 function cart_date_short($raw_date)
 {
-    if ( ($raw_date == '00000000') || ($raw_date == '') ) {
+    if ($raw_date == '00000000' || ($raw_date == '') {
         return false;
     }
 
@@ -125,8 +125,10 @@ function getCustomerSessions()
             // --- DB RECORDS ---
             $sesquery = xtc_db_query("SELECT value FROM " . TABLE_SESSIONS . " WHERE 1");
             while ($ses = xtc_db_fetch_array($sesquery)) {
-                if ( preg_match( "/customer_id[^\"]*\"([0-9]*)\"/", $ses['value'], $custval ) )
-                $customerSessionIds[] = $custval[1];
+                $expression = "/customer_id[^\"]*\"([0-9]*)\"/";
+                if (preg_match($expression, $ses['value'], $custval)) {
+                    $customerSessionIds[] = $custval[1];
+                }
             }
         } else {
             if ($handle = opendir(xtc_session_save_path())) {
@@ -137,7 +139,8 @@ function getCustomerSessions()
                             $val = fread($fp, filesize($file));
                             fclose($fp);
 
-                            if (preg_match( "/customer_id[^\"]*\"([0-9]*)\"/", $val, $custval)) {
+                            $expression = "/customer_id[^\"]*\"([0-9]*)\"/";
+                            if (preg_match($expression, $val, $custval)) {
                                 $customerSessionIds[] = $custval[1];
                             }
                         }
@@ -189,10 +192,10 @@ if ($action == 'complete') {
         if (isset($quote['error'])) {
             unset($_SESSION['shipping']);
         } else {
-            if ((isset($quote[0]['methods'][0]['title'])) && (isset($quote[0]['methods'][0]['cost']))) {
+            if (isset($quote[0]['methods'][0]['title']) && isset($quote[0]['methods'][0]['cost'])) {
                 $_SESSION['shipping'] = [
                     'id' => $_SESSION['shipping'],
-                    'title' => (($free_shipping == true) ? $quote[0]['methods'][0]['title'] : $quote[0]['module'] . ' (' . $quote[0]['methods'][0]['title'] . ')'),
+                    'title' => ($free_shipping == true ? $quote[0]['methods'][0]['title'] : $quote[0]['module'] . ' (' . $quote[0]['methods'][0]['title'] . ')'),
                     'cost' => $quote[0]['methods'][0]['cost']
                 ];
             }
@@ -339,7 +342,7 @@ if ($action == 'complete') {
             if (xtc_db_num_rows($stockQuery) > 0) {
                 $stockValues = xtc_db_fetch_array($stockQuery);
                 // do not decrement quantities if products_attributes_filename exists
-                if ((DOWNLOAD_ENABLED != 'true') || (!$stockValues['products_attributes_filename'])) {
+                if (DOWNLOAD_ENABLED != 'true' || !$stockValues['products_attributes_filename']) {
                     $stockLeft = $stockValues['products_quantity'] - $order->products[$i]['qty'];
                 } else {
                     $stockLeft = $stockValues['products_quantity'];
@@ -447,7 +450,7 @@ if ($action == 'complete') {
 
                 xtc_db_perform(TABLE_ORDERS_PRODUCTS_ATTRIBUTES, $sqlDataArray);
 
-                if ((DOWNLOAD_ENABLED == 'true') && isset ($attributesValues['products_attributes_filename']) && xtc_not_null($attributesValues['products_attributes_filename'])) {
+                if (DOWNLOAD_ENABLED == 'true' && isset($attributesValues['products_attributes_filename']) && xtc_not_null($attributesValues['products_attributes_filename'])) {
                     $sqlDataArray = [
                         'orders_id' => $insertId,
                         'orders_products_id' => $orderProductId,
@@ -460,7 +463,7 @@ if ($action == 'complete') {
             }
         }
         //------insert customer choosen option eof ----
-        $totalWeight += ($order->products[$i]['qty'] * $order->products[$i]['weight']);
+        $totalWeight += $order->products[$i]['qty'] * $order->products[$i]['weight'];
         $totalTax += xtc_calculate_tax($totalProductsPrice, $productsTax) * $order->products[$i]['qty'];
         $totalCost += $totalProductsPrice;
     }
@@ -645,7 +648,7 @@ if ($tdate == '') {
                                 }
                             }
 
-                            if( $specialPrice == 0 ) {
+                            if ($specialPrice == 0) {
                                 $specialPrice = $inrec2['price'];
                             }
                             $specialPrice += $attributePrice;
@@ -933,9 +936,9 @@ if ($tdate == '') {
                                                         } else {
                                                             // It's rare for the same customer to order the same item twice, so we probably have a matching order, show it
                                                             $backgroundColor = $rcsConfiguration->matchedOrderColor;
-                                                            $ccquery = xtc_db_query("SELECT orders_status_name FROM " . TABLE_ORDERS_STATUS . " WHERE language_id = " . (int)$_SESSION['languages_id'] . " AND orders_status_id = " . (int)$orec['orders_status'] );
+                                                            $ccquery = xtc_db_query("SELECT orders_status_name FROM " . TABLE_ORDERS_STATUS . " WHERE language_id = " . (int) $_SESSION['languages_id'] . " AND orders_status_id = " . (int) $orec['orders_status'] );
 
-                                                            if( $srec = xtc_db_fetch_array( $ccquery ) ) {
+                                                            if ($srec = xtc_db_fetch_array($ccquery)) {
                                                                 $status = ' <a href="' . xtc_href_link(FILENAME_ORDERS, "oID=" . $orec['orders_id'] . "&action=edit") .  '">[' . $srec['orders_status_name'] . ']</a>';
                                                             } else {
                                                                 $status = ' ['. TEXT_CURRENT_CUSTOMER . ']';
@@ -979,13 +982,13 @@ if ($tdate == '') {
                                                                                     pd.products_name name
                                                                         FROM    " . TABLE_PRODUCTS . " p,
                                                                                     " . TABLE_PRODUCTS_DESCRIPTION . " pd
-                                                                        WHERE   p.products_id = '" . (int)$basketEntryOfCustomer['pid'] . "'
+                                                                        WHERE   p.products_id = '" . (int) $basketEntryOfCustomer['pid'] . "'
                                                                         AND     pd.products_id = p.products_id
-                                                                        AND     pd.language_id = " . (int)$_SESSION['languages_id'] );
+                                                                        AND     pd.language_id = " . (int) $_SESSION['languages_id']);
                                         $inrec2 = xtc_db_fetch_array($query3);
 
                                         // Check to see if the product is on special, and if so use that pricing
-                                        $specialPrice = xtc_get_products_special_price_ow( $basketEntryOfCustomer['pid'], $basketEntryOfCustomer['cid'], ($basketEntryOfCustomer['qty'] < $quantity[(int) $basketEntryOfCustomer['pid']] ? $quantity[(int) $basketEntryOfCustomer['pid']] : $basketEntryOfCustomer['qty']));
+                                        $specialPrice = xtc_get_products_special_price_ow($basketEntryOfCustomer['pid'], $basketEntryOfCustomer['cid'], ($basketEntryOfCustomer['qty'] < $quantity[(int) $basketEntryOfCustomer['pid']] ? $quantity[(int) $basketEntryOfCustomer['pid']] : $basketEntryOfCustomer['qty']));
                                         // BEGIN OF ATTRIBUTE DB CODE
                                         $productAttributes = ''; // DO NOT DELETE
 
@@ -1002,11 +1005,11 @@ if ($tdate == '') {
                                                                                 AND     cba.customers_id = " . $currentCustomerId . "
                                                                                 AND     po.products_options_id = cba.products_options_id
                                                                                 AND     pov.products_options_values_id = cba.products_options_value_id
-                                                                                AND     pa.products_id = " . (int)$basketEntryOfCustomer['pid'] . "
+                                                                                AND     pa.products_id = " . (int) $basketEntryOfCustomer['pid'] . "
                                                                                 AND     pa.options_id = cba.products_options_id
                                                                                 AND     pa.options_values_id = cba.products_options_value_id
-                                                                                AND     po.language_id = " . (int)$_SESSION['languages_id'] . "
-                                                                                AND     pov.language_id = " . (int)$_SESSION['languages_id']);
+                                                                                AND     po.language_id = " . (int) $_SESSION['languages_id'] . "
+                                                                                AND     pov.language_id = " . (int) $_SESSION['languages_id']);
                                             $hasAttributes = false;
 
                                             if (xtc_db_num_rows($attributeQuery)) {
