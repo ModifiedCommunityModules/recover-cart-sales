@@ -98,7 +98,7 @@ function seadate($day)
 
 function cart_date_short($raw_date)
 {
-    if ($raw_date == '00000000' || ($raw_date == '') {
+    if ($raw_date == '00000000' || $raw_date == '') {
         return false;
     }
 
