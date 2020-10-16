@@ -23,10 +23,10 @@ class RecoverCartSales
             return false;
         }
 
-        $query = xtc_db_query("SELECT checkout_site FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_id = " . $customerId);
+        $query = xtc_db_query("SELECT mcm_checkout_site FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_id = " . $customerId);
         $result = xtc_db_fetch_array($query);
         
-        self::compareSite($site, $result['checkout_site']);
+        self::compareSite($site, $result['mcm_checkout_site']);
     }
 
     private static function compareSite($currentSite, $oldSite)
@@ -39,7 +39,7 @@ class RecoverCartSales
         ];
 
         if ($sorting[$currentSite] >= $sorting[$oldSite]) {
-            xtc_db_query("UPDATE " . TABLE_CUSTOMERS_BASKET . " SET checkout_site = '" . xtc_db_input($currentSite) . "', language = '" . xtc_db_input($_SESSION['language']) . "' WHERE customers_id = " . (int) $_SESSION['customer_id']);
+            xtc_db_query("UPDATE " . TABLE_CUSTOMERS_BASKET . " SET mcm_checkout_site = '" . xtc_db_input($currentSite) . "', mcm_language = '" . xtc_db_input($_SESSION['language']) . "' WHERE customers_id = " . (int) $_SESSION['customer_id']);
         }
     }
 }

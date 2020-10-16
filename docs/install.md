@@ -19,7 +19,7 @@ Erstellen Sie vor der Installation dieses Moduls ein Backup der Datenbank.
 ### Datenbank
 Bei der Installation werden folgende Tabellen und Spalten hinzugefügt.
 - `mcm_recover_cart_sales`
-- `customers_basket.checkout_site`
+- `customers_basket.mcm_checkout_site`
 - `customers_basket.language`
 
 ---

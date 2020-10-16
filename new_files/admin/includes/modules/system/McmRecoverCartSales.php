@@ -40,8 +40,8 @@ class McmRecoverCartSales extends StdModule
         );
 
         // Add new fields to tables
-        xtc_db_query("ALTER TABLE `customers_basket` ADD `checkout_site` ENUM( 'cart', 'shipping', 'payment', 'confirm' ) NOT NULL DEFAULT 'cart' COMMENT 'Module: mcm_recover_cart_sales'");
-        xtc_db_query("ALTER TABLE `customers_basket` ADD `language` VARCHAR(32) NULL DEFAULT NULL COMMENT 'Module: mcm_recover_cart_sales'");
+        xtc_db_query("ALTER TABLE `customers_basket` ADD `mcm_checkout_site` ENUM( 'cart', 'shipping', 'payment', 'confirm' ) NOT NULL DEFAULT 'cart' COMMENT 'Module: mcm_recover_cart_sales'");
+        xtc_db_query("ALTER TABLE `customers_basket` ADD `mcm_language` VARCHAR(32) NULL DEFAULT NULL COMMENT 'Module: mcm_recover_cart_sales'");
 
         // Create new Configuration Group
         $groupId = 33;
@@ -85,8 +85,8 @@ class McmRecoverCartSales extends StdModule
         xtc_db_query("DELETE FROM `configuration_group` WHERE `configuration_group_id` = '" . $groupId . "'");
         xtc_db_query('DROP TABLE IF EXISTS `mcm_recover_cart_sales`');
 
-        xtc_db_query("ALTER TABLE `customers_basket` DROP `checkout_site`");
-        xtc_db_query("ALTER TABLE `customers_basket` DROP `language`");
+        xtc_db_query("ALTER TABLE `customers_basket` DROP `mcm_checkout_site`");
+        xtc_db_query("ALTER TABLE `customers_basket` DROP `mcm_language`");
 
         $this->deleteConfiguration('BASE_DAYS');
         $this->deleteConfiguration('REPORT_DAYS');
