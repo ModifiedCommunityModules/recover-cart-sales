@@ -10,24 +10,31 @@ PHP 7.0 or above
 We recommend installing the module via the [MMLC](https://module-loader.de).
 *(Experienced developers can also install the module manually without MMLC. For this the required dependencies and autoloads must be also installed manually.)*
 
-## Authors
-- 2020 by Robin Wieschendorf (robinwieschendorf.de) - transferred to Github and entered in MMLC
-- 2009-2013 by modified (www.modified-shop.org)
-- 2007-2008 by Estelco
-- 2007 by 2007 Andre Estel (www.estelco.de)
-- 2003-2005 by JM Ivler (Ideas From the Deep / OSCommerce)
-- 2003 by xtcommerce (www.xt-commerce.com)
-- 2003 by nextcommerce (www.nextcommerce.org)
-- 2002-2003 by osCommerce (www.oscommerce.com)
-- 2001-2002 by Ian C Wilson (www.phesis.org)
-- 2000-2001 by The Exchange Project (earlier name of osCommerce)
-
-- ???? by Strider (strider@oscworks.com)
-- ???? by Nick Stanko (nick@ukidev.com, ukiDev.com)
-- ???? by Andre (ambidex@gmx.net)
-- ???? by Aalst (aalst@aalst.com)
-- ???? by willross (reply@qwest.net)
-- ???? by Lane Roathe (lane@ifd.com, www.osc-modsquad.com, www.ifd.com)
+## Contributors
+- Robin Wieschendorf (robinwieschendorf.de) - transferred to Github and entered in MMLC
+- prizzer
+- ralph_84
+- Buggyboy
+- Simon
+- 0815
+- Stefan
+- modified (www.modified-shop.org)
+- zazu
+- Modulfux - transferred to Modified Forum
+- Estelco
+- Andre Estel (www.estelco.de)
+- JM Ivler (Ideas From the Deep / OSCommerce)
+- xtcommerce (www.xt-commerce.com)
+- nextcommerce (www.nextcommerce.org)
+- osCommerce (www.oscommerce.com)
+- Ian C Wilson (www.phesis.org)
+- The Exchange Project (earlier name of osCommerce)
+- Strider (strider@oscworks.com)
+- Nick Stanko (nick@ukidev.com, ukiDev.com)
+- Andre (ambidex@gmx.net)
+- Aalst (aalst@aalst.com)
+- willross (reply@qwest.net)
+- Lane Roathe (lane@ifd.com, www.osc-modsquad.com, www.ifd.com)
 
 ## Contributing
 We would be happy if you would like to take part in the development of this module. If you wish more features or you want to make improvements or to fix errors feel free to contribute. In order to contribute, you just have to fork this repository and make pull requests or become a member of the github organisation [ModifiedCommunityModules](https://github.com/ModifiedCommunityModules) to get direct access to the repository.
