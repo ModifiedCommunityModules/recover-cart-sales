@@ -59,9 +59,9 @@ class Order
         return xtc_db_fetch_array($query);
     }
 
-    private function getAttributes($optionId, $optionValueId, $languagedId)
+    private function getAttributes($optionId, $optionValueId, $languageId)
     {
-        $sql = "SELECT popt.products_options_name, poval.products_options_values_name, pa.options_values_price, pa.price_prefix FROM " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa WHERE pa.products_id = '" . $productId . "' AND pa.options_id = '" . $optionId . "' AND pa.options_id = popt.products_options_id AND pa.options_values_id = '" . $optionValueId . "' AND pa.options_values_id = poval.products_options_values_id AND popt.language_id = '" . $languagedId . "' AND poval.language_id = '" . $languagedId . "'";
+        $sql = "SELECT popt.products_options_name, poval.products_options_values_name, pa.options_values_price, pa.price_prefix FROM " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa WHERE pa.products_id = '" . $productId . "' AND pa.options_id = '" . $optionId . "' AND pa.options_id = popt.products_options_id AND pa.options_values_id = '" . $optionValueId . "' AND pa.options_values_id = poval.products_options_values_id AND popt.language_id = '" . $languageId . "' AND poval.language_id = '" . $languageId . "'";
                     
         $query = xtc_db_query($sql);
         return xtc_db_fetch_array($query);
