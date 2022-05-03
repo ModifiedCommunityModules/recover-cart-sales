@@ -556,11 +556,11 @@ if ($tdate == '') {
                             $quantity[(int) $quantityResult['pid']] += $quantityResult['qty'];
                         }
 
-                        $query1 = xtc_db_query("SELECT cb.products_id pid,
+                        $sql = "SELECT cb.products_id pid,
                                     cb.customers_basket_quantity qty,
                                     cb.customers_basket_date_added bdate,
                                     cb.mcm_checkout_site site,
-                                    cb.language,
+                                    cb.mcm_language,
                                     cus.customers_firstname fname,
                                     cus.customers_lastname lname,
                                     cus.customers_gender,
@@ -571,11 +571,12 @@ if ($tdate == '') {
                                     " . TABLE_ADDRESS_BOOK . " ab,
                                     " . TABLE_COUNTRIES . " co
                             WHERE     cb.customers_id = cus.customers_id
-                            AND       cus.customers_id = '" . $customerId."'
+                            AND       cus.customers_id = '" . $customerId . "'
                             AND       cus.customers_default_address_id = ab.address_book_id
                             AND       co.countries_id=ab.entry_country_id
-                            ORDER BY  cb.customers_basket_date_added desc ");
+                            ORDER BY  cb.customers_basket_date_added desc ";
 
+                        $query1 = xtc_db_query($sql);
                         $queryRowCount = xtc_db_num_rows($query1);
                         for ($i = 0; $i < $queryRowCount; $i++) {
                             $inrec = xtc_db_fetch_array($query1);
@@ -862,6 +863,7 @@ if ($tdate == '') {
     
                                 while ($data = xtc_db_fetch_array($query2)) {
                                     $basketEntryOfCustomer = $data;
+
                                     //reset attributes price
                                     $attributePrice = 0;
                                     // If this is a new customer, create the appropriate HTML
@@ -882,6 +884,7 @@ if ($tdate == '') {
                                             $sentdate = "";
                                             $beforeDate = $rcsConfiguration->cartsMatchAllDates == 'true' ? '0' : $basketEntryOfCustomer['bdate'];
                                             $customerFullName = $basketEntryOfCustomer['fname'] . " " . $basketEntryOfCustomer['lname'];
+                                            $customerFullNameFormated = '<font color=' . $rcsConfiguration->curcustColor . '><b>' . $customerFullName . '</b></font>';
                                             $status = "";
 
                                             $doneQuery = xtc_db_query("SELECT * FROM " . TABLE_MCM_RECOVER_CART_SALES . " WHERE customers_id = '" . $currentCustomerId . "'");
@@ -919,7 +922,6 @@ if ($tdate == '') {
 
                                             if (xtc_db_num_rows($ccquery) > 0) {
                                                 // We have a matching order; assume current customer but not for this order
-                                                $customerFullNameFormated = '<font color=' . $rcsConfiguration->curcustColor . '><b>' . $customerFullName . '</b></font>';
 
                                                 // Now, look to see if one of the orders matches this current order's items
                                                 while ($orec = xtc_db_fetch_array($ccquery)) {
