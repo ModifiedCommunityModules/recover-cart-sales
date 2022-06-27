@@ -1,4 +1,25 @@
 <?php
+
+use ModifiedCommunityModules\RecoverCartSales\Classes\Controller;
+
+require 'includes/application_top.php';
+
+if (!defined('MODULE_MCM_RECOVER_CART_SALES_STATUS') || MODULE_MCM_RECOVER_CART_SALES_STATUS != 'true') {
+    return;
+}
+
+require_once DIR_FS_DOCUMENT_ROOT . '/vendor-no-composer/autoload.php';
+
+restore_error_handler();
+restore_exception_handler();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL ^ E_NOTICE);
+
+$controller = new Controller();
+$controller->invoke();
+
+die();
 /* ---------------------------------------------------------------------------------------------
 $Id: recover_cart_sales.php,v 3.0 2007/05/15 06:10:35 Estelco Exp $
 Recover Cart Sales Tool v3.0 for xtCommerce
