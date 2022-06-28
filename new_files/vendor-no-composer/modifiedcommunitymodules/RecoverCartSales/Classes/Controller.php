@@ -70,6 +70,17 @@ class Controller
         $this->show();
     }
 
+    private function getCustomerBasketEntriesByCustomerId(int $customerId): array
+    {  
+        $sql = "SELECT * FROM customers_basket WHERE customers_id = '$customerId' ORDER BY customers_basket_date_added DESC";
+        $entries = [];
+        $query = xtc_db_query($sql);
+        while ($row = xtc_db_fetch_array($query)) {
+            $entries[] = $row;
+        }
+        return $entries;
+    }
+
     private function getCustomerIdsFromBasket(string $dateAfter, array $excludedCustomerIds): array
     {
         $excludedCustomerIdsStr = '0';
