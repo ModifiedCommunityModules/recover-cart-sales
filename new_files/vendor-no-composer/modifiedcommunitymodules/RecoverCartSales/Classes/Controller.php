@@ -70,6 +70,36 @@ class Controller
         $this->show();
     }
 
+    private function getEntries()
+    {
+        $configuration = new Configuration('MODULE_MCM_RECOVER_CART_SALES');
+        $customerIdsInSessions = [];
+        if ($configuration->checkSessions == 'xtrue' ) {
+            $session = new Session();
+            $customerIdsInSessions = $session->getCustomerIdsFromAllSessions();
+        }
+
+        $date = $this->dateBeforeDays(90);
+        $customerIds = $this->getCustomerIdsFromBasket($date, $customerIdsInSessions);
+
+        $entries = [];
+        foreach ($customerIds as $customerId) {
+            $customer = $this->getCustomerById($customerId);
+            $customerBasketEntries = $this->getCustomerBasketEntriesByCustomerId($customerId);
+
+            if (!$customer || !$customerBasketEntries) {
+                continue;
+            }
+
+            $entries[] = [
+                'customer' => $customer,
+                'customerBasketEntries' => $customerBasketEntries,
+                'customerBasketTotal' => $this->getBasketSum($customerBasketEntries) //TODO bis jetzt nur netto
+            ];
+        }
+       return $entries;
+    }
+
     /**
      * Bis jetzt wird nur der netto Preis berechent.
      */
