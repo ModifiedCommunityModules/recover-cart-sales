@@ -71,6 +71,42 @@ class Controller
     }
 
     /**
+     * Gibt den besten Preis zurück, dabei werden der normele Preis, der Kundengruppen-Preis
+     * und die Sonderangebots-Preise verglichen und der niedriegste Preis geliefert.
+     */
+    private function getBestProductPrice(array $product, int $customerStatus, int $quantity): float
+    {
+        $prices = [];
+
+        if (isset($product['products_price'])) {
+            $prices[] = $product['products_price'];
+        }
+
+        if (!isset($product['products_id'])) {
+            return 0.0;
+        }
+
+        $productId = $product['products_id'] ?? 0;
+
+        $personalOfferPrice = $this->getPersonalOfferPrice($productId, $customerStatus, $quantity);
+        if ($personalOfferPrice) {
+            $prices[] = $personalOfferPrice;
+        }
+        
+        $specialPrice = $this->getSpecialPrice($productId);
+        if ($specialPrice) {
+            $prices[] = $specialPrice;
+        }
+        
+        if (!$prices) {
+            return 0.0;
+        }
+
+        return min($prices);
+    }
+
+
+    /**
      * Liefert -1, wenn keine customerStatus(Id) gefunden werden konnte.
      */
     private function getCustomerStatus(int $customerId): int
