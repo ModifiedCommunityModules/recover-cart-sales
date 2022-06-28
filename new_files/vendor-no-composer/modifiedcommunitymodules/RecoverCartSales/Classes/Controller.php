@@ -71,6 +71,29 @@ class Controller
     }
 
     /**
+     * Bis jetzt wird nur der netto Preis berechent.
+     */
+    private function getBasketSum(array $customerBasketEntries): float
+    {
+        $sum = 0.0;
+        foreach ($customerBasketEntries as $customerBasketEntry) {
+            $customerId = (int) $customerBasketEntry['customers_id'];
+            $customerStatus = $this->getCustomerStatus($customerId);
+
+            $productId = (int) $customerBasketEntry['products_id'];
+            $quantity = (int) $customerBasketEntry['customers_basket_quantity'];
+
+            $product = $this->getProduct($productId);
+
+            $bestPrice = $this->getBestProductPrice($product, $customerStatus, $quantity);
+
+            $sum += $bestPrice * $quantity;
+        }
+
+        return $sum;
+    }
+
+    /**
      * Gibt den besten Preis zurück, dabei werden der normele Preis, der Kundengruppen-Preis
      * und die Sonderangebots-Preise verglichen und der niedriegste Preis geliefert.
      */
