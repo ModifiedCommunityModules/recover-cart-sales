@@ -45,9 +45,9 @@ class Controller
         //$date = dateBeforeDays($tdate);
         $date = $this->dateBeforeDays(90);
 
-        $entries = $this->getCustomerIdsFromBasket($date, $customerIdsInSessions);
-        var_dump($entries);
-        die();
+        // $entries = $this->getCustomerIdsFromBasket($date, $customerIdsInSessions);
+        // var_dump($entries);
+        // die();
         // $sql = "SELECT customers_id, MAX(customers_basket_date_added) as added_latest
         //         FROM customers_basket
         //         WHERE customers_basket_date_added >= '$date'
