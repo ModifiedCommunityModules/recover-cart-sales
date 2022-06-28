@@ -123,6 +123,18 @@ class Controller
         return [];
     }
 
+    private function getCustomerById(int $customerId): array
+    {
+        $sql = "SELECT * FROM customers WHERE customers_id = '$customerId' LIMIT 1";
+        $entries = [];
+        $query = xtc_db_query($sql);
+        $row = xtc_db_fetch_array($query);
+        if ($row) {
+            return $row;
+        }
+        return [];
+    }
+
     private function getCustomerBasketEntriesByCustomerId(int $customerId): array
     {  
         $sql = "SELECT * FROM customers_basket WHERE customers_id = '$customerId' ORDER BY customers_basket_date_added DESC";
