@@ -30,6 +30,39 @@ class Controller
         $this->show();
     }
 
+    private function getCustomerIdsFromBasket(string $dateAfter, array $excludedCustomerIds): array
+    {
+        $excludedCustomerIdsStr = '0';
+        if ($excludedCustomerIds) {
+            $excludedCustomerIdsStr = implode(', ', $excludedCustomerIds);
+        }
+
+        $sql = "SELECT customers_id, MAX(customers_basket_date_added) as added_latest
+                FROM customers_basket
+                WHERE customers_basket_date_added >= '$dateAfter'
+                    AND customers_id NOT IN ($excludedCustomerIdsStr)
+                GROUP BY customers_id
+                ORDER BY added_latest DESC, customers_id";
+
+        $query = xtc_db_query($sql);
+
+        $entries = [];
+        while ($row = xtc_db_fetch_array($query)) {
+            $entries[] = $row;
+        }
+        return $entries;
+    }
+
+    /**
+     * TODO: Ausgabe im DateTime Format
+     */
+    private function dateBeforeDays(int $days): string
+    {
+        $time = strtotime("-$days days");
+        $date = date("Ymd", $time);
+        return $date;
+    }
+
     public function show($messages = [])
     {
         $page = new Page();
