@@ -93,6 +93,24 @@ class Controller
         return $row['specials_new_products_price'] ?? 0.0;
     }
 
+    /**
+     * Liefert 0, wenn kein Preis gefunden werden konnte.
+     */
+    private function getPersonalOfferPrice(int $productId, int $customerStatus, int $quantity): float
+    {
+        $tableName = 'personal_offers_by_customers_status_' . $customerStatus;
+
+        $sql = "SELECT *
+                FROM $tableName
+                WHERE products_id = '$productId'
+                    AND quantity <= '$quantity'
+                ORDER BY quantity DESC
+                LIMIT 1";
+        
+        $query = xtc_db_query($sql);
+        $row = xtc_db_fetch_array($query);
+        return $row['personal_offer'] ?? 0.0;
+    }
 
     private function getProduct(int $productId): array
     {
