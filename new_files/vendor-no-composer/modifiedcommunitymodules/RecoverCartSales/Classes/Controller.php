@@ -81,6 +81,18 @@ class Controller
         return $row['customers_status'] ?? -1;
     }
 
+    /**
+     * TODO: SpecialPrices können ablaufen, oder Limitiert sein, dass muss noch berücksichtig werden.
+     * Liefert 0, wenn kein Preis gefunden wurde.
+     */
+    private function getSpecialPrice(int $productId): float
+    {
+        $sql = "SELECT * FROM specials WHERE products_id = '$productId' AND status = 1";
+        $query = xtc_db_query($sql);
+        $row = xtc_db_fetch_array($query);
+        return $row['specials_new_products_price'] ?? 0.0;
+    }
+
     private function getCustomerBasketEntriesByCustomerId(int $customerId): array
     {  
         $sql = "SELECT * FROM customers_basket WHERE customers_id = '$customerId' ORDER BY customers_basket_date_added DESC";
