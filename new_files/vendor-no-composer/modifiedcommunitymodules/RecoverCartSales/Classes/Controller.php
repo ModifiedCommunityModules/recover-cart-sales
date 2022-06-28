@@ -70,6 +70,17 @@ class Controller
         $this->show();
     }
 
+    /**
+     * Liefert -1, wenn keine customerStatus(Id) gefunden werden konnte.
+     */
+    private function getCustomerStatus(int $customerId): int
+    {
+        $sql = "SELECT customers_status FROM customers WHERE customers_id = '$customerId'";
+        $query = xtc_db_query($sql);
+        $row = xtc_db_fetch_array($query);
+        return $row['customers_status'] ?? -1;
+    }
+
     private function getCustomerBasketEntriesByCustomerId(int $customerId): array
     {  
         $sql = "SELECT * FROM customers_basket WHERE customers_id = '$customerId' ORDER BY customers_basket_date_added DESC";
