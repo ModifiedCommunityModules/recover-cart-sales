@@ -2,6 +2,8 @@
 
 namespace ModifiedCommunityModules\RecoverCartSales\Classes;
 
+use ModifiedCommunityModules\RecoverCartSales\Classes\Session;
+use RobinTheHood\ModifiedStdModule\Classes\Configuration;
 use RobinTheHood\ModifiedUi\Classes\Admin\Page;
 use RobinTheHood\ModifiedUi\Classes\Admin\HtmlView;
 
@@ -25,8 +27,46 @@ class Controller
         }
     }
 
-    public function invokeIndex()
+    public function invokeIndex(): void
     {
+        // if ($customerSessionIds = getCustomerSessions()) {
+        //     $cust_sql = " AND customers_id not in ('" . implode(", ", $customerSessionIds) . "') ";
+        // }
+        
+        $configuration = new Configuration('MODULE_MCM_RECOVER_CART_SALES');
+        $customerIdsInSessions = [];
+        if ($configuration->checkSessions == 'xtrue' ) {
+            $session = new Session();
+            $customerIdsInSessions = $session->getCustomerIdsFromAllSessions();
+        }
+
+        // var_dump($customerIdsInSessionsStr);
+        // die();
+        //$date = dateBeforeDays($tdate);
+        $date = $this->dateBeforeDays(90);
+
+        $entries = $this->getCustomerIdsFromBasket($date, $customerIdsInSessions);
+        var_dump($entries);
+        die();
+        // $sql = "SELECT customers_id, MAX(customers_basket_date_added) as added_latest
+        //         FROM customers_basket
+        //         WHERE customers_basket_date_added >= '$date'
+        //             AND customers_id NOT IN ($customerIdsInSessionsStr)
+        //         GROUP BY customers_id
+        //         ORDER BY added_latest DESC, customers_id";
+
+
+        // $query = xtc_db_query($sql);
+        // while ($row = xtc_db_fetch_array($query)) {
+        //     var_dump($row);
+        // }
+        // die();
+
+        // $query1 = xtc_db_query("SELECT customers_id, MAX(customers_basket_date_added) as last FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_basket_date_added>='" . $ndate . "' " . $cust_sql . " GROUP BY customers_id ORDER BY last DESC, customers_id");
+
+
+        
+
         $this->show();
     }
 
