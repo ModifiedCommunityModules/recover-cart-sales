@@ -93,6 +93,18 @@ class Controller
         return $row['specials_new_products_price'] ?? 0.0;
     }
 
+
+    private function getProduct(int $productId): array
+    {
+        $sql = "SELECT * FROM products p WHERE p.products_id = '$productId'";
+        $query = xtc_db_query($sql);
+        $product = xtc_db_fetch_array($query);
+        if ($product) {
+            return $product;
+        }
+        return [];
+    }
+
     private function getCustomerBasketEntriesByCustomerId(int $customerId): array
     {  
         $sql = "SELECT * FROM customers_basket WHERE customers_id = '$customerId' ORDER BY customers_basket_date_added DESC";
