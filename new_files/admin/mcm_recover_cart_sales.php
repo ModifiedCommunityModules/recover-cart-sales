@@ -2,6 +2,8 @@
 
 use ModifiedCommunityModules\RecoverCartSales\Classes\Controller;
 
+$newVersion = true;
+if ($newVersion) {
 require 'includes/application_top.php';
 
 if (!defined('MODULE_MCM_RECOVER_CART_SALES_STATUS') || MODULE_MCM_RECOVER_CART_SALES_STATUS != 'true') {
@@ -20,6 +22,8 @@ $controller = new Controller();
 $controller->invoke();
 
 die();
+}
+
 /* ---------------------------------------------------------------------------------------------
 $Id: recover_cart_sales.php,v 3.0 2007/05/15 06:10:35 Estelco Exp $
 Recover Cart Sales Tool v3.0 for xtCommerce

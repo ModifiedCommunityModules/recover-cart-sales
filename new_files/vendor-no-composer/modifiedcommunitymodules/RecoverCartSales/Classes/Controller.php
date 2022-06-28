@@ -253,7 +253,7 @@ class Controller
 
         $entries = [];
         while ($row = xtc_db_fetch_array($query)) {
-            $entries[] = $row;
+            $entries[] = $row['customers_id'];
         }
         return $entries;
     }
@@ -275,7 +275,9 @@ class Controller
         $page->setSubHeading('Hilfsprogramme');
 
         $htmlView = new HtmlView();
-        $htmlView->loadHtml(self::TEMPLATE_PATH . 'Index.tmpl.php', []);
+        $htmlView->loadHtml(self::TEMPLATE_PATH . 'Index.tmpl.php', [
+            'tableEntries' => $this->getEntries()
+        ]);
 
         $page->addComponent($htmlView);
         $page->render();
