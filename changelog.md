@@ -4,6 +4,14 @@ Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ## [Unreleased]
 Unveröffentlichte Features und Fixes können auf GitHub eingesehen werden. Klicke hierfür auf [Unreleased].
 
+## [0.1.2] - 2022-07-21
+
+### Changed
+- Modul ist jetzt mit modified 2.0.7.0, 2.0.7.1, 2.0.7.2 und PHP 7.4 kompatible.
+- Fix: Fehler behoben, dass keine E-Mails versendet werden konnten.
+- Fix: Fehler behoben, dass die Namen und E-Mail Adressen in der Listendarstellen nicht korrekt angezeigt wurden.
+- Fix: "Bestellung abschließen" Button ausblenden, da dieser nurzeit nicht korrekt funktioniert.
+
 ## [0.1.1] - 2020-10-16
 
 ### Changed
@@ -20,6 +28,7 @@ die nicht mit anderen Versionsnummern von anderen Quellen übereinstimmen müsse
 ### Added
 - Feature: Initiale Version.
 
-[Unreleased]: https://github.com/ModifiedCommunityModules/recover-cart-sales/compare/0.1.0...HEAD
+[Unreleased]: https://github.com/ModifiedCommunityModules/recover-cart-sales/compare/0.1.2...HEAD
+[0.1.2]: https://github.com/ModifiedCommunityModules/recover-cart-sales/compare/0.1.1...0.1.2
 [0.1.1]: https://github.com/ModifiedCommunityModules/recover-cart-sales/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/ModifiedCommunityModules/recover-cart-sales/releases/tag/0.1.0
