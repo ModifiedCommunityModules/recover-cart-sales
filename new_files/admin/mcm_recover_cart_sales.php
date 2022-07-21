@@ -1065,7 +1065,8 @@ if ($tdate == '') {
                                                     <td class='dataTableContent' align='right' colspan='8'><b>" . $textTotal . "</b>" . $currencies->format($totalPrice) . "</td>
                                                     </tr>
                                                     <tr>
-                                                    <td colspan='6' align='right'><a class=\"button\" href=" . xtc_href_link('mcm_recover_cart_sales.php',"action=delete&customer_id=$currentCustomerId&tdate=$tdate") . ">" . BUTTON_DELETE  . "</a><a class=\"button\" href=" . xtc_href_link('mcm_recover_cart_sales.php',"action=complete&customer_id=$currentCustomerId&tdate=$tdate") . ">" . BUTTON_COMPLETE  . "</a></td>
+                                                    <td colspan='6' align='right'><a class=\"button\" href=" . xtc_href_link('mcm_recover_cart_sales.php',"action=delete&customer_id=$currentCustomerId&tdate=$tdate") . ">" . BUTTON_DELETE  . "</a>
+                                                    <!--<a class=\"button\" href=" . xtc_href_link('mcm_recover_cart_sales.php',"action=complete&customer_id=$currentCustomerId&tdate=$tdate") . ">" . BUTTON_COMPLETE  . "</a>--></td>
                                                     </tr>\n";
                                     if (!$skip) {
                                         echo $currentLine;
