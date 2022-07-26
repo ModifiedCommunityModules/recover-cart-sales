@@ -7,10 +7,10 @@ Unveröffentlichte Features und Fixes können auf GitHub eingesehen werden. Klic
 ## [0.1.2] - 2022-07-21
 
 ### Changed
-- Modul ist jetzt mit modified 2.0.7.0, 2.0.7.1, 2.0.7.2 und PHP 7.4 kompatible.
+- Modul ist jetzt mit modified 2.0.7.0, 2.0.7.1, 2.0.7.2 und PHP 7.4 kompatibel.
 - Fix: Fehler behoben, dass keine E-Mails versendet werden konnten.
 - Fix: Fehler behoben, dass die Namen und E-Mail Adressen in der Listendarstellen nicht korrekt angezeigt wurden.
-- Fix: "Bestellung abschließen" Button ausblenden, da dieser nurzeit nicht korrekt funktioniert.
+- Fix: "Bestellung abschließen" Button ausblenden, da dieser zurzeit nicht korrekt funktioniert.
 
 ## [0.1.1] - 2020-10-16
 
