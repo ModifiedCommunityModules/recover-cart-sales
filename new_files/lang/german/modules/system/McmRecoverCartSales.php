@@ -1,4 +1,5 @@
 <?php
+
 $moduleType = 'MODULE';
 $moduleName = 'MCM_RECOVER_CART_SALES';
 $prefix = $moduleType . '_' . $moduleName  . '_';

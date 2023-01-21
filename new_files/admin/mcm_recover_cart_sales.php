@@ -4,24 +4,24 @@ use ModifiedCommunityModules\RecoverCartSales\Classes\Controller;
 
 $newVersion = true;
 if ($newVersion) {
-require 'includes/application_top.php';
+    require 'includes/application_top.php';
 
-if (!defined('MODULE_MCM_RECOVER_CART_SALES_STATUS') || MODULE_MCM_RECOVER_CART_SALES_STATUS != 'true') {
-    return;
-}
+    if (!defined('MODULE_MCM_RECOVER_CART_SALES_STATUS') || MODULE_MCM_RECOVER_CART_SALES_STATUS != 'true') {
+        return;
+    }
 
-require_once DIR_FS_DOCUMENT_ROOT . '/vendor-no-composer/autoload.php';
+    require_once DIR_FS_DOCUMENT_ROOT . '/vendor-no-composer/autoload.php';
 
-restore_error_handler();
-restore_exception_handler();
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL ^ E_NOTICE);
+    restore_error_handler();
+    restore_exception_handler();
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL ^ E_NOTICE);
 
-$controller = new Controller();
-$controller->invoke();
+    $controller = new Controller();
+    $controller->invoke();
 
-die();
+    die();
 }
 
 /* ---------------------------------------------------------------------------------------------
@@ -104,7 +104,7 @@ function xtc_get_products_special_price_ow($productId, $customerId, $qty = 1)
     $customerGroupQuery = xtc_db_query("SELECT customers_status FROM " . TABLE_CUSTOMERS . " WHERE customers_id = '" . $customerId . "'");
     $customerGroup = xtc_db_fetch_array($customerGroupQuery);
     $personalQuery = xtc_db_query("SELECT personal_offer FROM " . TABLE_PERSONAL_OFFERS_BY . $customerGroup['customers_status'] . " WHERE products_id = " . (int) $productId . " AND quantity <= " . (int) $qty . " ORDER BY quantity DESC LIMIT 1");
-    
+
     if (xtc_db_num_rows($personalQuery)) {
         $personal = xtc_db_fetch_array($personalQuery);
         return $personal['personal_offer'];
@@ -146,7 +146,7 @@ function getCustomerSessions()
     $rcsConfiguration = new Configuration('MODULE_MCM_RECOVER_CART_SALES');
     $customerSessionIds = [];
 
-    if ($rcsConfiguration->checkSessions == 'true' ) {
+    if ($rcsConfiguration->checkSessions == 'true') {
         if (STORE_SESSIONS == 'mysql') {
             // --- DB RECORDS ---
             $sesquery = xtc_db_query("SELECT value FROM " . TABLE_SESSIONS . " WHERE 1");
@@ -158,7 +158,7 @@ function getCustomerSessions()
             }
         } else {
             if ($handle = opendir(xtc_session_save_path())) {
-                while (false !== ($file = readdir($handle)) ) {
+                while (false !== ($file = readdir($handle))) {
                     if ($file != "." && $file != "..") {
                         $file = xtc_session_save_path() . '/' . $file;    // create full path to file!
                         if ($fp = fopen($file, 'r')) {
@@ -248,7 +248,7 @@ if ($action == 'complete') {
 
     $sqlDataArray = [
         'customers_id' => $customerId,
-        'customers_name' => $order->customer['firstname'].' '.$order->customer['lastname'],
+        'customers_name' => $order->customer['firstname'] . ' ' . $order->customer['lastname'],
         'customers_firstname' => $order->customer['firstname'],
         'customers_lastname' => $order->customer['lastname'],
         'customers_cid' => $order->customer['csID'],
@@ -267,7 +267,7 @@ if ($action == 'complete') {
         'customers_telephone' => $order->customer['telephone'],
         'customers_email_address' => $order->customer['email_address'],
         'customers_address_format_id' => $order->customer['format_id'],
-        'delivery_name' => $order->delivery['firstname'].' '.$order->delivery['lastname'],
+        'delivery_name' => $order->delivery['firstname'] . ' ' . $order->delivery['lastname'],
         'delivery_firstname' => $order->delivery['firstname'],
         'delivery_lastname' => $order->delivery['lastname'],
         'delivery_company' => $order->delivery['company'],
@@ -279,7 +279,7 @@ if ($action == 'complete') {
         'delivery_country' => $order->delivery['country']['title'],
         'delivery_country_iso_code_2' => $order->delivery['country']['iso_code_2'],
         'delivery_address_format_id' => $order->delivery['format_id'],
-        'billing_name' => $order->billing['firstname'].' '.$order->billing['lastname'],
+        'billing_name' => $order->billing['firstname'] . ' ' . $order->billing['lastname'],
         'billing_firstname' => $order->billing['firstname'],
         'billing_lastname' => $order->billing['lastname'],
         'billing_company' => $order->billing['company'],
@@ -343,7 +343,7 @@ if ($action == 'complete') {
     $subtotal = 0;
     $totalTax = 0;
 
-    for ($i = 0, $n = sizeof($order->products); $i < $n; $i ++) {
+    for ($i = 0, $n = sizeof($order->products); $i < $n; $i++) {
         // Stock Update - Joao Correia
         if (STOCK_LIMITED == 'true') {
             if (DOWNLOAD_ENABLED == 'true') {
@@ -385,7 +385,7 @@ if ($action == 'complete') {
             'products_id' => xtc_get_prid($order->products[$i]['id']),
             'products_model' => $order->products[$i]['model'],
             'products_name' => $order->products[$i]['name'],
-            'products_shipping_time'=>$order->products[$i]['shipping_time'],
+            'products_shipping_time' => $order->products[$i]['shipping_time'],
             'products_price' => $order->products[$i]['price'],
             'final_price' => $order->products[$i]['final_price'],
             'products_tax' => $order->products[$i]['tax'],
@@ -511,7 +511,7 @@ if ($action == 'delete') {
     xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " WHERE customers_id=" . $customerId);
     xtc_db_query("DELETE FROM " . TABLE_MCM_RECOVER_CART_SALES . " WHERE customers_id=" . $customerId);
 
-    xtc_redirect(xtc_href_link('mcm_recover_cart_sales.php', 'delete=1&customer_id='. $_GET['customer_id'] . '&tdate=' . $_GET['tdate']));
+    xtc_redirect(xtc_href_link('mcm_recover_cart_sales.php', 'delete=1&customer_id=' . $_GET['customer_id'] . '&tdate=' . $_GET['tdate']));
 }
 
 if ($getDelete) {
@@ -546,7 +546,7 @@ if ($tdate == '') {
         <td width="100%" valign="top">
             <table border="0" width="100%" cellspacing="0" cellpadding="2">
                 
-                <?php if (count($_POST['custid']) > 0 ) {  // Are we doing an e-mail to some customers? ?>
+                <?php if (count($_POST['custid']) > 0) {  // Are we doing an e-mail to some customers? ?>
                     <tr>
                         <td class="pageHeading" align="left" colspan=2 width="50%"><?php echo HEADING_TITLE; ?> </td>
                         <td class="pageHeading" align="left" colspan=4 width="50%"><?php echo HEADING_EMAIL_SENT; ?> </td>
@@ -608,7 +608,7 @@ if ($tdate == '') {
                             $inrec = xtc_db_fetch_array($query1);
                             $attributePrice = 0;
                             // set new cline and curcus
-        
+
                             if ($lastCustomerId != $customerId) {
                                 if ($lastCustomerId != "") {
                                     $textTotal = $rcsConfiguration->showBruttoPrice == 'true' ? TABLE_CART_TOTAL_BRUTTO : TABLE_CART_TOTAL;
@@ -621,7 +621,7 @@ if ($tdate == '') {
                                         </tr>\n";
                                     echo $currentLine;
                                 }
-                                
+
                                 $currentLine = "<tr> <td class='dataTableContent' align='left' colspan='6' nowrap><a href='" . xtc_href_link(FILENAME_CUSTOMERS, 'search=' . $inrec['lname'], 'NONSSL') . "'>" . $inrec['fname'] . " " . $inrec['lname'] . "</a>" . $customer . "</td></tr>";
                                 $totalPrice = 0;
                             }
@@ -642,7 +642,7 @@ if ($tdate == '') {
                             $inrec2 = xtc_db_fetch_array($query2);
 
                             $specialPrice = xtc_get_products_special_price_ow($inrec['pid'], $customerId, ($inrec['qty'] < $quantity[(int) $inrec['pid']] ? $quantity[(int) $inrec['pid']] : $inrec['qty']));
-        
+
                             // BEGIN OF ATTRIBUTE DB CODE
                             $productAttributes = ''; // DO NOT DELETE
                             if ($rcsConfiguration->showAttributes == 'true') {
@@ -702,7 +702,7 @@ if ($tdate == '') {
                             $productsData[] = [
                                 'QUANTITY' => $inrec['qty'],
                                 'NAME' => $inrec2['name'],
-                                'LINK' => xtc_catalog_href_link('product_info.php', 'info=p'. $inrec['pid']),
+                                'LINK' => xtc_catalog_href_link('product_info.php', 'info=p' . $inrec['pid']),
                                 'IMAGE' => HTTP_SERVER.DIR_WS_CATALOG_INFO_IMAGES . $inrec2['image']
                             ];
                         }
@@ -710,7 +710,7 @@ if ($tdate == '') {
                         $currentLine .= "</td></tr>";
 
                         if ($inrec['language'] == null) {
-                            switch($inrec['iso']) {
+                            switch ($inrec['iso']) {
                                 case 'DE':
                                 case 'AT':
                                 case 'CH':
@@ -783,7 +783,7 @@ if ($tdate == '') {
                         $txtMail = $smarty->fetch(CURRENT_TEMPLATE . '/admin/mail/' . $inrec['language'] . '/mcm_reover_cart_sales.txt');
 
                         if ($inrec['email'] != '') {
-                            xtc_php_mail(EMAIL_SUPPORT_ADDRESS, EMAIL_SUPPORT_NAME, $inrec['email'] , $custname , $rcsConfiguration->emailCopiesTo, EMAIL_SUPPORT_REPLY_ADDRESS, EMAIL_SUPPORT_REPLY_ADDRESS_NAME, '', '', EMAIL_TEXT_SUBJECT, $htmlMail, $txtMail);
+                            xtc_php_mail(EMAIL_SUPPORT_ADDRESS, EMAIL_SUPPORT_NAME, $inrec['email'], $custname, $rcsConfiguration->emailCopiesTo, EMAIL_SUPPORT_REPLY_ADDRESS, EMAIL_SUPPORT_REPLY_ADDRESS_NAME, '', '', EMAIL_TEXT_SUBJECT, $htmlMail, $txtMail);
                         }
 
                         // Debugging
@@ -797,11 +797,11 @@ if ($tdate == '') {
                         */
 
                         // See if a record for this customer already exists; if not create one and if so update it
-                        $doneQuery = xtc_db_query("SELECT * FROM ". TABLE_MCM_RECOVER_CART_SALES ." WHERE customers_id = '" . $customerId . "'");
+                        $doneQuery = xtc_db_query("SELECT * FROM " . TABLE_MCM_RECOVER_CART_SALES . " WHERE customers_id = '" . $customerId . "'");
                         if (xtc_db_num_rows($doneQuery) == 0) {
                             xtc_db_query("INSERT into " . TABLE_MCM_RECOVER_CART_SALES . " (customers_id, date_added, date_modified ) values ('" . $customerId . "', '" . seadate('0') . "', '" . seadate('0') . "')");
                         } else {
-                            xtc_db_query("update " . TABLE_MCM_RECOVER_CART_SALES . " set date_modified = '" . seadate('0') . "' WHERE customers_id = " . $customerId );
+                            xtc_db_query("update " . TABLE_MCM_RECOVER_CART_SALES . " set date_modified = '" . seadate('0') . "' WHERE customers_id = " . $customerId);
                         }
                         echo $currentLine;
                         $currentLine = "";
@@ -810,10 +810,8 @@ if ($tdate == '') {
 
                     echo "<tr><td colspan=8 align='right' class='dataTableContent'><b>" . $textTotal . "</b>" . $currencies->format($totalPrice) . "</td> </tr>";
                     echo "<tr><td colspan=6 align='right'><a class=\"button\" href=" . xtc_href_link('mcm_recover_cart_sales.php', "action=delete&customer_id=" . $customerId . "&tdate=" . $tdate) . ">" . BUTTON_DELETE . "</a></td>  </tr>\n";
-                    echo "<tr><td colspan=6 align=center><a href=".$PHP_SELF.">" . TEXT_RETURN . "</a></td></tr>";
-                
+                    echo "<tr><td colspan=6 align=center><a href=" . $PHP_SELF . ">" . TEXT_RETURN . "</a></td></tr>";
                 } else { // we are NOT doing an e-mail to some customers ?>
-
                     <!-- REPORT TABLE BEGIN //-->
                     <tr>
                         <td class="pageHeading" align="left" width="50%" colspan="4"><?php echo HEADING_TITLE; ?></td>
@@ -853,7 +851,7 @@ if ($tdate == '') {
                             if ($customerSessionIds = getCustomerSessions()) {
                                 $cust_sql = " AND customers_id not in ('" . implode(", ", $customerSessionIds) . "') ";
                             }
-                            
+
                             $ndate = seadate($tdate);
                             $query1 = xtc_db_query("SELECT customers_id, MAX(customers_basket_date_added) as last FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_basket_date_added>='" . $ndate . "' " . $cust_sql . " GROUP BY customers_id ORDER BY last DESC, customers_id");
 
@@ -869,7 +867,7 @@ if ($tdate == '') {
                             while ($query1Res = xtc_db_fetch_array($query1)) {
                                 $quantity = [];
                                 $quantityQuery = xtc_db_query("SELECT products_id pid, customers_basket_quantity qty FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_id=" . $query1Res['customers_id']);
-        
+
                                 while ($quantityResult = xtc_db_fetch_array($quantityQuery)) {
                                     $quantity[(int) $quantityResult['pid']] += $quantityResult['qty'];
                                 }
@@ -888,14 +886,14 @@ if ($tdate == '') {
                                                     WHERE cb.customers_id = cus.customers_id
                                                     AND   cb.customers_id = " . $query1Res['customers_id'] . "
                                                     ORDER BY cb.customers_basket_date_added DESC");
-    
+
                                 while ($data = xtc_db_fetch_array($query2)) {
                                     $basketEntryOfCustomer = $data;
 
                                     //reset attributes price
                                     $attributePrice = 0;
                                     // If this is a new customer, create the appropriate HTML
-            
+
                                     if ($currentCustomerId != $basketEntryOfCustomer['cid']) {
                                         // output line
                                         $finalLine = true;
@@ -920,7 +918,7 @@ if ($tdate == '') {
 
                                             if (xtc_db_num_rows($doneQuery) > 0) {
                                                 $ttl = xtc_db_fetch_array($doneQuery);
-                                                
+
                                                 if ($ttl) {
                                                     if (xtc_not_null($ttl['date_modified'])) { // allow for older mcm_recover_cart_sales that have no date_modified
                                                         $ttldate = $ttl['date_modified'];
@@ -944,9 +942,9 @@ if ($tdate == '') {
                                                 SELECT orders_id, orders_status
                                                 FROM ' . TABLE_ORDERS . '
                                                 WHERE (customers_id = ' . (int) $currentCustomerId . '
-                                                OR customers_email_address like "' . $basketEntryOfCustomer['email'] .'"
+                                                OR customers_email_address like "' . $basketEntryOfCustomer['email'] . '"
                                                 OR customers_name like "' . $basketEntryOfCustomer['fname'] . ' ' . $basketEntryOfCustomer['lname'] . '")
-                                                AND date_purchased >= "' . $beforeDate . '"' );
+                                                AND date_purchased >= "' . $beforeDate . '"');
 
                                             if (xtc_db_num_rows($ccquery) > 0) {
                                                 // We have a matching order; assume current customer but not for this order
@@ -954,13 +952,13 @@ if ($tdate == '') {
                                                 // Now, look to see if one of the orders matches this current order's items
                                                 while ($orec = xtc_db_fetch_array($ccquery)) {
                                                     $ccquery = xtc_db_query('SELECT products_id FROM ' . TABLE_ORDERS_PRODUCTS . ' WHERE orders_id = ' . (int) $orec['orders_id'] . ' AND products_id = ' . (int) $basketEntryOfCustomer['pid']);
-                                                    if (xtc_db_num_rows($ccquery) > 0 ) {
+                                                    if (xtc_db_num_rows($ccquery) > 0) {
                                                         if ($orec['orders_status'] > $rcsConfiguration->pendingSaleStatus ) {
                                                             $checked = 0;
                                                         }
 
                                                         // OK, we have a matching order; see if we should just skip this or show the status
-                                                        if ($rcsConfiguration->skipMatchedCarts == 'true' && !$checked ) {
+                                                        if ($rcsConfiguration->skipMatchedCarts == 'true' && !$checked) {
                                                             $skip = true;    // reset flag & break us out of the while loop!
                                                             break;
                                                         } else {
@@ -971,7 +969,7 @@ if ($tdate == '') {
                                                             if ($srec = xtc_db_fetch_array($ccquery)) {
                                                                 $status = ' <a href="' . xtc_href_link(FILENAME_ORDERS, "oID=" . $orec['orders_id'] . "&action=edit") .  '">[' . $srec['orders_status_name'] . ']</a>';
                                                             } else {
-                                                                $status = ' ['. TEXT_CURRENT_CUSTOMER . ']';
+                                                                $status = ' [' . TEXT_CURRENT_CUSTOMER . ']';
                                                             }
                                                         }
                                                     }
@@ -981,7 +979,7 @@ if ($tdate == '') {
                                                     continue;    // got a matched cart, skip to next one
                                                 }
                                             }
-                    
+
                                             $sentInfo = TEXT_NOT_CONTACTED;
 
                                             if ($sentdate != '') {
@@ -995,7 +993,7 @@ if ($tdate == '') {
                                             <td class='dataTableContent' align='center' width='1%'>" . xtc_draw_checkbox_field('custid[]', $currentCustomerId, $rcsConfiguration->autoCheck == 'true' ? $checked : 0) . "</td>
                                             <td class='dataTableContent' align='left' width='9%' nowrap><b>" . $sentInfo . "</b></td>
                                             <td class='dataTableContent' align='left' width='15%' nowrap> " . xtc_date_short($basketEntryOfCustomer['bdate']) . "</td>
-                                            <td class='dataTableContent' align='left' width='30%' nowrap><a href='" . xtc_href_link(FILENAME_CUSTOMERS, 'search=' . $basketEntryOfCustomer['lname'], 'NONSSL') . "'>" . $customerFullNameFormated . "</a>".$status."</td>
+                                            <td class='dataTableContent' align='left' width='30%' nowrap><a href='" . xtc_href_link(FILENAME_CUSTOMERS, 'search=' . $basketEntryOfCustomer['lname'], 'NONSSL') . "'>" . $customerFullNameFormated . "</a>" . $status . "</td>
                                             <td class='dataTableContent' align='left' width='20%' nowrap><a href='" . xtc_href_link('mail.php', 'selected_box=tools&customer=' . $basketEntryOfCustomer['email']) . "'>" . $basketEntryOfCustomer['email'] . "</a></td>
                                             <td class='dataTableContent' align='left' width='10%' nowrap>" . $site . "</td>
                                             <td class='dataTableContent' align='left' colspan='2' width='15%' nowrap>" . $basketEntryOfCustomer['phone'] . "</td>
@@ -1070,8 +1068,8 @@ if ($tdate == '') {
                                         $totalProductPriceFormated = $currencies->format($basketEntryOfCustomer['qty'] * $specialPrice);
 
                                         $currentLine .= "<tr class='dataTableRow'>
-                                                <td class='dataTableContent' align='left' vAlign='top' colspan='2' width='12%' nowrap>" . ($basketEntryOfCustomer['bdate']<$ndate? " x":" &nbsp;") . "</td>
-                                                <td class='dataTableContent' align='left' vAlign='top' width='13%' nowrap>" . ($inrec2['model']?$inrec2['model']:"&nbsp;") . "</td>
+                                                <td class='dataTableContent' align='left' vAlign='top' colspan='2' width='12%' nowrap>" . ($basketEntryOfCustomer['bdate'] < $ndate ? " x" : " &nbsp;") . "</td>
+                                                <td class='dataTableContent' align='left' vAlign='top' width='13%' nowrap>" . ($inrec2['model'] ? $inrec2['model'] : "&nbsp;") . "</td>
                                                 <td class='dataTableContent' align='left' vAlign='top' colspan='2' width='55%'><a href='" . xtc_href_link(FILENAME_CATEGORIES, 'action=new_product&pID=' . $basketEntryOfCustomer['pid'], 'NONSSL') . "'><b>" . $inrec2['name'] . "</b></a>
                                                 " . $productAttributes . "
                                                 </td>
@@ -1081,7 +1079,7 @@ if ($tdate == '') {
                                             </tr>";
                                     }
                                 }
-        
+
                                 if ($finalLine) {
                                     $totalPriceOfAllCarts += $totalPrice;
                                     $textTotal = $rcsConfiguration->showBruttoPrice == 'true' ? TABLE_CART_TOTAL_BRUTTO : TABLE_CART_TOTAL;
@@ -1090,7 +1088,7 @@ if ($tdate == '') {
                                                     <td class='dataTableContent' align='right' colspan='8'><b>" . $textTotal . "</b>" . $currencies->format($totalPrice) . "</td>
                                                     </tr>
                                                     <tr>
-                                                    <td colspan='6' align='right'><a class=\"button\" href=" . xtc_href_link('mcm_recover_cart_sales.php',"action=delete&customer_id=$currentCustomerId&tdate=$tdate") . ">" . BUTTON_DELETE  . "</a>
+                                                    <td colspan='6' align='right'><a class=\"button\" href=" . xtc_href_link('mcm_recover_cart_sales.php', "action=delete&customer_id=$currentCustomerId&tdate=$tdate") . ">" . BUTTON_DELETE  . "</a>
                                                     <!--<a class=\"button\" href=" . xtc_href_link('mcm_recover_cart_sales.php',"action=complete&customer_id=$currentCustomerId&tdate=$tdate") . ">" . BUTTON_COMPLETE  . "</a>--></td>
                                                     </tr>\n";
                                     if (!$skip) {
@@ -1105,7 +1103,7 @@ if ($tdate == '') {
                             $textTotal = $rcsConfiguration->showBruttoPrice == 'true' ? TABLE_GRAND_TOTAL_BRUTTO : TABLE_GRAND_TOTAL;
                             $currentLine = "<tr></tr><td class='dataTableContent' align='right' colspan='8'><hr align=right width=55><b>" . $textTotal . "</b>" . $totalPriceOfAllCartsFormated . "</td>
                                         </tr>";
-                
+
                             echo $currentLine;
                             echo "<tr><td colspan=8><hr size=1 color=000080><b>" . PSMSG . "</b><br>" . xtc_draw_textarea_field('message', 'soft', '80', '5') . "<br>" . xtc_draw_selection_field('submit_button', 'submit', TEXT_SEND_EMAIL) . "</td></tr>";
                         ?>

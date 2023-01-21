@@ -1,4 +1,5 @@
 <?php
+
 /*
   $Id: stats_recover_cart_sales.php,v 1.4 2006/02/20 06:10:35 Anotherone Exp $
   Recover Cart Sales for xt:Commerce German Language File v2.12
