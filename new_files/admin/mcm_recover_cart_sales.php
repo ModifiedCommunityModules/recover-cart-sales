@@ -77,6 +77,7 @@ require_once DIR_WS_CLASSES . 'currencies.php';
 // Load from frontend
 require_once DIR_FS_INC . 'xtc_image_button.inc.php';
 require_once DIR_FS_INC . 'xtc_php_mail.inc.php';
+// require_once DIR_FS_INC . 'xtc_add_tax.inc.php';
 require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'main.php';
 require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'xtcPrice.php';
 require_once DIR_FS_CATALOG . DIR_WS_CLASSES . 'payment.php';
@@ -90,7 +91,7 @@ $rcsConfiguration = new Configuration('MODULE_MCM_RECOVER_CART_SALES');
 $action = $_GET['action'] ?? '';
 $getDelete = $_GET['delete'] ?? '';
 
-function getCustomerStatus(int $customerId, int $languageId): array
+function getCustomerStatus(int $customerId, int $languageId)
 {
     $sql = "SELECT c.customers_status, cs.customers_status_name,  cs.customers_status_image, cs.customers_status_ot_discount_flag, cs.customers_status_ot_discount FROM " . TABLE_CUSTOMERS . " c, " . TABLE_CUSTOMERS_STATUS . " cs WHERE c.customers_status=cs.customers_status_id AND c.customers_id=" . (int) $customerId . " AND cs.language_id=" . (int) $languageId;
 
@@ -678,10 +679,12 @@ if ($tdate == '') {
                                 $specialPrice = $inrec2['price'];
                             }
                             $specialPrice += $attributePrice;
-        
+
                             if ($rcsConfiguration->showBruttoPrice == 'true') {
                                 $tax = xtc_get_tax_rate($inrec2['tax']);
-                                $specialPrice = xtc_add_tax($specialPrice, $tax);
+                                $customerStatus = getCustomerStatus(0, $_SESSION['languages_id']);
+                                $xtPrice = new XtcPrice(DEFAULT_CURRENCY, $customerStatus['customers_status']);
+                                $specialPrice = $xtPrice->xtcAddTax($specialPrice, $tax);
                             }
 
                             $totalPrice = $totalPrice + ($inrec['qty'] * $specialPrice);
@@ -1053,10 +1056,12 @@ if ($tdate == '') {
                                             $specialPrice = $inrec2['price'];
                                         }
                                         $specialPrice += $attributePrice;
-            
+
                                         if ($rcsConfiguration->showBruttoPrice == 'true') {
                                             $tax = xtc_get_tax_rate($inrec2['tax']);
-                                            $specialPrice = xtc_add_tax($specialPrice, $tax);
+                                            $customerStatus = getCustomerStatus(0, $_SESSION['languages_id']);
+                                            $xtPrice = new XtcPrice(DEFAULT_CURRENCY, $customerStatus['customers_status']);
+                                            $specialPrice = $xtPrice->xtcAddTax($specialPrice, $tax);
                                         }
 
                                         // END OF ATTRIBUTE DB CODE
