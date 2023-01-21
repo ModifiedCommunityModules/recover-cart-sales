@@ -15,7 +15,7 @@ class McmRecoverCartSales extends StdModule
     {
         $this->init('MODULE_MCM_RECOVER_CART_SALES');
     }
-       
+
     public function display()
     {
         return $this->displaySaveButton();
@@ -65,7 +65,7 @@ class McmRecoverCartSales extends StdModule
         $this->addConfigurationSelect('CARTS_MATCH_ALL_DATES', 'true', $groupId, 84);
 
         xtc_db_query("INSERT INTO `configuration` ( `configuration_id` , `configuration_key` , `configuration_value` , `configuration_group_id` , `sort_order` , `last_modified` , `date_added` , `use_function` , `set_function` ) VALUES (NULL, 'MODULE_MCM_RECOVER_CART_SALES_PENDING_SALE_STATUS', '1', " . $groupId . ", 85, NULL, NOW(), 'xtc_get_order_status_name', 'xtc_cfg_pull_down_order_statuses(')");
-        
+
         $this->addConfiguration('REPORT_EVEN_STYLE', 'dataTableRow', $groupId, 90);
         $this->addConfiguration('REPORT_ODD_STYLE', '', $groupId, 92);
         $this->addConfigurationSelect('SHOW_BRUTTO_PRICE', 'true', 33, 94);

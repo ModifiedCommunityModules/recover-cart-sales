@@ -1,9 +1,10 @@
 <?php
+
 /**
  * Recover Cart Sales
- *  
- *  Licensed under GNU General Public License 2.0. 
- *  Some rights reserved. See LICENSE, README.md.
+ *
+ * Licensed under GNU General Public License 2.0. 
+ * Some rights reserved. See LICENSE, README.md.
  *
  * @license GPL-2.0 <https://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html>
  */
@@ -21,7 +22,7 @@ class Order
     public $delivery = [];
     public $taxDiscount = [];
     public $contentType;
-    
+
     public function __construct($customerId)
     {
         $this->cart($customerId);
@@ -37,8 +38,8 @@ class Order
 
     private function getShippingAddress($customerId, $customerDefaultAddressId)
     {
-        $sql = "SELECT ab.entry_firstname, ab.entry_lastname, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, ab.entry_country_id, c.countries_id, c.countries_name, c.countries_iso_code_2, c.countries_iso_code_3, c.address_format_id, ab.entry_state FROM " . TABLE_ADDRESS_BOOK . " ab LEFT JOIN " . TABLE_ZONES . " z ON (ab.entry_zone_id = z.zone_id) LEFT JOIN " . TABLE_COUNTRIES . " c ON (ab.entry_country_id = c.countries_id) WHERE ab.customers_id = '" . $customerId . "' AND ab.address_book_id = '" . $$customerDefaultAddressId . "'";
-      
+        $sql = "SELECT ab.entry_firstname, ab.entry_lastname, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, ab.entry_country_id, c.countries_id, c.countries_name, c.countries_iso_code_2, c.countries_iso_code_3, c.address_format_id, ab.entry_state FROM " . TABLE_ADDRESS_BOOK . " ab LEFT JOIN " . TABLE_ZONES . " z ON (ab.entry_zone_id = z.zone_id) LEFT JOIN " . TABLE_COUNTRIES . " c ON (ab.entry_country_id = c.countries_id) WHERE ab.customers_id = '" . $customerId . "' AND ab.address_book_id = '" . $customerDefaultAddressId . "'";
+
         $query = xtc_db_query($sql);
         return xtc_db_fetch_array($query);
     }
@@ -46,7 +47,7 @@ class Order
     private function getBillingAddress($customerId, $customerDefaultAddressId)
     {
         $sql = "SELECT ab.entry_firstname, ab.entry_lastname, ab.entry_company, ab.entry_street_address, ab.entry_suburb, ab.entry_postcode, ab.entry_city, ab.entry_zone_id, z.zone_name, ab.entry_country_id, c.countries_id, c.countries_name, c.countries_iso_code_2, c.countries_iso_code_3, c.address_format_id, ab.entry_state FROM " . TABLE_ADDRESS_BOOK . " ab LEFT JOIN " . TABLE_ZONES . " z ON (ab.entry_zone_id = z.zone_id) LEFT JOIN " . TABLE_COUNTRIES . " c ON (ab.entry_country_id = c.countries_id) WHERE ab.customers_id = '" . $customerId . "' AND ab.address_book_id = '" . $customerDefaultAddressId . "'";
-      
+
         $query = xtc_db_query($sql);
         return xtc_db_fetch_array($query);
     }
@@ -54,7 +55,7 @@ class Order
     private function getTaxAddress($customerId, $customerDefaultAddressId)
     {
         $sql = "SELECT ab.entry_country_id, ab.entry_zone_id FROM " . TABLE_ADDRESS_BOOK . " ab LEFT JOIN " . TABLE_ZONES . " z ON (ab.entry_zone_id = z.zone_id) WHERE ab.customers_id = '" . $customerId . "' AND ab.address_book_id = '" . $customerDefaultAddressId . "'";
-        
+
         $query = xtc_db_query($sql);
         return xtc_db_fetch_array($query);
     }
@@ -62,7 +63,7 @@ class Order
     private function getAttributes($optionId, $optionValueId, $languageId)
     {
         $sql = "SELECT popt.products_options_name, poval.products_options_values_name, pa.options_values_price, pa.price_prefix FROM " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa WHERE pa.products_id = '" . $productId . "' AND pa.options_id = '" . $optionId . "' AND pa.options_id = popt.products_options_id AND pa.options_values_id = '" . $optionValueId . "' AND pa.options_values_id = poval.products_options_values_id AND popt.language_id = '" . $languageId . "' AND poval.language_id = '" . $languageId . "'";
-                    
+
         $query = xtc_db_query($sql);
         return xtc_db_fetch_array($query);
     }
@@ -102,7 +103,7 @@ class Order
         if (isset($_SESSION['payment']) && is_object($_SESSION['payment'])) {
             $result['payment_method'] = $_SESSION['payment']->title;
             $result['payment_class'] = $_SESSION['payment']->title;
-            if ( isset($_SESSION['payment']->order_status) && is_numeric($_SESSION['payment']->order_status) && ($_SESSION['payment']->order_status > 0) ) {
+            if (isset($_SESSION['payment']->order_status) && is_numeric($_SESSION['payment']->order_status) && ($_SESSION['payment']->order_status > 0)) {
                 $result['order_status'] = $_SESSION['payment']->order_status;
             }
         }
@@ -212,12 +213,12 @@ class Order
                 'qty' => $product['quantity'],
                 'name' => $product['name'],
                 'model' => $product['model'],
-                'tax_class_id'=> $product['tax_class_id'],
+                'tax_class_id' => $product['tax_class_id'],
                 'tax' => xtc_get_tax_rate($product['tax_class_id'], $taxAddress['entry_country_id'], $taxAddress['entry_zone_id']),
                 'tax_description' => xtc_get_tax_description($product['tax_class_id'], $taxAddress['entry_country_id'], $taxAddress['entry_zone_id']),
                 'price' =>  $productPrice ,
                 'final_price' => $productPrice * $product['quantity'],
-                'shipping_time'=>$product['shipping_time'],
+                'shipping_time' => $product['shipping_time'],
                 'weight' => $product['weight'],
                 'id' => $product['id']
             ];
@@ -225,8 +226,7 @@ class Order
             if ($product['attributes']) {
                 $subindex = 0;
                 reset($product['attributes']);
-                while (list($optionId, $optionValueId) = each($product['attributes'])) { // TODO: Maybe we can foreach
-                    
+                while (list($optionId, $optionValueId) = each($product['attributes'])) { // BUG: each is not supportet in PHP >= 8.0
                     $attributes = $this->getAttributes($product['id'], $optionId, $optionValueId, $_SESSION['languages_id']);
 
                     $this->products[$index]['attributes'][$subindex] = [ // TODO: Maybe we can use [] instead of [$subindex]
@@ -244,13 +244,13 @@ class Order
 
             $shownPrice = $this->products[$index]['final_price'];
             $this->info['subtotal'] += $shownPrice;
-            if ($_SESSION['customers_status']['customers_status_ot_discount_flag'] == 1){
+            if ($_SESSION['customers_status']['customers_status_ot_discount_flag'] == 1) {
                 $shownPriceTax = $shownPrice - ($shownPrice / 100 * $_SESSION['customers_status']['customers_status_ot_discount']);
             }
 
             $productTax = $this->products[$index]['tax'];
             $productTaxDescription = $this->products[$index]['tax_description'];
-            
+
             if ($_SESSION['customers_status']['customers_status_show_price_tax'] == '1') {
                 $taxIndex = TAX_ADD_TAX . $productTaxDescription;
 

@@ -1,12 +1,14 @@
 <?php
+
 /**
  * Recover Cart Sales
- *  
- *  Licensed under GNU General Public License 2.0. 
- *  Some rights reserved. See LICENSE, README.md.
+ *
+ * Licensed under GNU General Public License 2.0.
+ * Some rights reserved. See LICENSE, README.md.
  *
  * @license GPL-2.0 <https://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html>
  */
+
 namespace ModifiedCommunityModules\RecoverCartSales\Classes;
 
 class RecoverCartSales
@@ -25,7 +27,7 @@ class RecoverCartSales
 
         $query = xtc_db_query("SELECT mcm_checkout_site FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_id = " . $customerId);
         $result = xtc_db_fetch_array($query);
-        
+
         self::compareSite($site, $result['mcm_checkout_site']);
     }
 

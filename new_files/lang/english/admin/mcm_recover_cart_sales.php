@@ -1,4 +1,5 @@
 <?php
+
 /*
   $Id: recover_cart_sales.php,v 1.5 2006/02/20 06:10:35 Anotherone Exp $
   Recover Cart Sales v2.12 for xt:Commerce GERMAN Language File
@@ -28,7 +29,7 @@ define('MESSAGE_STACK_CUSTOMER_ID', 'Warenkorb für Kundennummer ');
 define('MESSAGE_STACK_DELETE_SUCCESS', ' erfolgreich gelöscht');
 define('HEADING_TITLE', 'Offene Warenkörbe PLUS');
 define('HEADING_EMAIL_SENT', 'E-mail Sende-Report');
-define('EMAIL_TEXT_SUBJECT', 'Anfrage von '.  STORE_NAME );
+define('EMAIL_TEXT_SUBJECT', 'Anfrage von ' .  STORE_NAME );
 define('DAYS_FIELD_PREFIX', 'Zeige die letzten ');
 define('DAYS_FIELD_POSTFIX', ' Tage ');
 define('DAYS_FIELD_BUTTON', 'Anzeigen');

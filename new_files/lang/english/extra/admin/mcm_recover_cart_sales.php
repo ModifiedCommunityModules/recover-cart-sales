@@ -1,4 +1,5 @@
 <?php
+
 // modified loads this file in the hole admin area
 
 // buttons
@@ -11,7 +12,7 @@ define($prefix . 'BASE_DAYS_DESC', 'Anzahl der vergangenen Tage für nicht abges
 define($prefix . 'REPORT_DAYS_TITLE', 'Verkaufsbericht Zeitraum');
 define($prefix . 'REPORT_DAYS_DESC', 'Anzahl der Tage, die berücksichtigt werden sollen. Je mehr, desto länger dauert die Abfrage!');
 define($prefix . 'EMAIL_TTL_TITLE', 'Lebensdauer Email');
-define($prefix . 'EMAIL_TTL_DESC','Anzahl der Tage, die die E-Mail als gesendet markiert wird');
+define($prefix . 'EMAIL_TTL_DESC', 'Anzahl der Tage, die die E-Mail als gesendet markiert wird');
 define($prefix . 'EMAIL_FRIENDLY_TITLE', 'Persönliche E-Mails');
 define($prefix . 'EMAIL_FRIENDLY_DESC', 'Wenn <b>true</b> wird der Name des Kunden in der Anrede verwendet. Wenn <b>false</b> wird eine allgemeine Anrede verwendet.');
 define($prefix . 'EMAIL_COPIES_TO_TITLE', 'E-Mail Kopien an');
@@ -53,5 +54,5 @@ define($prefix . 'DELETE_COMPLETED_ORDERS_DESC', 'Soll der Warenkorb im Zuge des
 define('BOX_CONFIGURATION_33', 'Offene Warenkörbe');
 define('BOX_REPORTS_RECOVER_CART_SALES', 'Wiederhergestellte Warenkörbe');
 define('BOX_TOOLS_RECOVER_CART', 'Offene Warenkörbe');
-define('TAX_ADD_TAX','inkl. ');
-define('TAX_NO_TAX','zzgl. ');
+define('TAX_ADD_TAX', 'inkl. ');
+define('TAX_NO_TAX', 'zzgl. ');
