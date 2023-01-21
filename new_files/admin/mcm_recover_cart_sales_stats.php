@@ -35,7 +35,7 @@ function xtc_date_order_stat($rawDate)
     $year = substr($rawDate, 2, 2);
     $month = (int) substr($rawDate, 4, 2);
     $day = (int) substr($rawDate, 6, 2);
-    
+
     return date(DATE_FORMAT, mktime(0, 0, 0, $month, $day, $year));
 }
 
@@ -44,7 +44,6 @@ function seadate($day)
     $ts = date("U");
     $rawTime = strtotime("-" . $day . " days", $ts);
     $ndate = date("Ymd", $rawTime);
-    
     return $ndate;
 }
 
@@ -80,11 +79,11 @@ require DIR_WS_INCLUDES . 'head.php';
                                 <td class="pageHeading" align="left"><?php echo HEADING_TITLE; ?></td>
                                 <td class="pageHeading" align="right">
                                     <?php
-                                        $tdate = $_POST['tdate'] ?? '';
-                                        if ($tdate == '') {
-                                            $tdate = $configuration->reportDays;
-                                        }
-                                        $ndate = seadate($tdate);
+                                    $tdate = $_POST['tdate'] ?? '';
+                                    if ($tdate == '') {
+                                        $tdate = $configuration->reportDays;
+                                    }
+                                    $ndate = seadate($tdate);
                                     ?>
                                     
                                     <?php echo xtc_draw_form('mcm_recover_cart_sales_stats', 'mcm_recover_cart_sales_stats.php', '', 'post', '') . PHP_EOL; ?>
@@ -103,62 +102,62 @@ require DIR_WS_INCLUDES . 'head.php';
                 </tr>
 
                 <?php
-                    // Init vars
-                    $customerCount = 0;
-                    $totalRecovered = 0;
-                    $customerList = '';
+                // Init vars
+                $customerCount = 0;
+                $totalRecovered = 0;
+                $customerList = '';
 
-                    // Query database for abandoned carts within our timeframe
-                    $conquery = xtc_db_query("SELECT * FROM " . TABLE_MCM_RECOVER_CART_SALES . " WHERE date_added >= '" . $ndate . "' ORDER BY date_added DESC");
-                    $recoverdCount = xtc_db_num_rows($conquery);
+                // Query database for abandoned carts within our timeframe
+                $conquery = xtc_db_query("SELECT * FROM " . TABLE_MCM_RECOVER_CART_SALES . " WHERE date_added >= '" . $ndate . "' ORDER BY date_added DESC");
+                $recoverdCount = xtc_db_num_rows($conquery);
 
-                    // Loop though each one and process it
-                    for ($i = 0; $i < $recoverdCount; $i++) {
-                        $row = xtc_db_fetch_array($conquery);
-                        $customerId = $row['customers_id'];
-                        
-                        // we have to get the customer data in order to better locate matching orders
-                        $query1 = xtc_db_query("SELECT c.customers_firstname, c.customers_lastname, c.customers_email_address FROM " . TABLE_CUSTOMERS . " c WHERE c.customers_id ='" . $customerId . "'");
-                        $customerRecord = xtc_db_fetch_array($query1);
+                // Loop though each one and process it
+                for ($i = 0; $i < $recoverdCount; $i++) {
+                    $row = xtc_db_fetch_array($conquery);
+                    $customerId = $row['customers_id'];
 
-                        // Query DB for the FIRST order that matches this customer ID and came after the abandoned cart
-                        $ordersQueryRaw = "SELECT o.orders_id, o.customers_id, o.date_purchased, s.orders_status_name, ot.text as order_total, ot.value FROM " . TABLE_ORDERS . " o LEFT JOIN " . TABLE_ORDERS_TOTAL . " ot ON (o.orders_id = ot.orders_id), " . TABLE_ORDERS_STATUS . " s WHERE (o.customers_id = " . (int) $customerId . ' OR o.customers_email_address like "' . $customerRecord['customers_email_address'] .'" OR o.customers_name like "' . $customerRecord['customers_firstname'] . ' ' . $customerRecord['customers_lastname'] . '") AND o.orders_status >= ' . $configuration->pendingSalesStatus . ' AND s.orders_status_id = o.orders_status AND o.date_purchased >= "' . $row['date_added'] . '" AND ot.class = "ot_total"';
-                        
-                        $ordersQuery = xtc_db_query($ordersQueryRaw);
-                        $orders = xtc_db_fetch_array($ordersQuery);
+                    // we have to get the customer data in order to better locate matching orders
+                    $query1 = xtc_db_query("SELECT c.customers_firstname, c.customers_lastname, c.customers_email_address FROM " . TABLE_CUSTOMERS . " c WHERE c.customers_id ='" . $customerId . "'");
+                    $customerRecord = xtc_db_fetch_array($query1);
 
-                        // If we got a match, create the table entry to display the information
-                        if ($orders) {
-                            $customerCount++;
-                            $totalRecovered += $orders['value'];
-                            $customerCount % 2 ? $class = $configuration->reportEvenStyle : $class = $configuration->reportOddStyle;
-                            $customerList .= '<tr class="' . $class . '">' .
-                                '<td class="datatablecontent" align="right">' . $row['id'] . '</td>'.
-                                '<td>&nbsp;</td>' .
-                                '<td class="datatablecontent" align="center">' . xtc_date_order_stat($row['date_added']) . '</td>' .
-                                '<td>&nbsp;</td>' .
-                                '<td class="datatablecontent"><a href="' . xtc_href_link(FILENAME_CUSTOMERS, 'search=' . $customerRecord['customers_lastname'], 'NONSSL') . '">' . $customerRecord['customers_firstname'] . ' ' . $customerRecord['customers_lastname'] . '</a></td>' .
-                                '<td class="datatablecontent">' . xtc_date_short($orders['date_purchased']) . '</td>' .
-                                '<td class="datatablecontent" align="center">' . $orders['orders_status_name'] . '</td>' .
-                                '<td class="datatablecontent" align="right">' . strip_tags($orders['order_total']) . '</td>' .
-                                '<td>&nbsp;</td>' .
-                                '</tr>';
-                        }
+                    // Query DB for the FIRST order that matches this customer ID and came after the abandoned cart
+                    $ordersQueryRaw = "SELECT o.orders_id, o.customers_id, o.date_purchased, s.orders_status_name, ot.text as order_total, ot.value FROM " . TABLE_ORDERS . " o LEFT JOIN " . TABLE_ORDERS_TOTAL . " ot ON (o.orders_id = ot.orders_id), " . TABLE_ORDERS_STATUS . " s WHERE (o.customers_id = " . (int) $customerId . ' OR o.customers_email_address like "' . $customerRecord['customers_email_address'] .'" OR o.customers_name like "' . $customerRecord['customers_firstname'] . ' ' . $customerRecord['customers_lastname'] . '") AND o.orders_status >= ' . $configuration->pendingSalesStatus . ' AND s.orders_status_id = o.orders_status AND o.date_purchased >= "' . $row['date_added'] . '" AND ot.class = "ot_total"';
+
+                    $ordersQuery = xtc_db_query($ordersQueryRaw);
+                    $orders = xtc_db_fetch_array($ordersQuery);
+
+                    // If we got a match, create the table entry to display the information
+                    if ($orders) {
+                        $customerCount++;
+                        $totalRecovered += $orders['value'];
+                        $customerCount % 2 ? $class = $configuration->reportEvenStyle : $class = $configuration->reportOddStyle;
+                        $customerList .= '<tr class="' . $class . '">' .
+                            '<td class="datatablecontent" align="right">' . $row['id'] . '</td>' .
+                            '<td>&nbsp;</td>' .
+                            '<td class="datatablecontent" align="center">' . xtc_date_order_stat($row['date_added']) . '</td>' .
+                            '<td>&nbsp;</td>' .
+                            '<td class="datatablecontent"><a href="' . xtc_href_link(FILENAME_CUSTOMERS, 'search=' . $customerRecord['customers_lastname'], 'NONSSL') . '">' . $customerRecord['customers_firstname'] . ' ' . $customerRecord['customers_lastname'] . '</a></td>' .
+                            '<td class="datatablecontent">' . xtc_date_short($orders['date_purchased']) . '</td>' .
+                            '<td class="datatablecontent" align="center">' . $orders['orders_status_name'] . '</td>' .
+                            '<td class="datatablecontent" align="right">' . strip_tags($orders['order_total']) . '</td>' .
+                            '<td>&nbsp;</td>' .
+                            '</tr>';
                     }
+                }
 
-                    $currentLine =  '<tr><td height="15" colspan="8"> </td></tr>' .
-                        '<tr>' .
-                        '<td align="right" colspan="3" class="main"><b>' . TOTAL_RECORDS . '</b></td>'.
-                        '<td>&nbsp;</td>'.
-                        '<td align="left" colspan="5" class="main">' . $recoverdCount . '</td>'.
-                        '</tr>'.
-                        '<tr>'.
-                        '<td align="right" colspan="3" class="main"><b>' . TOTAL_SALES . '</b></td>' .
-                        '<td>&nbsp;</td>' .
-                        '<td align="left" colspan="5" class="main">'. $customerCount . TOTAL_SALES_EXPLANATION . '</td>' .
-                        '</tr>' .
-                        '<tr><td height="12" colspan="6"> </td></tr>';
-                    echo $currentLine;
+                $currentLine =  '<tr><td height="15" colspan="8"> </td></tr>' .
+                    '<tr>' .
+                    '<td align="right" colspan="3" class="main"><b>' . TOTAL_RECORDS . '</b></td>' .
+                    '<td>&nbsp;</td>' .
+                    '<td align="left" colspan="5" class="main">' . $recoverdCount . '</td>' .
+                    '</tr>' .
+                    '<tr>' .
+                    '<td align="right" colspan="3" class="main"><b>' . TOTAL_SALES . '</b></td>' .
+                    '<td>&nbsp;</td>' .
+                    '<td align="left" colspan="5" class="main">' . $customerCount . TOTAL_SALES_EXPLANATION . '</td>' .
+                    '</tr>' .
+                    '<tr><td height="12" colspan="6"> </td></tr>';
+                echo $currentLine;
                 ?>
 
                 <tr class="dataTableHeadingRow">    <!-- Header -->
