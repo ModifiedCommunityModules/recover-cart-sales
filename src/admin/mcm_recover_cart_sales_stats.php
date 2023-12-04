@@ -1,4 +1,5 @@
 <?php
+
 /*
 $Id: stats_recover_cart_sales.php,v 1.6 2006/02/20 06:10:35 Anotherone Exp $
 Recover Cart Sales Report v2.12 for xt:Commerce
@@ -16,6 +17,12 @@ aalst@aalst.com
 Modified by Lane Roathe (recover_cart_sales.php,v 1.4d .. v2.11)
 lane@ifd.com    www.osc-modsquad.com / www.ifd.com
 */
+
+/**
+ * @phpcs:disable PSR1.Files.SideEffects
+ * @phpcs:disable Generic.Files.LineLength.TooLong
+ */
+
 use currencies as Currencies;
 use RobinTheHood\ModifiedStdModule\Classes\Configuration;
 
@@ -44,6 +51,7 @@ function seadate($day)
     $ts = date("U");
     $rawTime = strtotime("-" . $day . " days", $ts);
     $ndate = date("Ymd", $rawTime);
+
     return $ndate;
 }
 
@@ -52,17 +60,17 @@ require DIR_WS_INCLUDES . 'head.php';
 
 <!-- header //-->
 
-<?php require DIR_WS_INCLUDES . 'header.php'; ?>
+<?php require DIR_WS_INCLUDES . 'header.php' ?>
 
 <!-- header_eof //-->
 
 <!-- body //-->
 <table border="0" width="100%" cellspacing="2" cellpadding="2">
     <tr>
-        <td class="columnLeft2" width="<?php echo BOX_WIDTH; ?>" valign="top">
-            <table border="0" width="<?php echo BOX_WIDTH; ?>" cellspacing="1" cellpadding="1" class="columnLeft">
+        <td class="columnLeft2" width="<?= BOX_WIDTH ?>" valign="top">
+            <table border="0" width="<?= BOX_WIDTH ?>" cellspacing="1" cellpadding="1" class="columnLeft">
                 <!-- left_navigation //-->
-                <?php require DIR_WS_INCLUDES . 'column_left.php'; ?>
+                <?php require DIR_WS_INCLUDES . 'column_left.php' ?>
                 <!-- left_navigation_eof //-->
             </table>
         </td>
@@ -76,7 +84,7 @@ require DIR_WS_INCLUDES . 'head.php';
                         <!-- new header -->
                         <table border="0" width="100%" cellspacing="0" cellpadding="2">
                             <tr>
-                                <td class="pageHeading" align="left"><?php echo HEADING_TITLE; ?></td>
+                                <td class="pageHeading" align="left"><?= HEADING_TITLE ?></td>
                                 <td class="pageHeading" align="right">
                                     <?php
                                     $tdate = $_POST['tdate'] ?? '';
@@ -85,12 +93,14 @@ require DIR_WS_INCLUDES . 'head.php';
                                     }
                                     $ndate = seadate($tdate);
                                     ?>
-                                    
-                                    <?php echo xtc_draw_form('mcm_recover_cart_sales_stats', 'mcm_recover_cart_sales_stats.php', '', 'post', '') . PHP_EOL; ?>
+
+                                    <?= xtc_draw_form('mcm_recover_cart_sales_stats', 'mcm_recover_cart_sales_stats.php', '', 'post', '') ?>
                                         <table align="right" width="100%">
                                             <tr class="dataTableContent" align="right">
                                                 <td nowrap>
-                                                    <?php echo DAYS_FIELD_PREFIX; ?><input type="text" size="4" width="4" value="<?php echo $tdate; ?>" name="tdate"><?php echo DAYS_FIELD_POSTFIX; ?><input type="submit" value="<?php echo DAYS_FIELD_BUTTON; ?>">
+                                                    <?= DAYS_FIELD_PREFIX ?>
+                                                    <input type="text" size="4" width="4" value="<?= $tdate ?>" name="tdate">
+                                                    <?= DAYS_FIELD_POSTFIX ?><input type="submit" value="<?= DAYS_FIELD_BUTTON ?>">
                                                 </td>
                                             </tr>
                                         </table>
@@ -121,7 +131,7 @@ require DIR_WS_INCLUDES . 'head.php';
                     $customerRecord = xtc_db_fetch_array($query1);
 
                     // Query DB for the FIRST order that matches this customer ID and came after the abandoned cart
-                    $ordersQueryRaw = "SELECT o.orders_id, o.customers_id, o.date_purchased, s.orders_status_name, ot.text as order_total, ot.value FROM " . TABLE_ORDERS . " o LEFT JOIN " . TABLE_ORDERS_TOTAL . " ot ON (o.orders_id = ot.orders_id), " . TABLE_ORDERS_STATUS . " s WHERE (o.customers_id = " . (int) $customerId . ' OR o.customers_email_address like "' . $customerRecord['customers_email_address'] .'" OR o.customers_name like "' . $customerRecord['customers_firstname'] . ' ' . $customerRecord['customers_lastname'] . '") AND o.orders_status >= ' . $configuration->pendingSalesStatus . ' AND s.orders_status_id = o.orders_status AND o.date_purchased >= "' . $row['date_added'] . '" AND ot.class = "ot_total"';
+                    $ordersQueryRaw = "SELECT o.orders_id, o.customers_id, o.date_purchased, s.orders_status_name, ot.text as order_total, ot.value FROM " . TABLE_ORDERS . " o LEFT JOIN " . TABLE_ORDERS_TOTAL . " ot ON (o.orders_id = ot.orders_id), " . TABLE_ORDERS_STATUS . " s WHERE (o.customers_id = " . (int) $customerId . ' OR o.customers_email_address like "' . $customerRecord['customers_email_address'] . '" OR o.customers_name like "' . $customerRecord['customers_firstname'] . ' ' . $customerRecord['customers_lastname'] . '") AND o.orders_status >= ' . (int) $configuration->pendingSalesStatus . ' AND s.orders_status_id = o.orders_status AND o.date_purchased >= "' . $row['date_added'] . '" AND ot.class = "ot_total"';
 
                     $ordersQuery = xtc_db_query($ordersQueryRaw);
                     $orders = xtc_db_fetch_array($ordersQuery);
@@ -161,27 +171,27 @@ require DIR_WS_INCLUDES . 'head.php';
                 ?>
 
                 <tr class="dataTableHeadingRow">    <!-- Header -->
-                    <td width="7%" class="dataTableHeadingContent" align="right"><?php echo TABLE_HEADING_SCART_ID; ?></td>
+                    <td width="7%" class="dataTableHeadingContent" align="right"><?= TABLE_HEADING_SCART_ID ?></td>
                     <td width="1%" class="dataTableHeadingContent">&nbsp;</td>
-                    <td width="10%" class="dataTableHeadingContent" align="center"><?php echo TABLE_HEADING_SCART_DATE; ?></td>
+                    <td width="10%" class="dataTableHeadingContent" align="center"><?= TABLE_HEADING_SCART_DATE ?></td>
                     <td width="1%" class="dataTableHeadingContent">&nbsp;</td>
-                    <td width="50%" class="dataTableHeadingContent"><?php echo TABLE_HEADING_CUSTOMER; ?></td>
-                    <td width="10%" class="dataTableHeadingContent"><?php echo TABLE_HEADING_ORDER_DATE; ?></td>
-                    <td width="10%" class="dataTableHeadingContent" align="center"><?php echo TABLE_HEADING_ORDER_STATUS; ?></td>
-                    <td width="10%" class="dataTableHeadingContent" align="right"><?php echo TABLE_HEADING_ORDER_AMOUNT; ?></td>
+                    <td width="50%" class="dataTableHeadingContent"><?= TABLE_HEADING_CUSTOMER ?></td>
+                    <td width="10%" class="dataTableHeadingContent"><?= TABLE_HEADING_ORDER_DATE ?></td>
+                    <td width="10%" class="dataTableHeadingContent" align="center"><?= TABLE_HEADING_ORDER_STATUS ?></td>
+                    <td width="10%" class="dataTableHeadingContent" align="right"><?= TABLE_HEADING_ORDER_AMOUNT ?></td>
                     <td width="1%" class="dataTableHeadingContent">&nbsp;</td>
                 </tr>
                 
-                <?php echo $customerList;    // BODY: <tr> sections with recovered cart data ?>
+                <?= $customerList;    // BODY: <tr> sections with recovered cart data ?>
             
                 <tr>
                     <td colspan="9" valign="bottom"><hr width="100%" size="1" color="#800000" noshade></td>
                 </tr>
             
                 <tr class="main">
-                    <td align="right" valign="center" colspan="4" class="main"><b><?php echo TOTAL_RECOVERED; ?>&nbsp;</b></font></td>
-                    <td align="left" colspan="3" class="main"><b><?php echo $recoverdCount ? xtc_round(($customerCount / $recoverdCount) * 100, 2) : 0; ?>%</b></font></td>
-                    <td class="main" align="right"><b><?php echo $currencies->format(xtc_round($totalRecovered, 2)); ?></b></font></td>
+                    <td align="right" valign="center" colspan="4" class="main"><b><?= TOTAL_RECOVERED ?>&nbsp;</b></font></td>
+                    <td align="left" colspan="3" class="main"><b><?= $recoverdCount ? xtc_round(($customerCount / $recoverdCount) * 100, 2) : 0 ?>%</b></font></td>
+                    <td class="main" align="right"><b><?= $currencies->format(xtc_round($totalRecovered, 2)) ?></b></font></td>
                     <td class="main">&nbsp;</td>
                 </tr>
                 Done!
@@ -193,10 +203,10 @@ require DIR_WS_INCLUDES . 'head.php';
 <!-- body_eof //-->
 
 <!-- footer //-->
-<?php require DIR_WS_INCLUDES . 'footer.php'; ?>
+<?php require DIR_WS_INCLUDES . 'footer.php' ?>
 <!-- footer_eof //-->
 
 <br>
 </body>
 </html>
-<?php require DIR_WS_INCLUDES . 'application_bottom.php'; ?>
+<?php require DIR_WS_INCLUDES . 'application_bottom.php' ?>

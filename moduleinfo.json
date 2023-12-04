@@ -1,7 +1,7 @@
 {
     "name": "Offene Warenkörbe Plus",
     "archiveName": "modifiedcommunitymodules/recover-cart-sales",
-    "sourceDir": "new_files",
+    "sourceDir": "src",
     "version": "auto",
 
     "shortDescription": "Steigern Sie Ihre Verkaufsquote",
@@ -15,20 +15,28 @@
     "category": "promotion/marketing",
 
     "require": {
-        "composer/autoload": "^1.0.0",
-        "robinthehood/modified-std-module": "^0.4.0"
+        "composer/autoload": "^1.3.0",
+        "robinthehood/modified-std-module": "^0.7.0"
     },
 
     "modifiedCompatibility": [
-        "2.0.5.1",
         "2.0.7.0",
         "2.0.7.1",
-        "2.0.7.2"
+        "2.0.7.2",
+        "3.0.0"
     ],
 
     "autoload": {
         "psr-4": {
-            "ModifiedCommunityModules\\": "/vendor-no-composer/modifiedcommunitymodules"
+            "ModifiedCommunityModules\\RecoverCartSales\\":  "src-mmlc"
         }
+    },
+
+    "php": {
+        "version": "^7.4.0 || ^8.0.0"
+    },
+
+    "mmlc": {
+        "version": "^1.21.0"
     }
 }

@@ -3,7 +3,7 @@
 /**
  * Recover Cart Sales
  *
- * Licensed under GNU General Public License 2.0. 
+ * Licensed under GNU General Public License 2.0.
  * Some rights reserved. See LICENSE, README.md.
  *
  * @license GPL-2.0 <https://www.gnu.org/licenses/old-licenses/gpl-2.0-standalone.html>
@@ -22,6 +22,7 @@ class Order
     public $delivery = [];
     public $taxDiscount = [];
     public $contentType;
+    public $billing;
 
     public function __construct($customerId)
     {
@@ -226,7 +227,7 @@ class Order
             if ($product['attributes']) {
                 $subindex = 0;
                 reset($product['attributes']);
-                while (list($optionId, $optionValueId) = each($product['attributes'])) { // BUG: each is not supportet in PHP >= 8.0
+                foreach ($product['attributes'] as $optionId => $optionValueId) {
                     $attributes = $this->getAttributes($product['id'], $optionId, $optionValueId, $_SESSION['languages_id']);
 
                     $this->products[$index]['attributes'][$subindex] = [ // TODO: Maybe we can use [] instead of [$subindex]
