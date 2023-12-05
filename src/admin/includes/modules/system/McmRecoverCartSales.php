@@ -13,7 +13,7 @@ class McmRecoverCartSales extends StdModule
 {
     public function __construct()
     {
-        $this->init('MODULE_MCM_RECOVER_CART_SALES');
+        parent::__construct('MODULE_MCM_RECOVER_CART_SALES');
     }
 
     public function display()
