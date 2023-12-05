@@ -15,7 +15,7 @@ Content of your shopping cart:
     {$product.LINK}
 {/foreach}
 
-We are keen to constantly improve the service to the interest of our customers. This is why we are interested in getting to know the reasons for not making a purchase with us this time. Therefore, we would be pleased if you could let us know if you were facing any problems or having any objections while visiting our online shop to successfully close the transaction. Should you have had any technical problems, we are certainly prepared to help you. It is our aim to facilitate and improve the purchasing procedure for you and other customers. 
+We are keen to constantly improve the service to the interest of our customers. This is why we are interested in getting to know the reasons for not making a purchase with us this time. Therefore, we would be pleased if you could let us know if you were facing any problems or having any objections while visiting our online shop to successfully close the transaction. Should you have had any technical problems, we are certainly prepared to help you.ï¿½It is our aim to facilitate and improve the purchasing procedure for you and other customers. 
 
 Thank you once again for spending your time and help in order to improve our online shop. 
 
