@@ -7,7 +7,6 @@
  */
 
 use RobinTheHood\ModifiedStdModule\Classes\StdModule;
-require_once DIR_FS_DOCUMENT_ROOT . '/vendor-no-composer/autoload.php';
 
 class McmRecoverCartSales extends StdModule
 {
