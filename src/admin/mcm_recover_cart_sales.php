@@ -43,6 +43,10 @@ use ModifiedCommunityModules\RecoverCartSales\Classes\Order;
 use ModifiedCommunityModules\RecoverCartSales\Classes\ShoppingCart as RcsShoppingCart;
 use RobinTheHood\ModifiedStdModule\Classes\Configuration;
 
+if (rth_is_module_disabled('MODULE_MCM_RECOVER_CART_SALES')) {
+    return;
+}
+
 require_once 'includes/application_top.php';
 
 // ini_set('display_errors', 1);

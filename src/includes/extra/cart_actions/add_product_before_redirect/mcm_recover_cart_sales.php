@@ -1,9 +1,9 @@
 <?php
 
-if (!defined('MODULE_MCM_RECOVER_CART_SALES_STATUS') || MODULE_MCM_RECOVER_CART_SALES_STATUS != 'true') {
+use ModifiedCommunityModules\RecoverCartSales\Classes\RecoverCartSales;
+
+if (rth_is_module_disabled('MODULE_MCM_RECOVER_CART_SALES')) {
     return;
 }
-
-use ModifiedCommunityModules\RecoverCartSales\Classes\RecoverCartSales;
 
 RecoverCartSales::checkoutSite('cart');

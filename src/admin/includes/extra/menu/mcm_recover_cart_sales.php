@@ -2,7 +2,7 @@
 
 defined('_VALID_XTC') or die('Direct Access to this location is not allowed.');
 
-if (!defined('MODULE_MCM_RECOVER_CART_SALES_STATUS') || MODULE_MCM_RECOVER_CART_SALES_STATUS != 'true') {
+if (rth_is_module_disabled('MODULE_MCM_RECOVER_CART_SALES')) {
     return;
 }
 
