@@ -5,7 +5,7 @@ Source modified Forum: [Offene Warenkörbe PLUS](https://www.modified-shop.org/f
 
 ## Requirements
 - PHP 7.4 or above
-- modified 2.0.7.0 to 3.0.0
+- modified 2.0.7.0 to 3.0.2
 - MMLC 1.21.0 or above
 
 ## Installation
