@@ -33,7 +33,6 @@ if (rth_is_module_disabled('MODULE_MCM_RECOVER_CART_SALES')) {
 }
 
 require_once DIR_WS_CLASSES . 'currencies.php';
-require_once DIR_FS_DOCUMENT_ROOT . '/vendor-no-composer/autoload.php';
 
 $currencies = new Currencies();
 $configuration = new Configuration('MODULE_MCM_RECOVER_CART_SALES');
