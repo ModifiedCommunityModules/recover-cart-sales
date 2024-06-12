@@ -99,6 +99,9 @@ $rcsConfiguration = new Configuration('MODULE_MCM_RECOVER_CART_SALES');
 $action = $_GET['action'] ?? '';
 $getDelete = $_GET['delete'] ?? '';
 
+/**
+ * Moved to CustomerHelper
+ */
 function getCustomerStatus(int $customerId, int $languageId)
 {
     $sql = "SELECT c.customers_status, cs.customers_status_name,  cs.customers_status_image, cs.customers_status_ot_discount_flag, cs.customers_status_ot_discount FROM " . TABLE_CUSTOMERS . " c, " . TABLE_CUSTOMERS_STATUS . " cs WHERE c.customers_status=cs.customers_status_id AND c.customers_id=" . (int) $customerId . " AND cs.language_id=" . (int) $languageId;
