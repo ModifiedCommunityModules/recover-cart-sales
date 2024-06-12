@@ -14,7 +14,7 @@ class Controller
 {
     public const FILE_NAME = 'mcm_recover_cart_sales.php';
     public const SESSION_PREFIX = 'mcm_recover_cart_sales';
-    public const TEMPLATE_PATH = '../vendor-no-composer/modifiedcommunitymodules/RecoverCartSales/Templates/';
+    public const TEMPLATE_PATH = '../vendor-mmlc/modifiedcommunitymodules/recover-cart-sales/Templates/';
 
     public $billPatterns = [];
     public $deliveryPatterns = [];
