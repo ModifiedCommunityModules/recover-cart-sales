@@ -53,7 +53,7 @@ class Controller
     {
         $configuration = new Configuration('MODULE_MCM_RECOVER_CART_SALES');
         $customerIdsInSessions = [];
-        if ($configuration->checkSessions == 'xtrue' ) {
+        if ($configuration->checkSessions == 'true') {
             $session = new Session();
             $customerIdsInSessions = $session->getCustomerIdsFromAllSessions();
         }
