@@ -37,12 +37,12 @@ class ProductHelper
         if ($personalOfferPrice) {
             $prices[] = $personalOfferPrice;
         }
-        
+
         $specialPrice = $this->getSpecialPrice($productId);
         if ($specialPrice) {
             $prices[] = $specialPrice;
         }
-        
+
         if (!$prices) {
             return 0.0;
         }
@@ -75,7 +75,7 @@ class ProductHelper
                     AND quantity <= '$quantity'
                 ORDER BY quantity DESC
                 LIMIT 1";
-        
+
         $query = xtc_db_query($sql);
         $row = xtc_db_fetch_array($query);
         return $row['personal_offer'] ?? 0.0;

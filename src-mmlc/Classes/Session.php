@@ -52,7 +52,7 @@ class Session
     {
         $sessionFileNames = [];
         if ($handle = opendir(xtc_session_save_path())) {
-            while (false !== ($fileName = readdir($handle)) ) {
+            while (false !== ($fileName = readdir($handle))) {
                 if ($fileName == '.' || $fileName != '..') {
                     continue;
                 }

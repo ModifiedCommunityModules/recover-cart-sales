@@ -31,7 +31,7 @@ class Controller
         $this->basketHelper = new BasketHelper(
             $this->productHelper,
             $this->customerHelper
-        );    
+        );
     }
 
     public function invoke()
@@ -76,7 +76,7 @@ class Controller
                 'customerBasketTotal' => $this->basketHelper->getBasketSum($customerBasketEntries) //TODO bis jetzt nur netto
             ];
         }
-       return $entries;
+        return $entries;
     }
 
     /**
